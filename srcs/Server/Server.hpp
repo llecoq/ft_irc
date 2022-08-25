@@ -8,9 +8,18 @@ class Server {
 		//canonical form
 		~Server();
 
-		void parse(Client &client);//does the parsing
-			//search_for_backslash_n(); //; 
+		run();
+		function_that_adds_client();
 
+		Client &function_that_does_receive();//Get msg in client buf
+
+		std::string parse(Client &client);//does the parsing
+			//search_for_backslash_n(); //; 
+		void execution(Client &client, std::string);
+
+		// receiving_client = function_that_does_receive();//Get msg in client buf
+		// while ((command = parsing(receiving_client)).empty() == 0) //as long as parsing returns commands, then execute them
+			// execution(receiving_client, command);
 
 	private :
 		std::vector<struct pollfd>	_pollfd;
@@ -20,12 +29,3 @@ class Server {
 		Parser _parser; //ptr ?
 
 };
-
-int main()
-{
-	Server;
-
-	server->parser(client);//should be caopabke of adding a channel
-
-
-}
