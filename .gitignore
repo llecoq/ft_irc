@@ -1,0 +1,5 @@
+.objs
+# .objs/*
+.vscode
+ircserv
+a.out
