@@ -89,6 +89,7 @@ class Server
 		void				_error_exit(int error, std::string error_msg);
 		void				_log(std::string log_msg);
 		void				_err_log(std::string err_msg);
+		void				_close_all_fds();
 
 };
 

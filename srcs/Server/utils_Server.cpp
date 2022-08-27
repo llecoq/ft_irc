@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 10:49:44 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 11:04:00 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	Server::_get_listening_socket()
 
 int	Server::_create_and_bind_socket(addrinfo* ptr)
 {
-	int		yes = 1;
+	int		opt = true;
 	int		socket_fd = 0;
 
 	if ((socket_fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol)) == FAILED)
@@ -77,7 +77,7 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 		_err_log("Trying to create and bind another socket...");
 		return ERR_SOCKET;
 	}
-	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == FAILED)
+	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) == FAILED)
 	{
 		perror("setsockopt");
 		_err_log("Trying to bind to the socket anyway...");
@@ -178,6 +178,7 @@ void	Server::_error_exit(int error, std::string error_msg)
 		perror(error_msg.c_str());
 	else if (error_msg.empty() != 1)
 		_err_log(error_msg);
+	_close_all_fds();
 	// CLOSE ALL FDS AND CLEAN EXIT
 	exit(EXIT_FAILURE);
 }
@@ -190,4 +191,12 @@ void	Server::_log(std::string log_msg)
 void	Server::_err_log(std::string err_msg)
 {
 	std::cerr << err_msg << std::endl;
+}
+
+void	Server::_close_all_fds()
+{
+	pollfd_iterator	it;
+
+	for (it = _pollfd.begin(); it != _pollfd.end(); it++)
+		close((*it).fd);	
 }
