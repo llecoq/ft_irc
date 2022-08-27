@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 11:04:00 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 11:26:32 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,14 @@ void	Server::_get_listening_socket()
     for (ptr = _server_info.servinfo; ptr != NULL; ptr = ptr->ai_next)
 	{
 		if (_create_and_bind_socket(ptr) > 0)
+		{
+			_add_socket_to_pollfd(_server_info.listening_socket);
 			break;
+		}
 	}
 	freeaddrinfo(_server_info.servinfo);
 	if (ptr == NULL)
-		_error_exit(NO_PERROR, "Couldn't create and bind to a socket. Server shutting down.");
+		_error_exit(NO_PERROR, "Couldn't create socket and bind to the port. Server shutting down.");
 }
 
 int	Server::_create_and_bind_socket(addrinfo* ptr)
@@ -91,6 +94,14 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 	}
 	_server_info.listening_socket = socket_fd;
 	return socket_fd;
+}
+
+void	Server::_add_socket_to_pollfd(int socket_fd)
+{
+	_pollfd.push_back(pollfd());
+	_pollfd.back().fd = socket_fd;
+	_pollfd.back().events = POLLIN;
+	
 }
 
 void	Server::_listen_for_incoming_connections()
@@ -137,23 +148,25 @@ int	Server::_find_event(struct pollfd current_pollfd)
 
 void	Server::_accept_pending_connection()
 {
-	// int						newfd;
-	// struct sockaddr_storage client_addr;
-    // socklen_t 				addrlen;
+	int						new_fd;
+	int						listening_socket;
+	struct sockaddr_storage client_addr;
+    socklen_t 				addrlen;
     
-	// addrlen = sizeof client_addr;
-	// newfd = accept(_listeningSocket, (struct sockaddr *)&client_addr, &addrlen);
-	// fcntl(newfd, F_SETFL, O_NONBLOCK);
-	// if (newfd > 0)
-	// {
-	// 	_pollfd.push_back(pollfd());
-	// 	_pollfd.back().fd = newfd;
-	// 	_pollfd.back().events = POLLIN;
+	addrlen = sizeof client_addr;
+	listening_socket = _server_info.listening_socket;
+	// trying to accept() connection
+	new_fd = accept(listening_socket, (struct sockaddr *)&client_addr, &addrlen);
+	fcntl(new_fd, F_SETFL, O_NONBLOCK); // set fd to non blocking
+	if (new_fd > 0)
+	{
+		_add_socket_to_pollfd(new_fd);
 		_log("new connection accepted !");
-	// 	send(newfd, msg.c_str(), msg.length(), 0);
-	// }
-	// else
-	// 	std::cout << "FAIL" << std::endl;
+		// if (_unknown_client(client_addr)) ?
+		// 	_add_client_to_book();
+	}
+	else
+		perror("server: accept");
 }
 
 // void add_client_to_book ?

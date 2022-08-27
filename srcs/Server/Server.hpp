@@ -14,6 +14,7 @@
 # include <poll.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <fcntl.h>
 
 enum	e_event
 {
@@ -76,7 +77,7 @@ class Server
 		void				_get_address_info();
 		void				_get_listening_socket();
 		int					_create_and_bind_socket(addrinfo* ptr);
-		void				_bind_socket();
+		void				_add_socket_to_pollfd(int socket_fd);
 		void				_listen_for_incoming_connections();
 		// run()
 		void				_poll_events();
