@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 17:00:59 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 19:31:41 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <netdb.h>
 # include <cstring>
 # include <errno.h>  
+# include <arpa/inet.h>
 
 # define UNKNOWN	-1
 # define BACKLOG 	10 
@@ -158,6 +159,7 @@ void	Server::_accept_pending_connection()
 	int						listening_socket;
 	sockaddr_storage		client_addr;
     socklen_t 				addrlen;
+	char 					ipstr[INET6_ADDRSTRLEN];
     
 	addrlen = sizeof client_addr;
 	listening_socket = _server_info.listening_socket;
@@ -168,23 +170,38 @@ void	Server::_accept_pending_connection()
 	{
 		_add_socket_to_pollfd(new_fd);
 		_log("new connection accepted !");
-		if (_client_identity(client_addr) == UNKNOWN)
-			_add_client_to_book(new_fd, client_addr);
+		// display bienvenue message to client
+		if (_client_identity(ipstr, client_addr) == UNKNOWN)
+			_add_client_to_book(new_fd, ipstr);
 	}
 	else
 		perror("server: accept");
 }
 
-int	Server::_client_identity(sockaddr_storage client_addr)
+int	Server::_client_identity(char* ipstr_ret, sockaddr_storage client_addr)
 {
-	(void)client_addr;
+	char 					ipstr[INET6_ADDRSTRLEN];
+
+	// deal with both IPv4 and IPv6:
+	if (client_addr.ss_family == AF_INET)
+	{
+		struct sockaddr_in *s = (struct sockaddr_in *)&client_addr;
+		inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+	}
+	else
+	{ // AF_INET6
+		struct sockaddr_in6 *s = (struct sockaddr_in6 *)&client_addr;
+		inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+	}
+	strcpy(ipstr_ret, ipstr); // beurk
 	return UNKNOWN;
 }
 
-void Server::_add_client_to_book(int client_fd, sockaddr_storage client_addr)
+void Server::_add_client_to_book(int client_fd, char* ipstr)
 {
+	_client_book.insert(client_pair("test", new Client(client_fd, ipstr))); // leaks
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH 
 	(void)client_fd;
-	(void)client_addr;
 }
 
 void	Server::_process_data(pollfd_iterator it)

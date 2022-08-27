@@ -2,7 +2,7 @@
 # define SERVER_HPP
 
 #include "Commons.hpp"
-// #include "Client.hpp"
+#include "Client.hpp"
 #include "Exceptions.hpp"
 
 // à mettre dans common ?
@@ -13,7 +13,9 @@
 # include <stdlib.h>
 # include <poll.h>
 # include <stdio.h>
-# include <unistd.h>
+# include <utility>
+
+// # include <unistd.h>
 # include <fcntl.h>
 
 enum	e_event
@@ -40,8 +42,11 @@ class Server
 	public :
 
 		// member types
-		typedef std::vector<struct pollfd>		pollfd_vector;
-		typedef pollfd_vector::iterator			pollfd_iterator;
+		typedef std::vector<struct pollfd>			pollfd_vector;
+		typedef pollfd_vector::iterator				pollfd_iterator;
+		typedef std::map<std::string, Client*>		client_map;
+		typedef client_map::iterator				client_iterator;
+		typedef	std::pair<std::string, Client*>		client_pair;
 		// typedef std::map<>
 
 		// constructors & destructor
@@ -68,7 +73,7 @@ class Server
 		pollfd_vector		_pollfd;
 		t_server_info		_server_info;					
 
-		// std::map<std::string client_name, Client *> _client_book;
+		client_map			_client_book;
 		// std::map<std::string channel_name, Channel *> _channel_book;
 		// std::map<std::string command_name, ptr*fun()> _cmd_book; //LOOK UP FUNCTION PTR
 
@@ -83,8 +88,8 @@ class Server
 		void				_poll_events();
 		int					_find_event(pollfd current_pollfd);
 		void				_accept_pending_connection();
-		int					_client_identity(struct sockaddr_storage client_addr);
-		void				_add_client_to_book(int client_fd, struct sockaddr_storage client_addr);
+		int					_client_identity(char* ipstr, struct sockaddr_storage client_addr);
+		void				_add_client_to_book(int client_fd, char* ipstr);
 		void				_process_data(pollfd_iterator it);
 		void				_close_connection(pollfd_iterator it);
 		// error and log management

@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 15:04:46 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/26 18:59:44 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 17:30:31 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
 	// mini parsing port // mdp ?
 	server.init();
-	// server.run();
+	server.run();
 	
 	// try
 		// serv.init
