@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 10:11:17 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 10:49:44 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 
 enum	e_errors
 {
+	PERROR,
+	NO_PERROR,
 	FAILED = -1,
 	ERR_BIND = -2,
 	ERR_SOCKET = -3,
@@ -61,10 +63,7 @@ void	Server::_get_listening_socket()
 	}
 	freeaddrinfo(_server_info.servinfo);
 	if (ptr == NULL)
-	{
-		std::cerr << "Couldn't create and bind to a socket. Server shutting down." << std::endl;
-		exit(EXIT_FAILURE);
-	}
+		_error_exit(NO_PERROR, "Couldn't create and bind to a socket. Server shutting down.");
 }
 
 int	Server::_create_and_bind_socket(addrinfo* ptr)
@@ -75,19 +74,19 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 	if ((socket_fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol)) == FAILED)
 	{
 		perror("server: socket");
-		std::cerr << "Trying to create and bind another socket..." << std::endl;
+		_err_log("Trying to create and bind another socket...");
 		return ERR_SOCKET;
 	}
 	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == FAILED)
 	{
 		perror("setsockopt");
-		std::cerr << "Trying to bind to the socket anyway..." << std::endl;
+		_err_log("Trying to bind to the socket anyway...");
 	}
 	if (bind(socket_fd, ptr->ai_addr, ptr->ai_addrlen) == FAILED)
 	{
 		close(socket_fd);
 		perror("server: bind");
-		std::cerr << "Trying to create and bind another socket..." << std::endl;
+		_err_log("Trying to create and bind another socket...");
 		return ERR_BIND;
 	}
 	_server_info.listening_socket = socket_fd;
@@ -98,7 +97,7 @@ void	Server::_listen_for_incoming_connections()
 {
 	if (listen(_server_info.listening_socket, BACKLOG) == -1)
 		throw serverExceptions("listen :", strerror(errno));
-	std::cout << "server: waiting for connections..." << std::endl;
+	_log("server: waiting for connections...");
 }
 
 /*
@@ -107,14 +106,11 @@ void	Server::_listen_for_incoming_connections()
 
 void	Server::_poll_events()
 {
-	int				res;
+	int				pfds;
 
-	res = poll(_pollfd.data(), _pollfd.size(), NO_TIMEOUT);
-	if (res == FAILED)
-	{
-		perror("server: poll");
-		exit(EXIT_FAILURE);
-	}
+	pfds = poll(_pollfd.data(), _pollfd.size(), NO_TIMEOUT);
+	if (pfds == FAILED)
+		_error_exit(PERROR, "server: poll");
 }
 
 int	Server::_find_event(struct pollfd current_pollfd)
@@ -141,7 +137,23 @@ int	Server::_find_event(struct pollfd current_pollfd)
 
 void	Server::_accept_pending_connection()
 {
-	
+	// int						newfd;
+	// struct sockaddr_storage client_addr;
+    // socklen_t 				addrlen;
+    
+	// addrlen = sizeof client_addr;
+	// newfd = accept(_listeningSocket, (struct sockaddr *)&client_addr, &addrlen);
+	// fcntl(newfd, F_SETFL, O_NONBLOCK);
+	// if (newfd > 0)
+	// {
+	// 	_pollfd.push_back(pollfd());
+	// 	_pollfd.back().fd = newfd;
+	// 	_pollfd.back().events = POLLIN;
+		_log("new connection accepted !");
+	// 	send(newfd, msg.c_str(), msg.length(), 0);
+	// }
+	// else
+	// 	std::cout << "FAIL" << std::endl;
 }
 
 // void add_client_to_book ?
@@ -156,4 +168,26 @@ void	Server::_close_connection(pollfd_iterator it)
 	(void)it;
 }
 
+/*
+** --------------------------------- ERROR / LOG ---------------------------------
+*/
 
+void	Server::_error_exit(int error, std::string error_msg)
+{
+	if (error == PERROR)
+		perror(error_msg.c_str());
+	else if (error_msg.empty() != 1)
+		_err_log(error_msg);
+	// CLOSE ALL FDS AND CLEAN EXIT
+	exit(EXIT_FAILURE);
+}
+
+void	Server::_log(std::string log_msg)
+{
+	std::cout << log_msg << std::endl;
+}
+
+void	Server::_err_log(std::string err_msg)
+{
+	std::cerr << err_msg << std::endl;
+}

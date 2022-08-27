@@ -85,6 +85,10 @@ class Server
 		// void				_add_client_to_book();
 		void				_process_data(pollfd_iterator it);
 		void				_close_connection(pollfd_iterator it);
+		// error and log management
+		void				_error_exit(int error, std::string error_msg);
+		void				_log(std::string log_msg);
+		void				_err_log(std::string err_msg);
 
 };
 
