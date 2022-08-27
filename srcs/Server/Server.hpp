@@ -49,7 +49,7 @@ class Server
 
 		// member functions
 		void	init();
-		// void	run();
+		void	run();
 		// function_that_adds_client();
 
 		// Client &function_that_does_receive();//Get msg in client buf
@@ -71,13 +71,21 @@ class Server
 		// std::map<std::string channel_name, Channel *> _channel_book;
 		// std::map<std::string command_name, ptr*fun()> _cmd_book; //LOOK UP FUNCTION PTR
 
-		// Utils functions
+		// UTILS FUNCTIONS
+		// init()
 		void				_get_address_info();
 		void				_get_listening_socket();
 		int					_create_and_bind_socket(addrinfo* ptr);
-		int					_create_socket(addrinfo* ptr);
 		void				_bind_socket();
 		void				_listen_for_incoming_connections();
+		// run()
+		void				_poll_events();
+		int					_find_event(pollfd current_pollfd);
+		void				_accept_pending_connection();
+		// void				_add_client_to_book();
+		void				_process_data(pollfd_iterator it);
+		void				_close_connection(pollfd_iterator it);
+
 };
 
 #endif /* ********************************************************** SERVER_HPP */

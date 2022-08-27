@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/26 19:11:59 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 10:11:17 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 # include <cstring>
 # include <errno.h>  
 
-# define BACKLOG 10 
+# define BACKLOG 	10 
+# define NO_TIMEOUT -1
+
 
 enum	e_errors
 {
@@ -27,6 +29,10 @@ enum	e_errors
 	ERR_SOCKET = -3,
 	ERR_SETSOCKOPT = -4
 };
+
+/*
+** ----------------------------------- INIT -----------------------------------
+*/
 
 void	Server::_get_address_info()
 {
@@ -63,11 +69,15 @@ void	Server::_get_listening_socket()
 
 int	Server::_create_and_bind_socket(addrinfo* ptr)
 {
-	int		yes = 0;
+	int		yes = 1;
 	int		socket_fd = 0;
 
-	if ((socket_fd = _create_socket(ptr)) == FAILED)
+	if ((socket_fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol)) == FAILED)
+	{
+		perror("server: socket");
+		std::cerr << "Trying to create and bind another socket..." << std::endl;
 		return ERR_SOCKET;
+	}
 	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == FAILED)
 	{
 		perror("setsockopt");
@@ -84,22 +94,66 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 	return socket_fd;
 }
 
-int	Server::_create_socket(struct addrinfo* ptr)
-{
-	int	sockfd = 0;
-	
-	sockfd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-	if (sockfd == FAILED)
-	{
-		perror("server: socket");
-		std::cerr << "Trying to create and bind another socket..." << std::endl;
-	}
-	return sockfd;
-}
-
 void	Server::_listen_for_incoming_connections()
 {
 	if (listen(_server_info.listening_socket, BACKLOG) == -1)
 		throw serverExceptions("listen :", strerror(errno));
 	std::cout << "server: waiting for connections..." << std::endl;
 }
+
+/*
+** ----------------------------------- RUN -----------------------------------
+*/
+
+void	Server::_poll_events()
+{
+	int				res;
+
+	res = poll(_pollfd.data(), _pollfd.size(), NO_TIMEOUT);
+	if (res == FAILED)
+	{
+		perror("server: poll");
+		exit(EXIT_FAILURE);
+	}
+}
+
+int	Server::_find_event(struct pollfd current_pollfd)
+{
+	if (current_pollfd.revents & POLLIN)
+	{
+		if (current_pollfd.fd == _server_info.listening_socket)
+			return PENDING_CONNECTION;
+		// else
+		// {
+		// 	// à faire en boucle jusqu'à ce qu'il n'y est plus de data ?
+		// 	_nbytes = recv(current_pollfd.fd, _buff, sizeof _buff, 0);
+
+		// 	if (_nbytes > 0)
+		// 		return DATA_RECEIVED;
+		// 	else if (_nbytes == 0)
+		// 		return CONNECTION_LOST;
+		// 	else // nbytes == -1
+		// 		return RECV_ERROR;
+		// }
+	}
+	return NO_EVENT;
+}
+
+void	Server::_accept_pending_connection()
+{
+	
+}
+
+// void add_client_to_book ?
+
+void	Server::_process_data(pollfd_iterator it)
+{
+	(void)it;
+}
+
+void	Server::_close_connection(pollfd_iterator it)
+{
+	(void)it;
+}
+
+
