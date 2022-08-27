@@ -28,17 +28,9 @@ Server::~Server()
 
 void	Server::init()
 {
-	try
-	{
-		_get_address_info();
-		_get_listening_socket();
-		_listen_for_incoming_connections();		
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-	    exit(EXIT_FAILURE);
-	}
+	_get_address_info();
+	_get_listening_socket();
+	_listen_for_incoming_connections();		
 }
 
 void	Server::run()

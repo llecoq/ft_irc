@@ -83,7 +83,8 @@ class Server
 		void				_poll_events();
 		int					_find_event(pollfd current_pollfd);
 		void				_accept_pending_connection();
-		// void				_add_client_to_book();
+		int					_client_identity(struct sockaddr_storage client_addr);
+		void				_add_client_to_book(int client_fd, struct sockaddr_storage client_addr);
 		void				_process_data(pollfd_iterator it);
 		void				_close_connection(pollfd_iterator it);
 		// error and log management

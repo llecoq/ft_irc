@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 11:26:32 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/27 17:00:59 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <cstring>
 # include <errno.h>  
 
+# define UNKNOWN	-1
 # define BACKLOG 	10 
 # define NO_TIMEOUT -1
 
@@ -48,7 +49,12 @@ void	Server::_get_address_info()
 
 	status = getaddrinfo(NULL, _server_info.port, &hints, &_server_info.servinfo);
 	if (status != 0)
-		throw serverExceptions("getaddrinfo error: ", gai_strerror(status));
+	{
+		// throw serverExceptions("getaddrinfo error: ", gai_strerror(status));
+		_err_log("getaddrinfo error: ");
+		gai_strerror(status);
+		exit(EXIT_FAILURE);
+	}
 }
 
 void	Server::_get_listening_socket()
@@ -150,7 +156,7 @@ void	Server::_accept_pending_connection()
 {
 	int						new_fd;
 	int						listening_socket;
-	struct sockaddr_storage client_addr;
+	sockaddr_storage		client_addr;
     socklen_t 				addrlen;
     
 	addrlen = sizeof client_addr;
@@ -162,14 +168,24 @@ void	Server::_accept_pending_connection()
 	{
 		_add_socket_to_pollfd(new_fd);
 		_log("new connection accepted !");
-		// if (_unknown_client(client_addr)) ?
-		// 	_add_client_to_book();
+		if (_client_identity(client_addr) == UNKNOWN)
+			_add_client_to_book(new_fd, client_addr);
 	}
 	else
 		perror("server: accept");
 }
 
-// void add_client_to_book ?
+int	Server::_client_identity(sockaddr_storage client_addr)
+{
+	(void)client_addr;
+	return UNKNOWN;
+}
+
+void Server::_add_client_to_book(int client_fd, sockaddr_storage client_addr)
+{
+	(void)client_fd;
+	(void)client_addr;
+}
 
 void	Server::_process_data(pollfd_iterator it)
 {
