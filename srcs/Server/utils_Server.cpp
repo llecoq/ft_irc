@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 20:36:56 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 20:46:48 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,10 +183,6 @@ void	Server::_accept_pending_connection()
 	}
 	else
 		perror("Server: accept");
-}void	Server::_signal_handler(int signum)
-{
-	(void)signum;
-	throw serverExceptions("Server: ", "shutting down...");
 }
 
 char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
@@ -217,8 +213,10 @@ void	Server::_add_client_to_book(int fd, char* ipstr)
 
 void	Server::_process_data(pollfd_iterator it)
 {
-	std::cout << *(_client_book.find(it->fd)->second) << std::endl;
-	(void)it;
+	std::cout << *(_client_book.find(it->fd)->second) << std::endl; // print client data for debug
+
+	// parse buffer of client
+	// excute cmd (do the changes on client + channel if needed and send numeric replies to client)
 }
 
 void	Server::_close_connection(pollfd_iterator it)

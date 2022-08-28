@@ -12,7 +12,6 @@
 # include <cstdio>
 
 # define BUFFER_SIZE 512
-# define CLOSED 	-1
 # define FAILED 	-1
 
 struct t_recv_data
@@ -68,8 +67,6 @@ class Client
 		// std::deque<std::string pending_msg> _pending_priv_msg; //pending_msg must contain the sender's username //deque or other ? must be FIFO
 
 		// std::map<std::string channel_name, Channel *> _joined_channels;
-		// // struct pollfd	_pollfd;
-
 };
 
 std::ostream &			operator<<( std::ostream & o, Client const & i );

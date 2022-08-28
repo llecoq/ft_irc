@@ -54,7 +54,6 @@ void	Server::run()
 				break;
 			case CONNECTION_LOST:
 				_log("CONNECTION LOST");
-				// print client ?
 				_close_connection(it);
 				break;
 			case DATA_RECEIVED:
@@ -62,7 +61,6 @@ void	Server::run()
 				_process_data(it);
 				break;
 			case NO_EVENT:
-				// std::cout << "no event : socket " << (*it).fd << std::endl;
 				break;
 			}
 		}	
