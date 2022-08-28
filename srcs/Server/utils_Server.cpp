@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 20:32:07 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 20:36:56 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ void	Server::_get_address_info()
 	if (status != 0)
 	{
 		// throw serverExceptions("getaddrinfo error: ", gai_strerror(status));
-		_err_log("getaddrinfo error: ");
-		gai_strerror(status);
+		std::string	err_msg("getaddrinfo error: ");
+		
+		err_msg.append(gai_strerror(status));
+		_err_log(err_msg);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -181,6 +183,10 @@ void	Server::_accept_pending_connection()
 	}
 	else
 		perror("Server: accept");
+}void	Server::_signal_handler(int signum)
+{
+	(void)signum;
+	throw serverExceptions("Server: ", "shutting down...");
 }
 
 char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
