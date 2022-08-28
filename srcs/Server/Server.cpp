@@ -39,17 +39,10 @@ void	Server::init()
 	_listen_for_incoming_connections();		
 }
 
-void	Server::_signal_handler(int signum)
-{
-	(void)signum;
-	throw serverExceptions("Server: ", "shutting down...");
-}
-
 void	Server::run()
 {
 	while (1) 					// main loop
 	{
-		signal(SIGINT, _signal_handler);
 		_poll_events(); 		// wait for events
 		for (pollfd_iterator it = _pollfd.begin(); it < _pollfd.end(); it++)
 		{

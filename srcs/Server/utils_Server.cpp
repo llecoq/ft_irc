@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 20:29:07 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 20:32:07 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,10 +125,17 @@ void	Server::_listen_for_incoming_connections()
 ** ----------------------------------- RUN -----------------------------------
 */
 
+void	Server::_signal_handler(int signum)
+{
+	(void)signum;
+	throw serverExceptions("Server: ", "shutting down...");
+}
+
 void	Server::_poll_events()
 {
 	int				pfds;
 
+	signal(SIGINT, _signal_handler);
 	pfds = poll(_pollfd.data(), _pollfd.size(), NO_TIMEOUT);
 	if (pfds == FAILED)
 		_error_exit(PERROR, "Server: poll");
