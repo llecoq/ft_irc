@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 15:04:46 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 17:30:31 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 19:42:35 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,16 @@ int main(int argc, char *argv[])
 	Server	server(argv[1], argv[2]);
 
 	// mini parsing port // mdp ?
-	server.init();
-	server.run();
+	try
+	{
+		server.init();
+		server.run();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+
 	
 	// try
 		// serv.init

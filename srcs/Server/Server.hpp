@@ -14,6 +14,7 @@
 # include <poll.h>
 # include <stdio.h>
 # include <utility>
+# include <csignal>
 
 // # include <unistd.h>
 # include <fcntl.h>
@@ -70,10 +71,6 @@ class Server
 			// execution(receiving_client, command);
 
 	private :
-		
-		// for testing DELETE
-		char					_buff[BUFFER_SIZE];
-		int						_nbytes;
 
 		pollfd_vector			_pollfd;
 		t_server_info			_server_info;					
@@ -102,7 +99,7 @@ class Server
 		void				_log(std::string log_msg);
 		void				_err_log(std::string err_msg);
 		void				_close_all_fds();
-		// void				_delete_clients_from_book();
+		static void			_signal_handler(int signum);
 
 };
 

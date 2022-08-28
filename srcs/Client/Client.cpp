@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 17:31:01 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 19:16:15 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ ssize_t	Client::read_data()
 	if (_recv_data.nbytes == FAILED)
 		perror("Client: recv");
 	else if (_recv_data.nbytes > 0)
-		_recv_data.buf[_recv_data.nbytes] = '\0';
+		_recv_data.buf[_recv_data.nbytes - 1] = '\0';
 	return _recv_data.nbytes;
 }
 

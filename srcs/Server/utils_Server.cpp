@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 18:21:58 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 19:14:30 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,14 +201,13 @@ void	Server::_add_client_to_book(int fd, char* ipstr)
 	
 	_client_book.insert(fd_client_pair(fd, new_client));
 	new_client->set_ipstr(ipstr);
-	std::cout << new_client << std::endl;
+	// std::cout << new_client << std::endl;
 }
 
 void	Server::_process_data(pollfd_iterator it)
 {
+	std::cout << *(_client_book.find(it->fd)->second) << std::endl;
 	(void)it;
-	// write(1, _buff, _nbytes);
-	_log(_buff);
 }
 
 void	Server::_close_connection(pollfd_iterator it)
