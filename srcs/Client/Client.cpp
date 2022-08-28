@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 19:25:57 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 11:07:34 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,10 @@
 
 Client::Client() {}
 
-Client::Client(int fd, std::string ipstr)
+Client::Client(int fd)
 :
-	_fd(fd),
-	_ipstr(ipstr)
-{
-	(void)_fd;
-	(void)_ipstr;
-	(void)_recv_data;
-}
+	_fd(fd)
+{}
 
 Client::Client( const Client & src )
 {
@@ -57,8 +52,14 @@ Client &				Client::operator=( Client const & rhs )
 
 std::ostream &			operator<<( std::ostream & o, Client const & i )
 {
-	(void)i;
-	//o << "Value = " << i.getValue();
+	o << "-------------------CLIENT--------------------" << std::endl;
+	o << "fd = " << i.get_fd() << std::endl;
+	o << "ipstr = " << i.get_ipstr() << std::endl;
+	o << "username = " << i.get_username() << std::endl;
+	o << "realname = " << i.get_realname() << std::endl;
+	o << "nickname = " << i.get_nickname() << std::endl;
+	i.display_recv_data();
+	o << "---------------------------------------------" << std::endl << std::endl;
 	return o;
 }
 
@@ -67,10 +68,83 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+ssize_t	Client::read_data()
+{
+	_recv_data.nbytes = recv(_fd, _recv_data.buf, sizeof _recv_data.buf, 0);
+	if (_recv_data.nbytes == FAILED)
+		perror("Client: recv");
+	return _recv_data.nbytes;
+}
+
+void	Client::init_client(char* ipstr)
+{
+	_ipstr = ipstr;
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+void	Client::set_fd(int fd)
+{
+	_fd = fd;
+}
+
+void	Client::set_username(std::string username)
+{
+	_username = username;
+}
+
+void	Client::set_realname(std::string realname)
+{
+	_realname = realname;
+}
+
+void	Client::set_nickname(std::string nickname)
+{
+	_nickname = nickname;
+}
+
+void	Client::set_ipstr(std::string ipstr)
+{
+	_ipstr = ipstr;
+}
+
+int	Client::get_fd() const
+{
+	return _fd;
+}
+
+std::string	Client::get_username() const
+{
+	return _username;
+}
+
+std::string	Client::get_realname() const
+{
+	return _realname;
+}
+
+std::string	Client::get_nickname() const
+{
+	return _nickname;
+}
+
+std::string Client::get_ipstr() const
+{
+	return _ipstr;
+}
+
+/*
+** ----------------------------------- DEBUG -----------------------------------
+*/
+
+void	Client::display_recv_data() const
+{
+	std::cout << "------------------recv_data------------------" << std::endl;
+	std::cout << "buffer = '" << _recv_data.buf << "'" << std::endl;
+	std::cout << "nbytes = " << _recv_data.nbytes << std::endl;
+	std::cout << "---------------------------------------------" << std::endl;
+}
 
 /* ************************************************************************** */

@@ -6,10 +6,10 @@
 #include "Exceptions.hpp"
 
 // à mettre dans common ?
-# include <iostream>
-# include <string>
+// # include <iostream>
+// # include <string>
 # include <vector>
-# include <map>
+// # include <map>
 # include <stdlib.h>
 # include <poll.h>
 # include <stdio.h>
@@ -88,8 +88,10 @@ class Server
 		void				_poll_events();
 		int					_find_event(pollfd current_pollfd);
 		void				_accept_pending_connection();
-		int					_client_identity(char* ipstr, struct sockaddr_storage client_addr);
-		void				_add_client_to_book(int client_fd, char* ipstr);
+		char*				_sockaddr_to_string(struct sockaddr_storage client_addr);
+		void				_authentify_client(int fd, char* ipstr);
+		// int					_client_identity(char* ipstr, struct sockaddr_storage client_addr);
+		// void				_add_client_to_book(int client_fd, char* ipstr);
 		void				_process_data(pollfd_iterator it);
 		void				_close_connection(pollfd_iterator it);
 		// error and log management

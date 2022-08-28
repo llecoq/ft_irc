@@ -6,29 +6,28 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/27 19:31:41 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 11:31:38 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 # include <sys/types.h>
-# include <sys/socket.h>
+// # include <sys/socket.h>
 # include <netdb.h>
 # include <cstring>
-# include <errno.h>  
+// # include <errno.h>  
 # include <arpa/inet.h>
 
-# define UNKNOWN	-1
 # define BACKLOG 	10 
 # define NO_TIMEOUT -1
+# define UNKNOWN	-1
 
 
 enum	e_errors
 {
 	PERROR,
 	NO_PERROR,
-	FAILED = -1,
 	ERR_BIND = -2,
 	ERR_SOCKET = -3,
 	ERR_SETSOCKOPT = -4
@@ -83,7 +82,7 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 
 	if ((socket_fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol)) == FAILED)
 	{
-		perror("server: socket");
+		perror("Server: socket");
 		_err_log("Trying to create and bind another socket...");
 		return ERR_SOCKET;
 	}
@@ -95,7 +94,7 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 	if (bind(socket_fd, ptr->ai_addr, ptr->ai_addrlen) == FAILED)
 	{
 		close(socket_fd);
-		perror("server: bind");
+		perror("Server: bind");
 		_err_log("Trying to create and bind another socket...");
 		return ERR_BIND;
 	}
@@ -115,7 +114,7 @@ void	Server::_listen_for_incoming_connections()
 {
 	if (listen(_server_info.listening_socket, BACKLOG) == -1)
 		throw serverExceptions("listen :", strerror(errno));
-	_log("server: waiting for connections...");
+	_log("Server: waiting for connections...");
 }
 
 /*
@@ -128,7 +127,7 @@ void	Server::_poll_events()
 
 	pfds = poll(_pollfd.data(), _pollfd.size(), NO_TIMEOUT);
 	if (pfds == FAILED)
-		_error_exit(PERROR, "server: poll");
+		_error_exit(PERROR, "Server: poll");
 }
 
 int	Server::_find_event(struct pollfd current_pollfd)
@@ -137,6 +136,9 @@ int	Server::_find_event(struct pollfd current_pollfd)
 	{
 		if (current_pollfd.fd == _server_info.listening_socket)
 			return PENDING_CONNECTION;
+		else
+		{
+		}
 		// else
 		// {
 		// 	// à faire en boucle jusqu'à ce qu'il n'y est plus de data ?
@@ -156,31 +158,31 @@ int	Server::_find_event(struct pollfd current_pollfd)
 void	Server::_accept_pending_connection()
 {
 	int						new_fd;
-	int						listening_socket;
 	sockaddr_storage		client_addr;
     socklen_t 				addrlen;
-	char 					ipstr[INET6_ADDRSTRLEN];
+	char* 					ipstr;
     
 	addrlen = sizeof client_addr;
-	listening_socket = _server_info.listening_socket;
 	// trying to accept() connection
-	new_fd = accept(listening_socket, (struct sockaddr *)&client_addr, &addrlen);
+	new_fd = accept(_server_info.listening_socket, (struct sockaddr *)&client_addr, &addrlen);
 	fcntl(new_fd, F_SETFL, O_NONBLOCK); // set fd to non blocking
 	if (new_fd > 0)
 	{
+		_log("New connection accepted !");
 		_add_socket_to_pollfd(new_fd);
-		_log("new connection accepted !");
+		ipstr = _sockaddr_to_string(client_addr);
+		// _authentify_client(new_fd, ipstr);
 		// display bienvenue message to client
-		if (_client_identity(ipstr, client_addr) == UNKNOWN)
-			_add_client_to_book(new_fd, ipstr);
+		// if (_client_identity(ipstr, client_addr) == UNKNOWN)
+			// _add_client_to_book(new_fd, ipstr);
 	}
 	else
-		perror("server: accept");
+		perror("Server: accept");
 }
 
-int	Server::_client_identity(char* ipstr_ret, sockaddr_storage client_addr)
+char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
 {
-	char 					ipstr[INET6_ADDRSTRLEN];
+	static char	ipstr[INET6_ADDRSTRLEN];
 
 	// deal with both IPv4 and IPv6:
 	if (client_addr.ss_family == AF_INET)
@@ -193,16 +195,24 @@ int	Server::_client_identity(char* ipstr_ret, sockaddr_storage client_addr)
 		struct sockaddr_in6 *s = (struct sockaddr_in6 *)&client_addr;
 		inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
 	}
-	strcpy(ipstr_ret, ipstr); // beurk
-	return UNKNOWN;
+	return ipstr;
 }
 
-void Server::_add_client_to_book(int client_fd, char* ipstr)
+void	Server::_authentify_client(int fd, char* ipstr)
 {
-	_client_book.insert(client_pair("test", new Client(client_fd, ipstr))); // leaks
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH 
-	(void)client_fd;
+	Client	new_client(fd);
+
+	new_client.read_data();
+	new_client.init_client(ipstr);
+	std::cout << new_client << std::endl;
 }
+
+// void Server::_add_client_to_book(int client_fd, char* ipstr)
+// {
+// 	// _client_book.insert(client_pair("test", new Client(client_fd, ipstr))); // leaks
+// // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH 
+// 	(void)client_fd;
+// }
 
 void	Server::_process_data(pollfd_iterator it)
 {
