@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 19:14:30 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 20:29:07 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,11 +145,10 @@ int	Server::_find_event(struct pollfd current_pollfd)
 			Client*	client = _client_book.find(current_pollfd.fd)->second;
 			ssize_t	nbytes = client->read_data();
 
-			if (nbytes > 0)
+			if (nbytes > 1) // ignore empty msg
 				return DATA_RECEIVED;
 			else if (nbytes == 0)
 				return CONNECTION_LOST;
-			std::cout << client << std::endl;
 		}
 	}
 	return NO_EVENT;
@@ -201,7 +200,6 @@ void	Server::_add_client_to_book(int fd, char* ipstr)
 	
 	_client_book.insert(fd_client_pair(fd, new_client));
 	new_client->set_ipstr(ipstr);
-	// std::cout << new_client << std::endl;
 }
 
 void	Server::_process_data(pollfd_iterator it)

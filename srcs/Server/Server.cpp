@@ -21,13 +21,11 @@ Server::Server(const char* port, const char* password)
 
 Server::~Server()
 {
-	std::cout << "server destructor" << std::endl;
 	client_iterator	it;
 
 	_close_all_fds();
 	for (it = _client_book.begin(); it != _client_book.end(); it++)
 		delete it->second;	
-	// _delete_clients_from_book(); // FREE ALL CLIENTS
 }
 
 /*
@@ -62,19 +60,16 @@ void	Server::run()
 				_accept_pending_connection();
 				break;
 			case CONNECTION_LOST:
-				std::cout << "CONNECTION LOST: socket " << it->fd << std::endl;
+				_log("CONNECTION LOST");
 				// print client ?
 				_close_connection(it);
 				break;
 			case DATA_RECEIVED:
-				std::cout << "DATA RECEIVED: socket " << it->fd << std::endl;
+				_log("DATA RECEIVED");
 				_process_data(it);
 				break;
 			case NO_EVENT:
 				// std::cout << "no event : socket " << (*it).fd << std::endl;
-				break;
-			case ERR_RECV:
-				_log("err recv");
 				break;
 			}
 		}	
