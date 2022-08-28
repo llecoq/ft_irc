@@ -1,10 +1,10 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include "Commons.hpp"
+// #include "commons.hpp"
 #include "Client.hpp"
-#include "Exceptions.hpp"
-
+// #include "exceptions.hpp"
+#include "numeric_replies.hpp"
 // à mettre dans common ?
 // # include <iostream>
 // # include <string>
@@ -23,7 +23,8 @@ enum	e_event
 	PENDING_CONNECTION,
 	CONNECTION_LOST,
 	DATA_RECEIVED,
-	NO_EVENT
+	NO_EVENT,
+	ERR_RECV
 };
 
 struct	t_server_info
@@ -44,9 +45,9 @@ class Server
 		// member types
 		typedef std::vector<struct pollfd>			pollfd_vector;
 		typedef pollfd_vector::iterator				pollfd_iterator;
-		typedef std::map<std::string, Client*>		client_map;
+		typedef std::map<int, Client*>				client_map;
 		typedef client_map::iterator				client_iterator;
-		typedef	std::pair<std::string, Client*>		client_pair;
+		typedef	std::pair<int, Client*>				fd_client_pair;
 		// typedef std::map<>
 
 		// constructors & destructor
@@ -70,10 +71,14 @@ class Server
 
 	private :
 		
-		pollfd_vector		_pollfd;
-		t_server_info		_server_info;					
+		// for testing DELETE
+		char					_buff[BUFFER_SIZE];
+		int						_nbytes;
 
-		client_map			_client_book;
+		pollfd_vector			_pollfd;
+		t_server_info			_server_info;					
+
+		client_map				_client_book;
 		// std::map<std::string channel_name, Channel *> _channel_book;
 		// std::map<std::string command_name, ptr*fun()> _cmd_book; //LOOK UP FUNCTION PTR
 
@@ -89,9 +94,7 @@ class Server
 		int					_find_event(pollfd current_pollfd);
 		void				_accept_pending_connection();
 		char*				_sockaddr_to_string(struct sockaddr_storage client_addr);
-		void				_authentify_client(int fd, char* ipstr);
-		// int					_client_identity(char* ipstr, struct sockaddr_storage client_addr);
-		// void				_add_client_to_book(int client_fd, char* ipstr);
+		void				_add_client_to_book(int client_fd, char* ipstr);
 		void				_process_data(pollfd_iterator it);
 		void				_close_connection(pollfd_iterator it);
 		// error and log management
@@ -99,6 +102,7 @@ class Server
 		void				_log(std::string log_msg);
 		void				_err_log(std::string err_msg);
 		void				_close_all_fds();
+		// void				_delete_clients_from_book();
 
 };
 

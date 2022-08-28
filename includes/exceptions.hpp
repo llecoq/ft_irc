@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 15:21:27 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/26 17:40:18 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 13:33:59 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ class serverExceptions : public std::exception
 		}
 };
 
+// (...)
 
 #endif

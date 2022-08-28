@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 11:07:34 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 17:31:01 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ Client::Client() {}
 
 Client::Client(int fd)
 :
-	_fd(fd)
+	_fd(fd),
+	_authentification(false)
 {}
 
 Client::Client( const Client & src )
@@ -73,12 +74,9 @@ ssize_t	Client::read_data()
 	_recv_data.nbytes = recv(_fd, _recv_data.buf, sizeof _recv_data.buf, 0);
 	if (_recv_data.nbytes == FAILED)
 		perror("Client: recv");
+	else if (_recv_data.nbytes > 0)
+		_recv_data.buf[_recv_data.nbytes] = '\0';
 	return _recv_data.nbytes;
-}
-
-void	Client::init_client(char* ipstr)
-{
-	_ipstr = ipstr;
 }
 
 /*
@@ -88,6 +86,12 @@ void	Client::init_client(char* ipstr)
 void	Client::set_fd(int fd)
 {
 	_fd = fd;
+}
+
+void	Client::set_authentification(std::string server_pass, std::string client_pass)
+{
+	if (server_pass.compare(client_pass) == 0)
+		_authentification = true;
 }
 
 void	Client::set_username(std::string username)
@@ -113,6 +117,11 @@ void	Client::set_ipstr(std::string ipstr)
 int	Client::get_fd() const
 {
 	return _fd;
+}
+
+bool	Client::get_authentification() const
+{
+	return _authentification;
 }
 
 std::string	Client::get_username() const

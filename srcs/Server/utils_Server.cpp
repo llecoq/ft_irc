@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 11:31:38 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/28 18:21:58 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 
 # define BACKLOG 	10 
 # define NO_TIMEOUT -1
-# define UNKNOWN	-1
-
 
 enum	e_errors
 {
@@ -104,17 +102,23 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 
 void	Server::_add_socket_to_pollfd(int socket_fd)
 {
-	_pollfd.push_back(pollfd());
-	_pollfd.back().fd = socket_fd;
-	_pollfd.back().events = POLLIN;
-	
+	pollfd	new_pollfd = {socket_fd, POLLIN, 0};
+
+	_pollfd.push_back(new_pollfd);
 }
 
 void	Server::_listen_for_incoming_connections()
 {
+	std::string		log_msg("Server: waiting for connections on port ");
+	std::string		err_msg("Server: listen ");
+
 	if (listen(_server_info.listening_socket, BACKLOG) == -1)
-		throw serverExceptions("listen :", strerror(errno));
-	_log("Server: waiting for connections...");
+		_error_exit(NO_PERROR, err_msg.append(strerror(errno)));
+	else
+	{
+		log_msg.append(_server_info.port);
+		_log(log_msg);
+	}
 }
 
 /*
@@ -138,19 +142,15 @@ int	Server::_find_event(struct pollfd current_pollfd)
 			return PENDING_CONNECTION;
 		else
 		{
-		}
-		// else
-		// {
-		// 	// à faire en boucle jusqu'à ce qu'il n'y est plus de data ?
-		// 	_nbytes = recv(current_pollfd.fd, _buff, sizeof _buff, 0);
+			Client*	client = _client_book.find(current_pollfd.fd)->second;
+			ssize_t	nbytes = client->read_data();
 
-		// 	if (_nbytes > 0)
-		// 		return DATA_RECEIVED;
-		// 	else if (_nbytes == 0)
-		// 		return CONNECTION_LOST;
-		// 	else // nbytes == -1
-		// 		return RECV_ERROR;
-		// }
+			if (nbytes > 0)
+				return DATA_RECEIVED;
+			else if (nbytes == 0)
+				return CONNECTION_LOST;
+			std::cout << client << std::endl;
+		}
 	}
 	return NO_EVENT;
 }
@@ -163,7 +163,6 @@ void	Server::_accept_pending_connection()
 	char* 					ipstr;
     
 	addrlen = sizeof client_addr;
-	// trying to accept() connection
 	new_fd = accept(_server_info.listening_socket, (struct sockaddr *)&client_addr, &addrlen);
 	fcntl(new_fd, F_SETFL, O_NONBLOCK); // set fd to non blocking
 	if (new_fd > 0)
@@ -171,10 +170,8 @@ void	Server::_accept_pending_connection()
 		_log("New connection accepted !");
 		_add_socket_to_pollfd(new_fd);
 		ipstr = _sockaddr_to_string(client_addr);
-		// _authentify_client(new_fd, ipstr);
+		_add_client_to_book(new_fd, ipstr);
 		// display bienvenue message to client
-		// if (_client_identity(ipstr, client_addr) == UNKNOWN)
-			// _add_client_to_book(new_fd, ipstr);
 	}
 	else
 		perror("Server: accept");
@@ -198,30 +195,27 @@ char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
 	return ipstr;
 }
 
-void	Server::_authentify_client(int fd, char* ipstr)
+void	Server::_add_client_to_book(int fd, char* ipstr)
 {
-	Client	new_client(fd);
-
-	new_client.read_data();
-	new_client.init_client(ipstr);
+	Client*	new_client = new Client(fd); // MUST DELETE IT 
+	
+	_client_book.insert(fd_client_pair(fd, new_client));
+	new_client->set_ipstr(ipstr);
 	std::cout << new_client << std::endl;
 }
-
-// void Server::_add_client_to_book(int client_fd, char* ipstr)
-// {
-// 	// _client_book.insert(client_pair("test", new Client(client_fd, ipstr))); // leaks
-// // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH 
-// 	(void)client_fd;
-// }
 
 void	Server::_process_data(pollfd_iterator it)
 {
 	(void)it;
+	// write(1, _buff, _nbytes);
+	_log(_buff);
 }
 
 void	Server::_close_connection(pollfd_iterator it)
 {
-	(void)it;
+	std::cout << "Connection closed by client " << it.base()->fd << std::endl;
+	close(it.base()->fd);
+	_pollfd.erase(it);
 }
 
 /*
@@ -234,8 +228,6 @@ void	Server::_error_exit(int error, std::string error_msg)
 		perror(error_msg.c_str());
 	else if (error_msg.empty() != 1)
 		_err_log(error_msg);
-	_close_all_fds();
-	// CLOSE ALL FDS AND CLEAN EXIT
 	exit(EXIT_FAILURE);
 }
 
