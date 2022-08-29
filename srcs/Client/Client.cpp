@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 20:27:20 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/29 16:31:16 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,11 +150,8 @@ std::string Client::get_ipstr() const
 
 void	Client::display_recv_data() const
 {
-	std::string	buf(_recv_data.buf);
-
-	buf.at(_recv_data.nbytes - 1) = '\0';
 	std::cout << "------------------recv_data------------------" << std::endl;
-	std::cout << "buffer = '" << buf << "'" << std::endl;
+	std::cout << "buffer = '" << _recv_data.buf << "'" << std::endl;
 	std::cout << "nbytes = " << _recv_data.nbytes << std::endl;
 	std::cout << "---------------------------------------------" << std::endl;
 }

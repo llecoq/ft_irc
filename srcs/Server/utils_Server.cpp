@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/28 20:46:48 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/29 12:07:24 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ void	Server::_accept_pending_connection()
 		_add_socket_to_pollfd(new_fd);
 		ipstr = _sockaddr_to_string(client_addr);
 		_add_client_to_book(new_fd, ipstr);
-		// display bienvenue message to client
 	}
 	else
 		perror("Server: accept");
