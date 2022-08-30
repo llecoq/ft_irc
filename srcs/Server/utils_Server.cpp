@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/29 12:07:24 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/08/30 12:00:53 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ int	Server::_find_event(struct pollfd current_pollfd)
 			return PENDING_CONNECTION;
 		else
 		{
-			Client*	client = _client_book.find(current_pollfd.fd)->second;
+			Client*	client = _exec.get_client(current_pollfd.fd);
 			ssize_t	nbytes = client->read_data();
 
 			if (nbytes > 1) // ignore empty msg
@@ -178,7 +178,9 @@ void	Server::_accept_pending_connection()
 		_log("New connection accepted !");
 		_add_socket_to_pollfd(new_fd);
 		ipstr = _sockaddr_to_string(client_addr);
-		_add_client_to_book(new_fd, ipstr);
+		_exec.init_client(new_fd, ipstr);
+		// ExecutionManager::exec.init_client(fd, ipstr);
+		// _add_client_to_book(new_fd, ipstr);
 	}
 	else
 		perror("Server: accept");
@@ -202,20 +204,17 @@ char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
 	return ipstr;
 }
 
-void	Server::_add_client_to_book(int fd, char* ipstr)
-{
-	Client*	new_client = new Client(fd); // MUST DELETE IT 
-	
-	_client_book.insert(fd_client_pair(fd, new_client));
-	new_client->set_ipstr(ipstr);
-}
-
 void	Server::_process_data(pollfd_iterator it)
 {
-	std::cout << *(_client_book.find(it->fd)->second) << std::endl; // print client data for debug
+	(void)it;
+	// std::cout << *(_client_book.find(it->fd)->second) << std::endl; // print client data for debug
 
-	// parse buffer of client
-	// excute cmd (do the changes on client + channel if needed and send numeric replies to client)
+	// std::string	nickname("llecoq");
+	// std::string	msg(RPL_WELCOME(nickname));
+
+	// send(it->fd, msg.c_str(), msg.size(), 0 );
+
+	// command_book
 }
 
 void	Server::_close_connection(pollfd_iterator it)

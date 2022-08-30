@@ -6,7 +6,8 @@
 
 Server::Server(const char* port, const char* password)
 :
-	_server_info(port, password)
+	_server_info(port, password),
+	_exec(password)
 {
 	// if (port > 1024)
 		// exit zobi ?
@@ -21,11 +22,7 @@ Server::Server(const char* port, const char* password)
 
 Server::~Server()
 {
-	client_iterator	it;
-
 	_close_all_fds();
-	for (it = _client_book.begin(); it != _client_book.end(); it++)
-		delete it->second;	
 }
 
 /*
