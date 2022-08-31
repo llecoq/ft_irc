@@ -99,10 +99,8 @@ std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
 		vec.push_back(buf.substr(start, end - start));
 	}
 	// erase \n at the end
-	token_iterator last_token = vec.end();
-	--last_token;
-	std::string last = *(last_token);
-	last.erase(last.find('\n'), 1);
+	std::string last = vec.back();
+	last.erase(last.size() - 1, 1);
 	vec.pop_back();
 	vec.push_back(last);
 	return vec;
