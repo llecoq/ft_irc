@@ -1,8 +1,9 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
-#include "Commons.hpp"
-#include "Client.hpp"
+#include "commons.hpp"
+
+class Client;
 
 class Channel {
 
@@ -21,5 +22,7 @@ class Channel {
 		std::map<std::string, Client*> _members; //client_name or fd or username // std::string client_name, Client* client
 
 };
+
+#include "Client.hpp"
 
 #endif

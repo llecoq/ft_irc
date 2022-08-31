@@ -1,11 +1,26 @@
 #include "ExecutionManager.hpp"
 
+typedef	std::vector<std::string>										token_vector;
+typedef	std::map<std::string, std::string (*)(Client*, token_vector)>	cmd_map;
+
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
-ExecutionManager::ExecutionManager(std::string password) : _password(password) {
-	// _intit_command_map() remplir la map de commande
+
+ExecutionManager::ExecutionManager() 
+: command_book(), _client_book(), _channel_book(), _password() {}
+
+ExecutionManager::ExecutionManager(std::string password)
+: command_book(), _client_book(), _channel_book(), _password(password) {
+	command_book["NICK"] = &ExecutionManager::nick;
+	command_book["USER"] = &ExecutionManager::user;
+	command_book["JOIN"] = &ExecutionManager::join;
+	command_book["KICK"] = &ExecutionManager::kick;
+	command_book["INVITE"] = &ExecutionManager::invite;
+	command_book["MODE"] = &ExecutionManager::mode;
+	command_book["PRIVMSG"] = &ExecutionManager::privmsg;
+	command_book["NOTICE"] = &ExecutionManager::notice;
 }
 
-ExecutionManager::ExecutionManager( const ExecutionManager & src ) {
+ExecutionManager::ExecutionManager(const ExecutionManager & src) {
 	(void)src;
 }
 
@@ -18,7 +33,7 @@ ExecutionManager::~ExecutionManager() {
 //----------------------------------------------------------------------------
 
 
-//--------------------------------- OVERLOAD ---------------------------------
+//--------------------------------- OVERLOADS --------------------------------
 ExecutionManager &ExecutionManager::operator=( ExecutionManager const & rhs ) {
 	(void)rhs;
 	//if ( this != &rhs )
@@ -37,8 +52,8 @@ std::ostream &operator<<( std::ostream & o, ExecutionManager const & i ) {
 
 
 //--------------------------------- METHODS ----------------------------------
-	//-------------UTILS
-std::string erase_space_begin(std::string const &buf) {
+//-------------UTILS
+std::string _erase_space_begin(std::string const &buf) {
 	std::string copy = buf;
 
 	int i = 0;
@@ -53,14 +68,14 @@ std::string erase_space_begin(std::string const &buf) {
 	return copy;
 }
 
-std::string get_first_word(std::string const &buf) {
-	std::string copy = erase_space_begin(buf);
+std::string _get_first_word(std::string const &buf) {
+	std::string copy = _erase_space_begin(buf);
 	std::string first_word;
 	first_word.append(copy, copy.find_first_of(" "));
 	return first_word;
 }
 
-std::vector<std::string> split(std::string const &buf) {
+std::vector<std::string> _split(std::string const &buf) {
 
 	std::vector<std::string> vec;
 	size_t start;
@@ -72,19 +87,28 @@ std::vector<std::string> split(std::string const &buf) {
 	}
 	return vec;
 }
-	//-------------
+//-------------
 
-void	ExecutionManager::init_client(int fd, char* ipstr) {
+void ExecutionManager::init_client(int fd, char* ipstr) {
 	Client*	new_client = new Client(fd); // MUST DELETE IT 
 	
 	_client_book.insert(fd_client_pair(fd, new_client));
 	new_client->set_ipstr(ipstr);
 }
+
+void run(Client* client) {
+	
+}
 //----------------------------------------------------------------------------
 
 
 //--------------------------------- ACCESSORS --------------------------------
-Client*	ExecutionManager::get_client(int fd) const {
+Client* ExecutionManager::get_client(int fd) const {
 	return _client_book.find(fd)->second;
 }
+//----------------------------------------------------------------------------
+
+
+//-------------------------------- NON MEMBERS -------------------------------
+std::ostream &operator<<(std::ostream & o, ExecutionManager const & i);
 //----------------------------------------------------------------------------

@@ -1,18 +1,14 @@
 #ifndef CLIENT_HPP
-# define CLIENT_HPP
+#define CLIENT_HPP
 
+#include "Channel.hpp"
 #include "exceptions.hpp"
-// # include "Common.hpp"
-# include <unistd.h>
-# include <sys/socket.h>
-# include <string>
-# include <iostream>
-# include <errno.h>
-# include <map>
-# include <cstdio>
+#include "commons.hpp"
 
-# define BUFFER_SIZE 512
-# define FAILED 	-1
+#include <sys/socket.h>
+
+#define BUFFER_SIZE 512
+#define FAILED 	-1
 
 struct t_recv_data
 {
@@ -66,7 +62,7 @@ class Client
 
 		// std::deque<std::string pending_msg> _pending_priv_msg; //pending_msg must contain the sender's username //deque or other ? must be FIFO
 
-		// std::map<std::string channel_name, Channel *> _joined_channels;
+		std::map<std::string, Channel *> _joined_channels; // channel name, obj channel
 };
 
 std::ostream &			operator<<( std::ostream & o, Client const & i );
