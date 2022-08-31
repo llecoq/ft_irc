@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "commons.hpp"
+#include "numeric_replies.hpp"
 
 class Client;
 
@@ -13,7 +14,7 @@ class ExecutionManager
 	public:
 
 		typedef	std::vector<std::string>										token_vector;
-		typedef std::string (ExecutionManager::*pf)(Client*, token_vector);
+		typedef void (ExecutionManager::*pf)(Client*, token_vector);
 		typedef	std::map<std::string, pf>										cmd_map;
 		typedef	cmd_map::iterator												cmd_iterator;
 		typedef std::map<int, Client*>											client_map;
@@ -24,16 +25,20 @@ class ExecutionManager
 
 
 		ExecutionManager(std::string password);
-		ExecutionManager( ExecutionManager const & src );
+		ExecutionManager(ExecutionManager const & src);
 		~ExecutionManager();
 
 		ExecutionManager			&operator=( ExecutionManager const & rhs );
 
-		void						init_client(int client_fd, char* ipstr);
-		Client*						get_client(int fd) const;
-		void						run(Client *client);
-
 		cmd_map						command_book;
+
+//--------------------------------- ACCESSORS --------------------------------
+
+		Client*						get_client(int fd) const;
+	
+//--------------------------------- METHODS ----------------------------------
+		void						init_client(int client_fd, char* ipstr);
+		void						run(Client *client);
 
 	private:
 
@@ -49,15 +54,16 @@ class ExecutionManager
 		cmd_map						_init_command_book();
 
 
-		std::string					nick(Client *client, token_vector tokens);
-		std::string					user(Client *client, token_vector tokens);
-		std::string					join(Client *client, token_vector tokens);
-		std::string					kick(Client *client, token_vector tokens);
-		std::string					invite(Client *client, token_vector tokens);
-		std::string					topic(Client *client, token_vector tokens);
-		std::string					mode(Client *client, token_vector tokens);
-		std::string					privmsg(Client *client, token_vector tokens);
-		std::string					notice(Client *client, token_vector tokens);
+		void						nick(Client *client, token_vector tokens);
+		void						user(Client *client, token_vector tokens);
+		void						join(Client *client, token_vector tokens);
+		void						kick(Client *client, token_vector tokens);
+		void						invite(Client *client, token_vector tokens);
+		void						topic(Client *client, token_vector tokens);
+		void						mode(Client *client, token_vector tokens);
+		void						privmsg(Client *client, token_vector tokens);
+		void						notice(Client *client, token_vector tokens);
+		void						pass(Client *client, token_vector tokens);
 
 };
 

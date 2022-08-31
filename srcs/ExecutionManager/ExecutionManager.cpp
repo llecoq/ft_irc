@@ -1,8 +1,6 @@
 #include "ExecutionManager.hpp"
-#include "numeric_replies.hpp"
 
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
-
 ExecutionManager::ExecutionManager() 
 : command_book(), _client_book(), _channel_book(), _password() {}
 
@@ -16,6 +14,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	command_book["MODE"] = &ExecutionManager::mode;
 	command_book["PRIVMSG"] = &ExecutionManager::privmsg;
 	command_book["NOTICE"] = &ExecutionManager::notice;
+	command_book["PASS"] = &ExecutionManager::pass;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -50,7 +49,52 @@ std::ostream	&operator<<( std::ostream & o, ExecutionManager const & i ) {
 
 
 //--------------------------------- METHODS ----------------------------------
-//-------------UTILS
+void	ExecutionManager::init_client(int fd, char* ipstr) {
+	Client*	new_client = new Client(fd); // delete afterwards
+	
+	_client_book.insert(fd_client_pair(fd, new_client));
+	new_client->set_ipstr(ipstr);
+}
+
+void	ExecutionManager::run(Client* client) {
+
+	std::string buffer = client->get_buf();
+	token_vector tokens = _split(buffer);
+	std::string cmd = _get_first_word(buffer);
+
+	if (buffer.empty())
+		return ;
+
+	// cmd_iterator it = command_book.begin();
+	// cmd_iterator ite = command_book.end();
+	// while (it != ite) {
+	// 	if (cmd == it->first) {
+	// 		(this->*(it->second))(client, tokens);
+	// 		break ;
+	// 	}
+	// 	++it;
+	// }
+	// if (it == ite) {
+	// 	std::string msg = ERR_UNKNOWNCOMMAND(cmd);
+	// 	send(client->get_fd(), msg.c_str(), msg.size(), 0 );
+	// }
+
+}
+//----------------------------------------------------------------------------
+
+
+//--------------------------------- ACCESSORS --------------------------------
+Client*	ExecutionManager::get_client(int fd) const {
+	return _client_book.find(fd)->second;
+}
+//----------------------------------------------------------------------------
+
+
+//-------------------------------- NON MEMBERS -------------------------------
+std::ostream	&operator<<(std::ostream & o, ExecutionManager const & i);
+//----------------------------------------------------------------------------
+
+//--------------------------------- PRIVATE ----------------------------------
 std::string	ExecutionManager::_erase_bn_end(std::string const &buf) {
 	std::string copy = buf;
 
@@ -97,50 +141,4 @@ std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
 	}
 	return vec;
 }
-//-------------
-
-void	ExecutionManager::init_client(int fd, char* ipstr) {
-	Client*	new_client = new Client(fd); // delete afterwards
-	
-	_client_book.insert(fd_client_pair(fd, new_client));
-	new_client->set_ipstr(ipstr);
-}
-
-void	ExecutionManager::run(Client* client) {
-
-	std::string buffer = client->get_buf();
-	token_vector tokens = _split(buffer);
-	std::string cmd = _get_first_word(buffer);
-	std::cout << "cmd : " << cmd << std::endl;
-
-	if (buffer.empty())
-		return ;
-
-	cmd_iterator it = command_book.begin();
-	cmd_iterator ite = command_book.end();
-	while (it != ite) {
-		if (cmd == it->first) {
-			(this->*(it->second))(client, tokens);
-			break ;
-		}
-		++it;
-	}
-	if (it == ite) {
-		std::string msg = ERR_UNKNOWNCOMMAND(client->get_nickname(), cmd);
-		send(client->get_fd(), msg.c_str(), msg.size(), 0 );
-	}
-
-}
-//----------------------------------------------------------------------------
-
-
-//--------------------------------- ACCESSORS --------------------------------
-Client*	ExecutionManager::get_client(int fd) const {
-	return _client_book.find(fd)->second;
-}
-//----------------------------------------------------------------------------
-
-
-//-------------------------------- NON MEMBERS -------------------------------
-std::ostream	&operator<<(std::ostream & o, ExecutionManager const & i);
 //----------------------------------------------------------------------------
