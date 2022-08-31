@@ -19,6 +19,8 @@ int ExecutionManager::join(Client *client, std::vector<std::string> tokens) {
 
 	for (it = channels.begin(), it != channels.end(), it++)
 	{
+		//if channel has same name as user
+			//send made up err and continue
 		//if channel does not exist in channel_book
 			//if channel.length() is > 50 
 				//send Channel_name too long and continue
