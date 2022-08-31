@@ -45,6 +45,7 @@ class Client
 		std::string			get_realname() const;
 		std::string			get_nickname() const;
 		std::string			get_ipstr() const;
+		std::string			get_buf() const;
 
 		// debug
 		void				display_recv_data() const;

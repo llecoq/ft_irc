@@ -139,9 +139,14 @@ std::string	Client::get_nickname() const
 	return _nickname;
 }
 
-std::string Client::get_ipstr() const
+std::string	Client::get_ipstr() const
 {
 	return _ipstr;
+}
+
+std::string	Client::get_buf() const
+{
+	return _recv_data.buf;
 }
 
 /*

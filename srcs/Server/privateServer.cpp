@@ -214,7 +214,8 @@ void	Server::_process_data(pollfd_iterator it)
 
 	// send(it->fd, msg.c_str(), msg.size(), 0 );
 
-	// command_book
+	//command_book
+	_exec.run(_exec.get_client(it->fd));
 }
 
 void	Server::_close_connection(pollfd_iterator it)
