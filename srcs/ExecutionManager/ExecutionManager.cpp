@@ -1,8 +1,5 @@
 #include "ExecutionManager.hpp"
 
-typedef	std::vector<std::string>										token_vector;
-typedef	std::map<std::string, std::string (*)(Client*, token_vector)>	cmd_map;
-
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
 
 ExecutionManager::ExecutionManager() 
@@ -96,8 +93,13 @@ void ExecutionManager::init_client(int fd, char* ipstr) {
 	new_client->set_ipstr(ipstr);
 }
 
-void run(Client* client) {
+void ExecutionManager::run(Client* client) {
+	std::string ret;
+
 	
+	
+	ret = (this->*(command_book["NICK"]))(client, std::vector<std::string>());
+	std::cout << ret << std::endl;
 }
 //----------------------------------------------------------------------------
 

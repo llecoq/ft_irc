@@ -1,12 +1,11 @@
 #ifndef EXECUTIONMANAGER_HPP
-# define EXECUTIONMANAGER_HPP
+#define EXECUTIONMANAGER_HPP
 
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "commons.hpp"
 
 class Client;
-// std::string (*pf)(Client*, token_vector);
 
 class ExecutionManager
 {
@@ -14,15 +13,8 @@ class ExecutionManager
 	public:
 
 		typedef	std::vector<std::string>										token_vector;
-
-	// pointeur sur fonction
 		typedef std::string (ExecutionManager::*pf)(Client*, token_vector);
 		typedef	std::map<std::string, pf>										cmd_map;
-	
-		// typedef std::string (*pf)(Client*, token_vector)						ptr_func;
-		// typedef std::string ExecutionManager::run(Client*, token_vector)				pf;
-		// typedef	std::map<std::string, std::string (*)(Client*, token_vector)>	cmd_map;
-
 		typedef std::map<int, Client*>											client_map;
 		typedef std::map<std::string, Channel*>									channel_map;
 		typedef channel_map::iterator											channel_iterator;
@@ -43,8 +35,6 @@ class ExecutionManager
 	private:
 
 		ExecutionManager();
-		// void _copy(ExecutionManager const& copy);
-		// void _del();
 
 		client_map		_client_book;
 		channel_map		_channel_book;
