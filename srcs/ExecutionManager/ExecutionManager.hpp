@@ -14,6 +14,7 @@ class ExecutionManager
 	public:
 
 		typedef	std::vector<std::string>										token_vector;
+		typedef	token_vector::iterator											token_iterator;
 		typedef void (ExecutionManager::*pf)(Client*, token_vector);
 		typedef	std::map<std::string, pf>										cmd_map;
 		typedef	cmd_map::iterator												cmd_iterator;
@@ -47,12 +48,7 @@ class ExecutionManager
 		client_map					_client_book;
 		channel_map					_channel_book;
 		std::string					_password;
-		std::string					_erase_space_begin(std::string const &buf);
-		std::string					_erase_bn_end(std::string const &buf);
-		std::string					_get_first_word(std::string const &buf);
-		std::vector<std::string>	_split(std::string const &buf);
-		cmd_map						_init_command_book();
-
+		token_vector				_split(std::string const &buf);
 
 		void						nick(Client *client, token_vector tokens);
 		void						user(Client *client, token_vector tokens);

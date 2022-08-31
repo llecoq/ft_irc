@@ -50,6 +50,7 @@ std::ostream	&operator<<( std::ostream & o, ExecutionManager const & i ) {
 
 //--------------------------------- METHODS ----------------------------------
 void	ExecutionManager::init_client(int fd, char* ipstr) {
+
 	Client*	new_client = new Client(fd); // delete afterwards
 	
 	_client_book.insert(fd_client_pair(fd, new_client));
@@ -58,27 +59,19 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 
 void	ExecutionManager::run(Client* client) {
 
-	std::string buffer = client->get_buf();
-	token_vector tokens = _split(buffer);
-	std::string cmd = _get_first_word(buffer);
-
-	if (buffer.empty())
+	if (client->get_buf().empty())
 		return ;
 
-	// cmd_iterator it = command_book.begin();
-	// cmd_iterator ite = command_book.end();
-	// while (it != ite) {
-	// 	if (cmd == it->first) {
-	// 		(this->*(it->second))(client, tokens);
-	// 		break ;
-	// 	}
-	// 	++it;
-	// }
-	// if (it == ite) {
-	// 	std::string msg = ERR_UNKNOWNCOMMAND(cmd);
-	// 	send(client->get_fd(), msg.c_str(), msg.size(), 0 );
-	// }
+	token_vector tokens = _split(client->get_buf());
+	std::string cmd = *(tokens.begin());
 
+	cmd_iterator found = command_book.find(cmd);
+	if (found != command_book.end())
+			(this->*(found->second))(client, tokens);
+	else {
+		std::string msg(ERR_UNKNOWNCOMMAND(cmd));
+		send(client->get_fd(), msg.c_str(), msg.size(), 0 );
+	}
 }
 //----------------------------------------------------------------------------
 
@@ -95,43 +88,9 @@ std::ostream	&operator<<(std::ostream & o, ExecutionManager const & i);
 //----------------------------------------------------------------------------
 
 //--------------------------------- PRIVATE ----------------------------------
-std::string	ExecutionManager::_erase_bn_end(std::string const &buf) {
-	std::string copy = buf;
-
-	std::string::iterator ite = --(copy.end());
-	if (*ite == '\n')
-		copy.erase(ite);
-	return copy;
-}
-
-std::string	ExecutionManager::_erase_space_begin(std::string const &buf) {
-	std::string copy = buf;
-
-	int i = 0;
-	std::string::const_iterator it = copy.begin();
-	if (*it == ' ') {
-		while (*it == ' ') {
-			++it;
-			++i;
-		}
-		copy.erase(0, i);
-	}
-	return copy;
-}
-
-std::string	ExecutionManager::_get_first_word(std::string const &buf) {
-	std::string copy = _erase_space_begin(buf);
-	std::string first_word = copy;
-	size_t pos_space = copy.find_first_of(" ");
-	if (pos_space != std::string::npos)
-		first_word.erase(pos_space, std::string::npos);
-	first_word = _erase_bn_end(first_word);
-	return first_word;
-}
-
 std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
 
-	std::vector<std::string> vec;
+	token_vector vec;
 	size_t start;
 	size_t end = 0;
 
@@ -139,6 +98,13 @@ std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
 		end = buf.find(" ", start);
 		vec.push_back(buf.substr(start, end - start));
 	}
+	// erase \n at the end
+	token_iterator last_token = vec.end();
+	--last_token;
+	std::string last = *(last_token);
+	last.erase(last.find('\n'), 1);
+	vec.pop_back();
+	vec.push_back(last);
 	return vec;
 }
 //----------------------------------------------------------------------------
