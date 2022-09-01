@@ -1,7 +1,7 @@
 #include "ExecutionManager.hpp"
 
 // JOIN <channels>
-//also used to re-enter channel that client is already a member off -> BUT US we cannot leave a channel so no need?
+
 
 //pseudocode below  --> OK
 int ExecutionManager::join(Client *client, std::vector<std::string> tokens) {
@@ -19,8 +19,9 @@ int ExecutionManager::join(Client *client, std::vector<std::string> tokens) {
 
 	for (it = channels.begin(), it != channels.end(), it++)
 	{
-		//if channel has same name as user
-			//send made up err and continue
+		//CHECK IF CHANNEL starts with #
+
+		
 		//if channel does not exist in channel_book
 			//if channel.length() is > 50 
 				//send Channel_name too long and continue
