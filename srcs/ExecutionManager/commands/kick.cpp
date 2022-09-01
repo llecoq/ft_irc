@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-void ExecutionManager::kick(Client *client, token_vector tokens) {
+unsigned int ExecutionManager::kick(Client *client, token_vector tokens) {
 	(void)client;
-	(void)tokens;
+	(void)tokens;return SUCCESS;
 }

@@ -8,6 +8,8 @@
 
 #include <algorithm>
 
+#define	SUCCESS 0 // msg return for commands
+
 class Client;
 
 class ExecutionManager
@@ -17,7 +19,7 @@ class ExecutionManager
 
 		typedef	std::vector<std::string>										token_vector;
 		typedef	token_vector::iterator											token_iterator;
-		typedef void (ExecutionManager::*pf)(Client*, token_vector);
+		typedef unsigned int (ExecutionManager::*pf)(Client*, token_vector);
 		typedef	std::map<std::string, pf>										cmd_map;
 		typedef	cmd_map::iterator												cmd_iterator;
 		typedef std::map<int, Client*>											client_map;
@@ -41,7 +43,7 @@ class ExecutionManager
 	
 //--------------------------------- METHODS ----------------------------------
 		void						init_client(int client_fd, char* ipstr);
-		void						run(Client *client);
+		unsigned int				run(Client *client);
 
 	private:
 
@@ -52,16 +54,16 @@ class ExecutionManager
 		std::string					_password;
 		token_vector				_split(std::string const &buf, std::string sep);
 
-		void						nick(Client *client, token_vector tokens);
-		void						user(Client *client, token_vector tokens);
-		void						join(Client *client, token_vector tokens);
-		void						kick(Client *client, token_vector tokens);
-		void						invite(Client *client, token_vector tokens);
-		void						topic(Client *client, token_vector tokens);
-		void						mode(Client *client, token_vector tokens);
-		void						privmsg(Client *client, token_vector tokens);
-		void						notice(Client *client, token_vector tokens);
-		void						pass(Client *client, token_vector tokens);
+		unsigned int				nick(Client *client, token_vector tokens);
+		unsigned int				user(Client *client, token_vector tokens);
+		unsigned int				join(Client *client, token_vector tokens);
+		unsigned int				kick(Client *client, token_vector tokens);
+		unsigned int				invite(Client *client, token_vector tokens);
+		unsigned int				topic(Client *client, token_vector tokens);
+		unsigned int				mode(Client *client, token_vector tokens);
+		unsigned int				privmsg(Client *client, token_vector tokens);
+		unsigned int				notice(Client *client, token_vector tokens);
+		unsigned int				pass(Client *client, token_vector tokens);
 
 };
 

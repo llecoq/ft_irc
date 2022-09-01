@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-void ExecutionManager::pass(Client *client, token_vector tokens) {
+unsigned int ExecutionManager::pass(Client *client, token_vector tokens) {
 	(void)client;
-	(void)tokens;
+	(void)tokens;return SUCCESS;
 }

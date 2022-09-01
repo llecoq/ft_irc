@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-void ExecutionManager::topic(Client *client, token_vector tokens) {
+unsigned int ExecutionManager::topic(Client *client, token_vector tokens) {
 	(void)client;
-	(void)tokens;
+	(void)tokens;return SUCCESS;
 }
