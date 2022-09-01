@@ -63,7 +63,7 @@ void	ExecutionManager::run(Client* client) {
 		return ;
 
 	//for multiple \n
-	std::vector<std::string> multiple_cmds = _split(client->get_buf(), "\n");
+	std::vector<std::string> multiple_cmds = _split(client->get_buf(), "\n"); // get_buf will change
 
 	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
 		token_vector tokens = _split(multiple_cmds[i], " ");
@@ -75,7 +75,7 @@ void	ExecutionManager::run(Client* client) {
 		else {
 			std::string msg(ERR_UNKNOWNCOMMAND(cmd));
 			send(client->get_fd(), msg.c_str(), msg.size(), 0 );
-			break ; // if first command line(multiple \n) is wrong, not even launching the next ones
+			break ; // if first command line(in case of multiple \n) is wrong, not even launching the next ones
 		}
 	}
 
