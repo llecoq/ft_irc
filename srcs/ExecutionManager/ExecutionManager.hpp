@@ -6,6 +6,8 @@
 #include "commons.hpp"
 #include "numeric_replies.hpp"
 
+#include <algorithm>
+
 class Client;
 
 class ExecutionManager
@@ -48,7 +50,7 @@ class ExecutionManager
 		client_map					_client_book;
 		channel_map					_channel_book;
 		std::string					_password;
-		token_vector				_split(std::string const &buf);
+		token_vector				_split(std::string const &buf, std::string sep);
 
 		void						nick(Client *client, token_vector tokens);
 		void						user(Client *client, token_vector tokens);
