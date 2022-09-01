@@ -57,28 +57,35 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 	new_client->set_ipstr(ipstr);
 }
 
-void	ExecutionManager::run(Client* client) {
+unsigned int	ExecutionManager::run(Client* client) {
+
+	unsigned int ret = 0;
 
 	if (client->get_buf().empty())
-		return ;
+		return ret;
 
 	//for multiple \n
 	std::vector<std::string> multiple_cmds = _split(client->get_buf(), "\n"); // get_buf will change
 
 	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
 		token_vector tokens = _split(multiple_cmds[i], " ");
-		std::string cmd = *(tokens.begin());
+		std::string cmd = tokens[0];
+
+		for (size_t i = 0; i < tokens.size(); ++i) {
+			std::cout << "token :" << tokens[i] << "\n";
+		}
 
 		cmd_iterator found = command_book.find(cmd);
 		if (found != command_book.end())
-				(this->*(found->second))(client, tokens);
+				ret = (this->*(found->second))(client, tokens);
 		else {
+			ret = 421;
 			std::string msg(ERR_UNKNOWNCOMMAND(cmd));
 			send(client->get_fd(), msg.c_str(), msg.size(), 0 );
 			break ; // if first command line(in case of multiple \n) is wrong, not even launching the next ones
 		}
 	}
-
+	return ret;
 }
 //----------------------------------------------------------------------------
 
@@ -97,12 +104,19 @@ std::ostream	&operator<<(std::ostream & o, ExecutionManager const & i);
 //--------------------------------- PRIVATE ----------------------------------
 std::vector<std::string>	ExecutionManager::_split(std::string const &buf, std::string sep) {
 
+	size_t colon = 0;
+	if (sep == " ")
+		colon = buf.find_first_of(":", 0);
+
 	token_vector vec;
 	size_t start = 0;
 	size_t end = 0;
 
 	while ((start = buf.find_first_not_of(sep, end)) != std::string::npos) { // size_t npos -> end of string
 		end = buf.find(sep, start);
+		if (sep == " " && start == colon) {	// gerer les : only when we are seperating the parameters.
+			end = std::string::npos;
+		}
 		vec.push_back(buf.substr(start, end - start));
 	}
 	return vec;
