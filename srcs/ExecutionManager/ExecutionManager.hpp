@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "commons.hpp"
+#include "numeric_replies.hpp"
 
 class Client;
 
@@ -13,7 +14,8 @@ class ExecutionManager
 	public:
 
 		typedef	std::vector<std::string>										token_vector;
-		typedef std::string (ExecutionManager::*pf)(Client*, token_vector);
+		typedef	token_vector::iterator											token_iterator;
+		typedef void (ExecutionManager::*pf)(Client*, token_vector);
 		typedef	std::map<std::string, pf>										cmd_map;
 		typedef	cmd_map::iterator												cmd_iterator;
 		typedef std::map<int, Client*>											client_map;
@@ -24,16 +26,20 @@ class ExecutionManager
 
 
 		ExecutionManager(std::string password);
-		ExecutionManager( ExecutionManager const & src );
+		ExecutionManager(ExecutionManager const & src);
 		~ExecutionManager();
 
 		ExecutionManager			&operator=( ExecutionManager const & rhs );
 
-		void						init_client(int client_fd, char* ipstr);
-		Client*						get_client(int fd) const;
-		void						run(Client *client);
-
 		cmd_map						command_book;
+
+//--------------------------------- ACCESSORS --------------------------------
+
+		Client*						get_client(int fd) const;
+	
+//--------------------------------- METHODS ----------------------------------
+		void						init_client(int client_fd, char* ipstr);
+		void						run(Client *client);
 
 	private:
 
@@ -42,22 +48,18 @@ class ExecutionManager
 		client_map					_client_book;
 		channel_map					_channel_book;
 		std::string					_password;
-		std::string					_erase_space_begin(std::string const &buf);
-		std::string					_erase_bn_end(std::string const &buf);
-		std::string					_get_first_word(std::string const &buf);
-		std::vector<std::string>	_split(std::string const &buf);
-		cmd_map						_init_command_book();
+		token_vector				_split(std::string const &buf);
 
-
-		std::string					nick(Client *client, token_vector tokens);
-		std::string					user(Client *client, token_vector tokens);
-		std::string					join(Client *client, token_vector tokens);
-		std::string					kick(Client *client, token_vector tokens);
-		std::string					invite(Client *client, token_vector tokens);
-		std::string					topic(Client *client, token_vector tokens);
-		std::string					mode(Client *client, token_vector tokens);
-		std::string					privmsg(Client *client, token_vector tokens);
-		std::string					notice(Client *client, token_vector tokens);
+		void						nick(Client *client, token_vector tokens);
+		void						user(Client *client, token_vector tokens);
+		void						join(Client *client, token_vector tokens);
+		void						kick(Client *client, token_vector tokens);
+		void						invite(Client *client, token_vector tokens);
+		void						topic(Client *client, token_vector tokens);
+		void						mode(Client *client, token_vector tokens);
+		void						privmsg(Client *client, token_vector tokens);
+		void						notice(Client *client, token_vector tokens);
+		void						pass(Client *client, token_vector tokens);
 
 };
 

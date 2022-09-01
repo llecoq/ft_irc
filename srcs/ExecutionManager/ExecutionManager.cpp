@@ -1,8 +1,6 @@
 #include "ExecutionManager.hpp"
-#include "numeric_replies.hpp"
 
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
-
 ExecutionManager::ExecutionManager() 
 : command_book(), _client_book(), _channel_book(), _password() {}
 
@@ -16,6 +14,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	command_book["MODE"] = &ExecutionManager::mode;
 	command_book["PRIVMSG"] = &ExecutionManager::privmsg;
 	command_book["NOTICE"] = &ExecutionManager::notice;
+	command_book["PASS"] = &ExecutionManager::pass;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -50,56 +49,8 @@ std::ostream	&operator<<( std::ostream & o, ExecutionManager const & i ) {
 
 
 //--------------------------------- METHODS ----------------------------------
-//-------------UTILS
-std::string	ExecutionManager::_erase_bn_end(std::string const &buf) {
-	std::string copy = buf;
-
-	std::string::iterator ite = --(copy.end());
-	if (*ite == '\n')
-		copy.erase(ite);
-	return copy;
-}
-
-std::string	ExecutionManager::_erase_space_begin(std::string const &buf) {
-	std::string copy = buf;
-
-	int i = 0;
-	std::string::const_iterator it = copy.begin();
-	if (*it == ' ') {
-		while (*it == ' ') {
-			++it;
-			++i;
-		}
-		copy.erase(0, i);
-	}
-	return copy;
-}
-
-std::string	ExecutionManager::_get_first_word(std::string const &buf) {
-	std::string copy = _erase_space_begin(buf);
-	std::string first_word = copy;
-	size_t pos_space = copy.find_first_of(" ");
-	if (pos_space != std::string::npos)
-		first_word.erase(pos_space, std::string::npos);
-	first_word = _erase_bn_end(first_word);
-	return first_word;
-}
-
-std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
-
-	std::vector<std::string> vec;
-	size_t start;
-	size_t end = 0;
-
-	while ((start = buf.find_first_not_of(" ", end)) != std::string::npos) { // size_t npos -> end of string
-		end = buf.find(" ", start);
-		vec.push_back(buf.substr(start, end - start));
-	}
-	return vec;
-}
-//-------------
-
 void	ExecutionManager::init_client(int fd, char* ipstr) {
+
 	Client*	new_client = new Client(fd); // delete afterwards
 	
 	_client_book.insert(fd_client_pair(fd, new_client));
@@ -108,28 +59,19 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 
 void	ExecutionManager::run(Client* client) {
 
-	std::string buffer = client->get_buf();
-	token_vector tokens = _split(buffer);
-	std::string cmd = _get_first_word(buffer);
-	std::cout << "cmd : " << cmd << std::endl;
-
-	if (buffer.empty())
+	if (client->get_buf().empty())
 		return ;
 
-	cmd_iterator it = command_book.begin();
-	cmd_iterator ite = command_book.end();
-	while (it != ite) {
-		if (cmd == it->first) {
-			(this->*(it->second))(client, tokens);
-			break ;
-		}
-		++it;
-	}
-	if (it == ite) {
-		std::string msg = ERR_UNKNOWNCOMMAND(client->get_nickname(), cmd);
+	token_vector tokens = _split(client->get_buf());
+	std::string cmd = *(tokens.begin());
+
+	cmd_iterator found = command_book.find(cmd);
+	if (found != command_book.end())
+			(this->*(found->second))(client, tokens);
+	else {
+		std::string msg(ERR_UNKNOWNCOMMAND(cmd));
 		send(client->get_fd(), msg.c_str(), msg.size(), 0 );
 	}
-
 }
 //----------------------------------------------------------------------------
 
@@ -143,4 +85,24 @@ Client*	ExecutionManager::get_client(int fd) const {
 
 //-------------------------------- NON MEMBERS -------------------------------
 std::ostream	&operator<<(std::ostream & o, ExecutionManager const & i);
+//----------------------------------------------------------------------------
+
+//--------------------------------- PRIVATE ----------------------------------
+std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
+
+	token_vector vec;
+	size_t start;
+	size_t end = 0;
+
+	while ((start = buf.find_first_not_of(" ", end)) != std::string::npos) { // size_t npos -> end of string
+		end = buf.find(" ", start);
+		vec.push_back(buf.substr(start, end - start));
+	}
+	// erase \n at the end
+	std::string last = vec.back();
+	last.erase(last.size() - 1, 1);
+	vec.pop_back();
+	vec.push_back(last);
+	return vec;
+}
 //----------------------------------------------------------------------------
