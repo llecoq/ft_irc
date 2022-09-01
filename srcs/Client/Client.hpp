@@ -12,8 +12,12 @@
 
 struct t_recv_data
 {
-	char 	buf[BUFFER_SIZE]; //BUFFER_SIZE ? Check if msg is >BUFFER_SIZE what to do since buffer will already be full
-	ssize_t nbytes;
+	t_recv_data(): buf_len(0), nbytes(0) {}
+
+	char 		buf[BUFFER_SIZE];
+	ssize_t		buf_len;
+	ssize_t 	nbytes;
+	std::string	input;
 };
 
 class Client
@@ -34,20 +38,21 @@ class Client
 
 		// accessor
 		void				set_fd(int fd);
-		void				set_authentification(std::string server_pass, std::string client_pass);
+		void				set_authentication(std::string server_pass, std::string client_pass);
 		void				set_username(std::string username);
 		void				set_password(std::string password);
 		void				set_realname(std::string realname);
 		void				set_nickname(std::string nickname);
 		void				set_ipstr(std::string ipstr);
 		int					get_fd() const;
-		bool				get_authentification() const;
+		bool				get_authentication() const;
 		std::string			get_password() const;
 		std::string			get_username() const;
 		std::string			get_nickname() const;
 		std::string			get_realname() const;
 		std::string			get_ipstr() const;
 		std::string			get_buf() const;
+		std::string			get_input() const;
 
 		// debug
 		void				display_recv_data() const;
@@ -55,7 +60,7 @@ class Client
 	private:
 
 		int				_fd;
-		bool			_authentification;
+		bool			_authentication;
 		std::string 	_password;
 		std::string 	_nickname;
 		std::string 	_username;

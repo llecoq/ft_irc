@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_Server.cpp                                   :+:      :+:    :+:   */
+/*   privateServer.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/30 12:00:53 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/01 17:29:10 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,16 +206,10 @@ char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
 
 void	Server::_process_data(pollfd_iterator it)
 {
-	(void)it;
-	// std::cout << *(_client_book.find(it->fd)->second) << std::endl; // print client data for debug
+	Client *client = _exec.get_client(it->fd);
 
-	// std::string	nickname("llecoq");
-	// std::string	msg(RPL_WELCOME(nickname));
-
-	// send(it->fd, msg.c_str(), msg.size(), 0 );
-
-	//command_book
 	_exec.run(_exec.get_client(it->fd));
+	std::cout << *client << std::endl;
 }
 
 void	Server::_close_connection(pollfd_iterator it)

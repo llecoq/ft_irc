@@ -61,11 +61,11 @@ unsigned int	ExecutionManager::run(Client* client) {
 
 	unsigned int ret = 0;
 
-	if (client->get_buf().empty())
+	if (client->get_input().empty())  // if we enter this function, it means that it should not be empty anyway
 		return ret;
 
 	//for multiple \n
-	std::vector<std::string> multiple_cmds = _split(client->get_buf(), "\n"); // get_buf will change
+	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n"); // get_buf will change
 
 	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
 		token_vector tokens = _split(multiple_cmds[i], " ");
