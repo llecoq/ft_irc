@@ -105,11 +105,6 @@ std::vector<std::string>	ExecutionManager::_split(std::string const &buf, std::s
 		end = buf.find(sep, start);
 		vec.push_back(buf.substr(start, end - start));
 	}
-	// erase \n at the end
-	// std::string last = vec.back();
-	// last.erase(last.size() - 1, 1);
-	// vec.pop_back();
-	// vec.push_back(last);
 	return vec;
 }
 //----------------------------------------------------------------------------
