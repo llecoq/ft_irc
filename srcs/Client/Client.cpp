@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/29 16:31:16 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/01 10:26:50 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,19 +94,24 @@ void	Client::set_authentification(std::string server_pass, std::string client_pa
 		_authentification = true;
 }
 
+void	Client::set_password(std::string password)
+{
+	_password = password;
+}
+
 void	Client::set_username(std::string username)
 {
 	_username = username;
 }
 
-void	Client::set_realname(std::string realname)
-{
-	_realname = realname;
-}
-
 void	Client::set_nickname(std::string nickname)
 {
 	_nickname = nickname;
+}
+
+void	Client::set_realname(std::string realname)
+{
+	_realname = realname;
 }
 
 void	Client::set_ipstr(std::string ipstr)
@@ -124,19 +129,24 @@ bool	Client::get_authentification() const
 	return _authentification;
 }
 
+std::string	Client::get_password() const
+{
+	return _password;
+}
+
 std::string	Client::get_username() const
 {
 	return _username;
 }
 
-std::string	Client::get_realname() const
-{
-	return _realname;
-}
-
 std::string	Client::get_nickname() const
 {
 	return _nickname;
+}
+
+std::string	Client::get_realname() const
+{
+	return _realname;
 }
 
 std::string	Client::get_ipstr() const

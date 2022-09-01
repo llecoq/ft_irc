@@ -36,14 +36,16 @@ class Client
 		void				set_fd(int fd);
 		void				set_authentification(std::string server_pass, std::string client_pass);
 		void				set_username(std::string username);
+		void				set_password(std::string password);
 		void				set_realname(std::string realname);
 		void				set_nickname(std::string nickname);
 		void				set_ipstr(std::string ipstr);
 		int					get_fd() const;
 		bool				get_authentification() const;
+		std::string			get_password() const;
 		std::string			get_username() const;
-		std::string			get_realname() const;
 		std::string			get_nickname() const;
+		std::string			get_realname() const;
 		std::string			get_ipstr() const;
 		std::string			get_buf() const;
 
@@ -54,9 +56,10 @@ class Client
 
 		int				_fd;
 		bool			_authentification;
+		std::string 	_password;
 		std::string 	_username;
-		std::string 	_realname;
 		std::string 	_nickname;
+		std::string 	_realname;
 		std::string		_ipstr;
 		t_recv_data 	_recv_data;
 
