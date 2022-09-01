@@ -62,16 +62,23 @@ void	ExecutionManager::run(Client* client) {
 	if (client->get_buf().empty())
 		return ;
 
-	token_vector tokens = _split(client->get_buf());
-	std::string cmd = *(tokens.begin());
+	//for multiple \n
+	std::vector<std::string> multiple_cmds = _split(client->get_buf(), "\n");
 
-	cmd_iterator found = command_book.find(cmd);
-	if (found != command_book.end())
-			(this->*(found->second))(client, tokens);
-	else {
-		std::string msg(ERR_UNKNOWNCOMMAND(cmd));
-		send(client->get_fd(), msg.c_str(), msg.size(), 0 );
+	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
+		token_vector tokens = _split(multiple_cmds[i], " ");
+		std::string cmd = *(tokens.begin());
+
+		cmd_iterator found = command_book.find(cmd);
+		if (found != command_book.end())
+				(this->*(found->second))(client, tokens);
+		else {
+			std::string msg(ERR_UNKNOWNCOMMAND(cmd));
+			send(client->get_fd(), msg.c_str(), msg.size(), 0 );
+			break ; // if first command line(multiple \n) is wrong, not even launching the next ones
+		}
 	}
+
 }
 //----------------------------------------------------------------------------
 
@@ -88,21 +95,21 @@ std::ostream	&operator<<(std::ostream & o, ExecutionManager const & i);
 //----------------------------------------------------------------------------
 
 //--------------------------------- PRIVATE ----------------------------------
-std::vector<std::string>	ExecutionManager::_split(std::string const &buf) {
+std::vector<std::string>	ExecutionManager::_split(std::string const &buf, std::string sep) {
 
 	token_vector vec;
-	size_t start;
+	size_t start = 0;
 	size_t end = 0;
 
-	while ((start = buf.find_first_not_of(" ", end)) != std::string::npos) { // size_t npos -> end of string
-		end = buf.find(" ", start);
+	while ((start = buf.find_first_not_of(sep, end)) != std::string::npos) { // size_t npos -> end of string
+		end = buf.find(sep, start);
 		vec.push_back(buf.substr(start, end - start));
 	}
 	// erase \n at the end
-	std::string last = vec.back();
-	last.erase(last.size() - 1, 1);
-	vec.pop_back();
-	vec.push_back(last);
+	// std::string last = vec.back();
+	// last.erase(last.size() - 1, 1);
+	// vec.pop_back();
+	// vec.push_back(last);
 	return vec;
 }
 //----------------------------------------------------------------------------
