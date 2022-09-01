@@ -30,10 +30,9 @@ enum	e_event
 
 struct	t_server_info
 {
-	t_server_info(const char* prt, const char* pass) : port(prt), password(pass) {}
+	t_server_info(const char* prt) : port(prt) {}
 
 	const char*			port;
-	const char*			password;
 	struct addrinfo*	servinfo;
 	int					listening_socket;
 };
@@ -46,7 +45,6 @@ class Server
 		// member types
 		typedef std::vector<struct pollfd>			pollfd_vector;
 		typedef pollfd_vector::iterator				pollfd_iterator;
-		// typedef std::map<std::string, Channel*>		command_map;
 
 		// constructors & destructor
 		Server(const char* port, const char* password);
@@ -62,10 +60,7 @@ class Server
 		t_server_info			_server_info;					
 
 		ExecutionManager			_exec;
-		// std::map<std::string channel_name, Channel *> _channel_book;
-		// std::map<std::string command_name, ptr*fun()> _cmd_book; //LOOK UP FUNCTION PTR
 
-		// UTILS FUNCTIONS
 		// init()
 		void				_get_address_info();
 		void				_get_listening_socket();

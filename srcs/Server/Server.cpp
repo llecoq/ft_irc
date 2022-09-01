@@ -6,13 +6,12 @@
 
 Server::Server(const char* port, const char* password)
 :
-	_server_info(port, password),
+	_server_info(port),
 	_exec(password)
 {
 	// if (port > 1024)
 		// exit zobi ?
 	// if password ... exit ?
-	(void)_server_info.password;
 	_pollfd.reserve(10);
 }
 

@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/01 10:26:50 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/01 10:37:49 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,10 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 	o << "-------------------CLIENT--------------------" << std::endl;
 	o << "fd = " << i.get_fd() << std::endl;
 	o << "ipstr = " << i.get_ipstr() << std::endl;
+	o << "password = " << i.get_password() << std::endl;
+	o << "nickname = " << i.get_nickname() << std::endl;
 	o << "username = " << i.get_username() << std::endl;
 	o << "realname = " << i.get_realname() << std::endl;
-	o << "nickname = " << i.get_nickname() << std::endl;
 	i.display_recv_data();
 	o << "---------------------------------------------" << std::endl;
 	return o;
@@ -99,14 +100,14 @@ void	Client::set_password(std::string password)
 	_password = password;
 }
 
-void	Client::set_username(std::string username)
-{
-	_username = username;
-}
-
 void	Client::set_nickname(std::string nickname)
 {
 	_nickname = nickname;
+}
+
+void	Client::set_username(std::string username)
+{
+	_username = username;
 }
 
 void	Client::set_realname(std::string realname)
@@ -134,14 +135,14 @@ std::string	Client::get_password() const
 	return _password;
 }
 
-std::string	Client::get_username() const
-{
-	return _username;
-}
-
 std::string	Client::get_nickname() const
 {
 	return _nickname;
+}
+
+std::string	Client::get_username() const
+{
+	return _username;
 }
 
 std::string	Client::get_realname() const

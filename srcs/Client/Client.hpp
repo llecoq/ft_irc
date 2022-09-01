@@ -57,8 +57,8 @@ class Client
 		int				_fd;
 		bool			_authentification;
 		std::string 	_password;
-		std::string 	_username;
 		std::string 	_nickname;
+		std::string 	_username;
 		std::string 	_realname;
 		std::string		_ipstr;
 		t_recv_data 	_recv_data;
