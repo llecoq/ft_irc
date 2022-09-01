@@ -35,7 +35,7 @@ class ExecutionManager
 
 		ExecutionManager			&operator=( ExecutionManager const & rhs );
 
-		cmd_map						command_book;
+		cmd_map						command_book; // should be private
 
 //--------------------------------- ACCESSORS --------------------------------
 

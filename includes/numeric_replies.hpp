@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/08/30 11:09:44 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/01 17:51:44 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #define ERR_UNKNOWNCOMMAND(command)				"421 " + command + " :Unknown command" + CRLF
 
 // ERROR REPLIES 2812
+#define ERR_NEEDMOREPARAMS(command)				"461 " + command + " :Not enough parameters" + CRLF
+#define ERR_ALREADYREGISTRED					"462 :Unauthorized command (already registered)"
 
 
 // COMMAND RESPONSES RFC_2812

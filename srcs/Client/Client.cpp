@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/01 17:33:11 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/01 20:36:02 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 	o << "nickname = " << i.get_nickname() << std::endl;
 	o << "username = " << i.get_username() << std::endl;
 	o << "realname = " << i.get_realname() << std::endl;
-	// i.display_recv_data();
+	i.display_recv_data();
 	o << "---------------------------------------------" << std::endl;
 	return o;
 }
@@ -83,7 +83,11 @@ ssize_t	Client::read_data()
 		if (_recv_data.buf[_recv_data.buf_len - 1] == '\n') // if last char is '\n' then input is ready to be processed
 		{
 			_recv_data.input = _recv_data.buf;
-			_recv_data.buf_len = 0;	
+			_recv_data.buf_len = 0;
+			for (size_t i = 0; i < _recv_data.input.size(); i++)
+				if (_recv_data.input[i] == '\r')
+					_recv_data.input.erase(i, 1);
+			
 		}
 		else
 			_recv_data.nbytes = 0; // if last char isn't '\n', then don't process data yet

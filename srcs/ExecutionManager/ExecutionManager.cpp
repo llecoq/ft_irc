@@ -72,7 +72,7 @@ unsigned int	ExecutionManager::run(Client* client) {
 		std::string cmd = tokens[0];
 
 		for (size_t i = 0; i < tokens.size(); ++i) {
-			std::cout << "token :" << tokens[i] << "\n";
+			std::cout << "token :" << tokens[i] << '\n';
 		}
 
 		cmd_iterator found = command_book.find(cmd);
