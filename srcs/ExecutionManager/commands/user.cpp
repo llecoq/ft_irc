@@ -15,10 +15,7 @@ unsigned int ExecutionManager::user(Client *client, token_vector tokens) {
 	}
 	client->set_username(tokens[1]);
 	client->set_realname(tokens[4]); // attention ':' included
-	if (client->get_nickname().empty() == 0
-		&& client->get_username().empty() == 0
-		&& client->get_password().empty() == 0)
-		client->set_authentication(_password, client->get_password());
+	client->set_authentication(_password, client->get_password());
 	if (client->get_authentication() == true){
 		msg = RPL_WELCOME(client->get_nickname());
 		send(client->get_fd(), msg.c_str(), msg.size(), 0);

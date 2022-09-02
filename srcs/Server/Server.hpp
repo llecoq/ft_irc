@@ -30,10 +30,10 @@ enum	e_event
 
 struct	t_server_info
 {
-	t_server_info(const char* prt) : port(prt) {}
+	t_server_info(const char *prt) : port(prt) {}
 
-	const char*			port;
-	struct addrinfo*	servinfo;
+	const char			*port;
+	struct addrinfo		*servinfo;
 	int					listening_socket;
 };
 
@@ -47,7 +47,7 @@ class Server
 		typedef pollfd_vector::iterator				pollfd_iterator;
 
 		// constructors & destructor
-		Server(const char* port, const char* password);
+		Server(const char *port, const char *password);
 		~Server();
 
 		// member functions
@@ -64,7 +64,7 @@ class Server
 		// init()
 		void				_get_address_info();
 		void				_get_listening_socket();
-		int					_create_and_bind_socket(addrinfo* ptr);
+		int					_create_and_bind_socket(addrinfo *ptr);
 		void				_add_socket_to_pollfd(int socket_fd);
 		void				_listen_for_incoming_connections();
 		// run()

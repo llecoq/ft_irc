@@ -1,28 +1,37 @@
 #ifndef CHANNEL_HPP
-#define CHANNEL_HPP
+# define CHANNEL_HPP
 
-#include "commons.hpp"
+// # include "Client.hpp"
 
-class Client;
+# include <iostream>
+# include <string>
 
-class Channel {
+class Channel
+{
 
-	public :
+	public:
+
 		Channel();
-		//canonical form
+		Channel( Channel const & src );
 		~Channel();
-		// send_priv_msg(); //??
-		void broadcast();
 
-	private :
-		std::string _name;
-		std::string _topic;
-		Client *_operator_client; //or operator_fd?? or username??
+		Channel &		operator=( Channel const & rhs );
+
+		// void	broadcast(int client_fd, std::string msg);
+
+	private:
+		
+		std::string		_name;
+		std::string		_topic;
+		// Client			*_operator;
+		// 		std::string _name;
+// 		std::string _topic;
+// 		Client *_operator_client; //or operator_fd?? or username??
  
-		std::map<std::string, Client*> _members; //client_name or fd or username // std::string client_name, Client* client
+// 		std::map<std::string, Client*> _members; //client_name or fd or username // std::string client_name, Client* client
 
 };
 
-#include "Client.hpp"
+std::ostream &			operator<<( std::ostream & o, Channel const & i );
 
-#endif
+#endif /* ********************************************************* CHANNEL_H */

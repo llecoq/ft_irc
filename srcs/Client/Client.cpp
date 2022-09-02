@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/01 20:36:02 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/02 09:58:17 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,11 @@ void	Client::set_fd(int fd)
 
 void	Client::set_authentication(std::string server_pass, std::string client_pass)
 {
-	if (server_pass.compare(client_pass) == 0)
-		_authentication = true;
+	if (_nickname.empty() == 0
+		&& _username.empty() == 0
+		&& _password.empty() == 0)
+		if (server_pass.compare(client_pass) == 0)
+			_authentication = true;
 }
 
 void	Client::set_password(std::string password)
@@ -128,6 +131,7 @@ void	Client::set_username(std::string username)
 
 void	Client::set_realname(std::string realname)
 {
+	realname.erase(0, 1);
 	_realname = realname;
 }
 
