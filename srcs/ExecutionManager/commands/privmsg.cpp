@@ -2,7 +2,7 @@
 
 #define RPL(nickname, msg)		"PRIVMSG " + nickname + " :" + msg + CRLF
 
-unsigned int	errors(Client *client, ExecutionManager::token_vector tokens) {
+unsigned int	ExecutionManager::_err_msg(Client *client, token_vector tokens) {
 
 	std::string cmd("PRIVMSG");
 	std::string msg;
@@ -27,41 +27,70 @@ unsigned int	errors(Client *client, ExecutionManager::token_vector tokens) {
 	return SUCCESS;
 }
 
-unsigned int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
+std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
 
-	unsigned int check_err = errors(client, tokens);
-	if (check_err != SUCCESS)
-		return check_err;
+	std::string msg;
 
+	for (size_t i = 2; i < token_msg.size(); ++i) {
+		msg.append(token_msg[i]);
+	}
+	return msg;
+}
+
+unsigned int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd) {
 	std::string dest = tokens[1];
-	int dest_fd;
-	channel_iterator it;
+	std::string text = tokens[2];
 
-	if ((dest_fd = _find_fd_client_by_name(dest))) {
-		std::string text = tokens[2];
-		if (tokens.size() > 3) // in case no :
-			text = _assemble_msg(tokens);
+	if (tokens.size() > 3) // in case no :
+		text = _assemble_msg(tokens);
+	std::string msg = RPL(dest, text);
+	send(dest_fd, msg.c_str(), msg.size(), 0);
+	return SUCCESS;
+}
+
+unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, channel_iterator chan_it, int dest_fd) {
+	std::string dest = tokens[1];
+	Channel* chan = chan_it->second;
+	std::string text = tokens[2];
+
+	if (tokens.size() > 3) // in case no :
+		text = _assemble_msg(tokens);
+	if (chan->members.find(client->get_nickname()) == chan->members.end()) { // check client is member of chan
+		std::string msg = ERR_CANNOTSENDTOCHAN(chan_it->first);
+		send(client->get_fd(), msg.c_str(), msg.size(), 0);
+		return 404;
+	}
+	for (Channel::members_iterator it = chan->members.begin(); it != chan->members.end(); ++it) {
+		if (client->get_nickname() == it->first)
+			continue ;
 		std::string msg = RPL(dest, text);
 		send(dest_fd, msg.c_str(), msg.size(), 0);
 	}
-	else if ((it = _channel_book.find(dest)) != _channel_book.end()) {
-		Channel* chan = it->second;
-		std::string text = tokens[2];
-		if (tokens.size() > 3) // in case no :
-			text = _assemble_msg(tokens);
-		if (chan->members.find(client->get_nickname()) == chan->members.end()) { // check client is member of chan
-			std::string msg = ERR_CANNOTSENDTOCHAN(it->first);
-			send(client->get_fd(), msg.c_str(), msg.size(), 0);
-			return 404;
-		}
-		for (Channel::members_iterator it = chan->members.begin(); it != chan->members.end(); ++it) {
-			if (client->get_nickname() == it->first)
-				continue ;
-			std::string msg = RPL(dest, text);
-			send(dest_fd, msg.c_str(), msg.size(), 0);
-		}
-	}
 	return SUCCESS;
+}
+
+
+unsigned int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
+
+	unsigned int ret = _err_msg(client, tokens);
+	if (ret != SUCCESS)
+		return ret;
+
+	int dest_fd = _find_fd_client_by_name(tokens[1]);
+	channel_iterator chan_it = _channel_book.find(tokens[1]);
+
+	if (dest_fd) {
+		ret = _msg_to_nickname(tokens, dest_fd);
+	}
+	else if (chan_it != _channel_book.end()) {
+		ret = _msg_to_channel(client, tokens, chan_it, dest_fd);
+	}
+	else {
+		std::string msg = ERR_NOSUCHNICK(tokens[1]);
+		send(client->get_fd(), msg.c_str(), msg.size(), 0);
+		ret = 401;
+	}
+	return ret;
 }
 
 // // ----ERR we are doing---

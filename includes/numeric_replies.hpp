@@ -22,8 +22,8 @@
 
 // ERROR REPLIES 2812
 #define ERR_NEEDMOREPARAMS(command)				"461 " + command + " :Not enough parameters" + CRLF
-#define ERR_ALREADYREGISTRED					"462 :Unauthorized command (already registered)" + CRLF
-#define ERR_NOTREGISTERED						"451 :You have not registered" + CRLF
+#define ERR_ALREADYREGISTRED					"462 :Unauthorized command (already registered)\r\n"
+#define ERR_NOTREGISTERED						"451 :You have not registered\r\n"
 #define ERR_NORECIPIENT(command)				"411 :No recipient given " + command + CRLF
 #define ERR_CANNOTSENDTOCHAN(channel)			"404 " + channel + " :Cannot send to channel" + CRLF
 

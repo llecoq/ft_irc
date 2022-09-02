@@ -126,14 +126,4 @@ int	ExecutionManager::_find_fd_client_by_name(std::string nickname) {
 	return ret;
 }
 
-std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
-
-	std::string msg;
-
-	for (size_t i = 2; i < token_msg.size(); ++i) {
-		msg.append(token_msg[i]);
-	}
-	return msg;
-}
-
 //----------------------------------------------------------------------------

@@ -50,7 +50,12 @@ private:
 	std::string					_password;
 	token_vector				_split(std::string const &buf, std::string sep);
 	int							_find_fd_client_by_name(std::string nickname);
-	std::string					_assemble_msg(std::vector<std::string> token_msg);
+	unsigned int				_err_msg(Client *client, token_vector tokens);
+	std::string					_assemble_msg(token_vector token_msg);
+	unsigned int				_msg_to_nickname(token_vector tokens, int dest_fd);
+	unsigned int				_msg_to_channel(Client *client, token_vector tokens,\
+									channel_iterator chan_it, int dest_fd);
+
 
 	unsigned int				nick(Client *client, token_vector tokens);
 	unsigned int				user(Client *client, token_vector tokens);
