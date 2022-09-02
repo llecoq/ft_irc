@@ -3,7 +3,7 @@
 unsigned int ExecutionManager::user(Client *client, token_vector tokens) {
 	std::string	cmd("USER");
 
-	if (tokens.size() < 2){
+	if (tokens.size() < 5){
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
 	}
 	if (client->get_authentication() == true) {
