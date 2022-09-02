@@ -2,19 +2,19 @@
 
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
 ExecutionManager::ExecutionManager() 
-: command_book(), _client_book(), _channel_book(), _password() {}
+: _command_book(), _client_book(), _channel_book(), _password() {}
 
 ExecutionManager::ExecutionManager(std::string password)
-: command_book(), _client_book(), _channel_book(), _password(password) {
-	command_book["NICK"] = &ExecutionManager::nick;
-	command_book["USER"] = &ExecutionManager::user;
-	command_book["JOIN"] = &ExecutionManager::join;
-	command_book["KICK"] = &ExecutionManager::kick;
-	command_book["INVITE"] = &ExecutionManager::invite;
-	command_book["MODE"] = &ExecutionManager::mode;
-	command_book["PRIVMSG"] = &ExecutionManager::privmsg;
-	command_book["NOTICE"] = &ExecutionManager::notice;
-	command_book["PASS"] = &ExecutionManager::pass;
+: _command_book(), _client_book(), _channel_book(), _password(password) {
+	_command_book["NICK"] = &ExecutionManager::nick;
+	_command_book["USER"] = &ExecutionManager::user;
+	_command_book["JOIN"] = &ExecutionManager::join;
+	_command_book["KICK"] = &ExecutionManager::kick;
+	_command_book["INVITE"] = &ExecutionManager::invite;
+	_command_book["MODE"] = &ExecutionManager::mode;
+	_command_book["PRIVMSG"] = &ExecutionManager::privmsg;
+	_command_book["NOTICE"] = &ExecutionManager::notice;
+	_command_book["PASS"] = &ExecutionManager::pass;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -64,20 +64,20 @@ unsigned int	ExecutionManager::run(Client* client) {
 	if (client->get_input().empty())  // if we enter this function, it means that it should not be empty anyway
 		return ret;
 
+	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n");
 	//for multiple \n
-	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n"); // get_buf will change
 
 	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
 		token_vector tokens = _split(multiple_cmds[i], " ");
 		std::string cmd = tokens[0];
 
-		for (size_t i = 0; i < tokens.size(); ++i) {
-			std::cout << "token :" << tokens[i] << '\n';
-		}
+		// for (size_t i = 0; i < tokens.size(); ++i) {
+		// 	std::cout << "token :" << tokens[i] << '\n';
+		// }
 
-		cmd_iterator found = command_book.find(cmd);
-		if (found != command_book.end())
-				ret = (this->*(found->second))(client, tokens);
+		cmd_iterator found = _command_book.find(cmd);
+		if (found != _command_book.end())
+				ret = (this->*(found->second))(client, tokens); // why not send tokens[0] on top to have cmd directly ?
 		else {
 			ret = 421;
 			std::string msg(ERR_UNKNOWNCOMMAND(cmd));

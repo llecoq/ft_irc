@@ -35,7 +35,6 @@ class ExecutionManager
 
 		ExecutionManager			&operator=( ExecutionManager const & rhs );
 
-		cmd_map						command_book; // should be private
 
 //--------------------------------- ACCESSORS --------------------------------
 
@@ -49,6 +48,7 @@ class ExecutionManager
 
 		ExecutionManager();
 
+		cmd_map						_command_book;
 		client_map					_client_book;
 		channel_map					_channel_book;
 		std::string					_password;
