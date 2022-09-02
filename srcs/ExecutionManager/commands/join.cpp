@@ -2,14 +2,12 @@
 
 unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 	std::string	cmd("JOIN");
-	std::string	msg;
 
-	if (client->get_authentication() == false)
-		return 0; // or msg ? ERR_NOTREGISTERED
+	if (client->get_authentication() == false) {
+		return _send_rpl(client, ERR_NOTREGISTRERED, 451);
+	}
 	if (tokens.size() < 2){
-		msg = ERR_NEEDMOREPARAMS(cmd);
-		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		return 461;
+		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
 	}
 	// too many params does not exists because server just create chan with first param (tested on freenode)
 	token_vector			channels = _split(tokens[1], ",");
@@ -24,9 +22,7 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 
 			if (chan_it == _channel_book.end()){ // channel does not exists
 				if (channel_name.size() > 50){
-					msg = ERR_BADCHANNAME(channel_name);
-					send(client->get_fd(), msg.c_str(), msg.size(), 0);
-					return 479; // errcode should be different than 0
+					return _send_rpl(client, ERR_BADCHANNAME(channel_name), 479);
 				}
 				Channel	*new_channel = new Channel(channel_name);
 				// add channel to book
@@ -53,12 +49,5 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 			}
 		}
 	}
-	
-	// }
-	// send  bimbadaboumboum (~bimbadabo@freenode/user/bimbadaboumboum) a rejoint #freenode 
-	// send RPL_TOPIC  ou RPL_NOTOPIC
-	// send RPL_NAMREPLY
-	// send RPL_ENDOFNAMES
-
 	return SUCCESS;
 }

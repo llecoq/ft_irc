@@ -49,6 +49,7 @@ class ExecutionManager
 		std::string					_password;
 		token_vector				_split(std::string const &buf, std::string sep);
 		int							_send_channel_update(Channel *channel, Client *client, std::string msg);
+		int							_send_rpl(Client *client, std::string msg, int numeric);
 
 		unsigned int				nick(Client *client, token_vector tokens);
 		unsigned int				user(Client *client, token_vector tokens);

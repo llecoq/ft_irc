@@ -10,20 +10,17 @@ int	ExecutionManager::_send_channel_update(Channel *channel, Client *client, std
 	
 	// :llecoq!~llecoq@127.0.0.1 JOIN #baba
 	channel->broadcast(NULL, msg);
-	if (channel_topic.empty() == 0)
-		msg = RPL_NOTOPIC(client_nickname, channel_name);
+	if (channel_topic.empty() == 1)
+		_send_rpl(client, RPL_NOTOPIC(client_nickname, channel_name), 331);
 	else
-		msg = RPL_TOPIC(client_nickname, channel_name, channel_topic);
-	send(client->get_fd(), msg.c_str(), msg.size(), 0);
+		_send_rpl(client, RPL_TOPIC(client_nickname, channel_name, channel_topic), 332);
+	_send_rpl(client, RPL_NAMREPLY(channel_name, client_nickname), 353);
+	_send_rpl(client, RPL_ENDOFNAMES(channel_name, client_nickname), 366);
+	return SUCCESS;
+}
 
-	msg = RPL_NAMREPLY(channel_name, client_nickname);
+int	ExecutionManager::_send_rpl(Client *client, std::string msg, int numeric)
+{
 	send(client->get_fd(), msg.c_str(), msg.size(), 0);
-
-	msg = RPL_ENDOFNAMES(channel_name, client_nickname);
-	send(client->get_fd(), msg.c_str(), msg.size(), 0);
-	
-
-	// send RPL_NAMREPLY
-	// send RPL_ENDOFNAMES
-	return 0;
+	return numeric;
 }
