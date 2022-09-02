@@ -1,12 +1,8 @@
 #ifndef CHANNEL_HPP
-# define CHANNEL_HPP
+#define CHANNEL_HPP
 
-// # include "Client.hpp"
-
-# include <iostream>
-# include <string>
-# include <vector>
-# include <map>
+#include "commons.hpp"
+#include "numeric_replies.hpp"
 
 class Client;
 
@@ -19,7 +15,6 @@ class Channel
 {
 
 	public:
-
 		typedef std::pair<std::string, Channel*>		pair;
 		typedef std::map<std::string, Channel*>			map;
 		typedef map::iterator							iterator;
@@ -28,7 +23,7 @@ class Channel
 		Channel( Channel const & src );
 		~Channel();
 
-		Channel &		operator=( Channel const & rhs );
+		Channel &			operator=( Channel const & rhs );
 
 		// accessors
 		std::string	get_name() const;
@@ -51,11 +46,9 @@ class Channel
 		Client					*_operator;
 		std::vector<Client *>	_members;
 
-// 		std::map<std::string, Client*> _members; //client_name or fd or username // std::string client_name, Client* client
-
 };
 
-std::ostream &			operator<<( std::ostream & o, Channel const & i );
+std::ostream &				operator<<( std::ostream & o, Channel const & i );
 
 #include "Client.hpp"
 

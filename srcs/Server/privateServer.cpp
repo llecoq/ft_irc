@@ -209,7 +209,8 @@ void	Server::_process_data(pollfd_iterator it)
 	Client *client = _exec.get_client(it->fd);
 
 	_exec.run(_exec.get_client(it->fd));
-	std::cout << *client << std::endl;
+	(void)client;
+	// std::cout << *client << std::endl;
 }
 
 void	Server::_close_connection(pollfd_iterator it)

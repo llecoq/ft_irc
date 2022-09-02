@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-#define	SUCCESS 0 // msg return for commands
+#define SUCCESS 0 // msg return for commands
 
 class Client;
 
@@ -16,13 +16,11 @@ class ExecutionManager
 {
 
 	public:
-
-		typedef	std::vector<std::string>										token_vector;
-		typedef	token_vector::iterator											token_iterator;
-		typedef unsigned int (ExecutionManager::*pf)(Client*, token_vector);
-		typedef	std::map<std::string, pf>										cmd_map;
-		typedef	cmd_map::iterator												cmd_iterator;
-
+		typedef std::vector<std::string>										token_vector;
+		typedef token_vector::iterator											token_iterator;
+		typedef unsigned int (ExecutionManager::*pf)(Client *, token_vector);
+		typedef std::map<std::string, pf>										cmd_map;
+		typedef cmd_map::iterator												cmd_iterator;
 
 		ExecutionManager(std::string password);
 		ExecutionManager(ExecutionManager const & src);
@@ -30,7 +28,6 @@ class ExecutionManager
 
 		ExecutionManager			&operator=( ExecutionManager const & rhs );
 
-		cmd_map						command_book; // should be private
 
 //--------------------------------- ACCESSORS --------------------------------
 
@@ -44,12 +41,19 @@ class ExecutionManager
 
 		ExecutionManager();
 
+		cmd_map						_command_book;
 		Client::map					_client_book;
 		Channel::map				_channel_book;
 		std::string					_password;
+
 		token_vector				_split(std::string const &buf, std::string sep);
 		int							_send_channel_update(Channel *channel, Client *client, std::string msg);
 		int							_send_rpl(Client *client, std::string msg, int numeric);
+		int							_find_fd_client_by_name(std::string nickname);
+		unsigned int				_err_msg(Client *client, token_vector tokens);
+		std::string					_assemble_msg(token_vector token_msg);
+		unsigned int				_msg_to_nickname(token_vector tokens, int dest_fd);
+		unsigned int				_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it);
 
 		unsigned int				nick(Client *client, token_vector tokens);
 		unsigned int				user(Client *client, token_vector tokens);
@@ -64,6 +68,6 @@ class ExecutionManager
 
 };
 
-std::ostream						&operator<<(std::ostream & o, ExecutionManager const & i);
+std::ostream					&operator<<(std::ostream &o, ExecutionManager const &i);
 
 #endif

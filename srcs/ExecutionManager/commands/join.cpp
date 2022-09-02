@@ -4,7 +4,7 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 	std::string	cmd("JOIN");
 
 	if (client->get_authentication() == false) {
-		return _send_rpl(client, ERR_NOTREGISTRERED, 451);
+		return _send_rpl(client, ERR_NOTREGISTERED, 451);
 	}
 	if (tokens.size() < 2){
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
