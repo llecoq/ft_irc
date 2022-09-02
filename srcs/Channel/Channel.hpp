@@ -32,13 +32,14 @@ class Channel
 
 		// accessors
 		std::string	get_name() const;
+		std::string	get_topic() const;
 		int			get_mode() const;
 		void		set_operator(Client *client);
 		
 		// methods
+		void		broadcast(Client *client, std::string msg);
 		void		add_member(Client *client);
 		bool		user_is_in_channel(Client *client);
-		// void	broadcast(int client_fd, std::string msg);
 
 	private:
 		
@@ -55,5 +56,7 @@ class Channel
 };
 
 std::ostream &			operator<<( std::ostream & o, Channel const & i );
+
+#include "Client.hpp"
 
 #endif /* ********************************************************* CHANNEL_H */

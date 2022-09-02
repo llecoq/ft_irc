@@ -24,17 +24,16 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 
 			if (chan_it == _channel_book.end()){ // channel does not exists
 				if (channel_name.size() > 50){
-					// freenode sends "<channel>: Invalid channel name" but I cannot find this damned ERR_ code
-					// tried with ERR_NOSUCHCHANNEL without luck so far
-					return 0; // errcode should be different than 0
+					msg = ERR_BADCHANNAME(channel_name);
+					send(client->get_fd(), msg.c_str(), msg.size(), 0);
+					return 479; // errcode should be different than 0
 				}
 				Channel	*new_channel = new Channel(channel_name);
 				// add channel to book
 				_channel_book.insert(Channel::pair(channel_name, new_channel));
 				client->join_channel(new_channel); // add channel to client's joined_channel and client to channel's members
 				new_channel->set_operator(client);
-				// broadcast to all members of chan
-				// HANDLE RPL MSG
+				return _send_channel_update(new_channel, client, MSG_JOIN(channel_name, client->get_nickname()));				
 			}
 			else { // channel exists
 				Channel	*channel = chan_it->second;
@@ -50,8 +49,7 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 					return 473;
 				}
 				client->join_channel(channel); // add channel to client's joined_channel and client to channel's members
-				// broadcast to all members of chan
-				// HANDLE RPL MSG
+				return _send_channel_update(channel, client, MSG_JOIN(channel_name, client->get_nickname()));
 			}
 		}
 	}
