@@ -60,7 +60,7 @@ unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector toke
 		return 404;
 	}
 	std::string msg = RPL(dest, text);
-	chan->broadcast(client, msg);
+	chan->broadcast(client->get_fd(), msg);
 	return SUCCESS;
 }
 
