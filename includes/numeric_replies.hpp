@@ -34,21 +34,4 @@
 // COMMAND RESPONSES RFC_1459
 
 
-// #define ERR(fd, msg, size, err_nb)\
-// {\
-// 	send(fd, msg, size, 0);\
-// 	err_nb;\
-// }
-
-
-// struct Err {
-// 	Err(){};
-
-// 	unsigned int	ret(int fd, std::string msg, unsigned int err_code) {
-// 		send(fd, msg.c_str(), msg.size(), 0);
-// 		return err_code;
-// 	}
-// };
-
-
 #endif // NUMERIC_REPLIES_HPP

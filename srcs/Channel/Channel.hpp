@@ -20,7 +20,7 @@ class Channel
 		Channel &			operator=( Channel const & rhs );
 
 		members_map			members; //client_name or fd or username
-		// void	broadcast(int client_fd, std::string msg);
+		void	broadcast(int client_fd, std::string msg);
 
 	private:
 		

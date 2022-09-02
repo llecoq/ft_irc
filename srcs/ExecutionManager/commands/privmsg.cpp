@@ -10,9 +10,7 @@ unsigned int	ExecutionManager::_err_msg(Client *client, token_vector tokens) {
 	if (tokens.size() == 1) {
 		msg = ERR_NORECIPIENT(cmd);
 		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		return 451;
-		// Err error;
-		// return error.ret(client->get_fd(), ERR_NORECIPIENT(cmd), 451);
+		return 411;
 	}
 	else if (tokens.size() == 2) {
 		msg = ERR_NEEDMOREPARAMS(cmd); // or ERR_NOTEXTTOSEND
@@ -48,10 +46,11 @@ unsigned int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd
 	return SUCCESS;
 }
 
-unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, channel_iterator chan_it, int dest_fd) {
+unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens,\
+				channel_iterator chan_it, int dest_fd) {
 	std::string dest = tokens[1];
-	Channel* chan = chan_it->second;
 	std::string text = tokens[2];
+	Channel* chan = chan_it->second;
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
@@ -60,12 +59,8 @@ unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector toke
 		send(client->get_fd(), msg.c_str(), msg.size(), 0);
 		return 404;
 	}
-	for (Channel::members_iterator it = chan->members.begin(); it != chan->members.end(); ++it) {
-		if (client->get_nickname() == it->first)
-			continue ;
-		std::string msg = RPL(dest, text);
-		send(dest_fd, msg.c_str(), msg.size(), 0);
-	}
+	std::string msg = RPL(dest, text);
+	chan->broadcast(client, msg);
 	return SUCCESS;
 }
 

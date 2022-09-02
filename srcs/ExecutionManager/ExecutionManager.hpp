@@ -48,6 +48,7 @@ private:
 	client_map					_client_book;
 	channel_map					_channel_book;
 	std::string					_password;
+
 	token_vector				_split(std::string const &buf, std::string sep);
 	int							_find_fd_client_by_name(std::string nickname);
 	unsigned int				_err_msg(Client *client, token_vector tokens);
