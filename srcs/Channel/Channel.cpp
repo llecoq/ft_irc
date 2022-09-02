@@ -4,9 +4,9 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel()
-{
-}
+Channel::Channel() {}
+
+Channel::Channel(std::string name) : _name(name){(void)_name;}
 
 Channel::Channel( const Channel & src )
 {
@@ -49,10 +49,36 @@ std::ostream &			operator<<( std::ostream & o, Channel const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void	Channel::add_member(Client *client)
+{
+	_members.push_back(client);
+}
+
+bool	Channel::user_is_in_channel(Client *client)
+{
+	for (size_t i = 0; i < _members.size(); i++)
+		if (_members[i] == client)
+			return true;
+	return false;	
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
+std::string	Channel::get_name() const
+{
+	return _name;
+}
+
+int	Channel::get_mode() const
+{
+	return _mode;
+}
+
+void	Channel::set_operator(Client *client)
+{
+	_operator = client;
+}
 
 /* ************************************************************************** */

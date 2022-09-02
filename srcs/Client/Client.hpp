@@ -7,6 +7,8 @@
 
 #include <sys/socket.h>
 #include <cstring>
+#include <map>
+#include <vector>
 
 #define BUFFER_SIZE 512
 #define FAILED 	-1
@@ -24,7 +26,13 @@ struct t_recv_data
 class Client
 {
 
+
 	public:
+
+		typedef	std::pair<int, Client *>				pair;
+		typedef std::map<int, Client *>					map;
+		typedef std::vector<Client *>					vector;
+		typedef map::iterator							iterator;
 
 		Client();
 		Client( int fd );
@@ -36,6 +44,7 @@ class Client
 
 		// methods
 		ssize_t				read_data();
+		void				join_channel(Channel *channel);
 
 		// accessor
 		void				set_fd(int fd);
@@ -68,9 +77,6 @@ class Client
 		std::string 	_realname;
 		std::string		_ipstr;
 		t_recv_data 	_recv_data;
-
-
-		// std::deque<std::string pending_msg> _pending_priv_msg; //pending_msg must contain the sender's username //deque or other ? must be FIFO
 
 		std::map<std::string, Channel *> _joined_channels; // channel name, obj channel
 };

@@ -22,10 +22,13 @@ ExecutionManager::ExecutionManager(const ExecutionManager & src) {
 }
 
 ExecutionManager::~ExecutionManager() {
-	client_iterator	it;
+	Client::iterator		client_it;
+	Channel::iterator	chan_it;
 
-	for (it = _client_book.begin(); it != _client_book.end(); it++)
-		delete it->second;	
+	for (client_it = _client_book.begin(); client_it != _client_book.end(); client_it++)
+		delete client_it->second;	
+	for (chan_it = _channel_book.begin(); chan_it != _channel_book.end(); chan_it++)
+		delete chan_it->second;
 }
 //----------------------------------------------------------------------------
 
@@ -53,7 +56,7 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 
 	Client*	new_client = new Client(fd); // delete afterwards
 	
-	_client_book.insert(fd_client_pair(fd, new_client));
+	_client_book.insert(Client::pair(fd, new_client));
 	new_client->set_ipstr(ipstr);
 }
 

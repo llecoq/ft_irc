@@ -19,6 +19,11 @@ unsigned int ExecutionManager::user(Client *client, token_vector tokens) {
 	if (client->get_authentication() == true){
 		msg = RPL_WELCOME(client->get_nickname());
 		send(client->get_fd(), msg.c_str(), msg.size(), 0);
+		// upon successful registration, send:
+			// - welcome msg
+			// - basic informations about server
+			// - basic help or cmds like join #channel 
+			// - user mode 
 	}
 	return SUCCESS;
 }
