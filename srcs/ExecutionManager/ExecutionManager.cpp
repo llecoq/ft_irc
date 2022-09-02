@@ -70,20 +70,14 @@ unsigned int	ExecutionManager::run(Client* client) {
 	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
 		token_vector tokens = _split(multiple_cmds[i], " ");
 		std::string cmd = tokens[0];
-
-		// for (size_t i = 0; i < tokens.size(); ++i) {
-		// 	std::cout << "token :" << tokens[i] << '\n';
-		// }
-
 		cmd_iterator found = _command_book.find(cmd);
-		if (found != _command_book.end())
-				ret = (this->*(found->second))(client, tokens); // why not send tokens[0] on top to have cmd directly ?
-		else {
+		if (found == _command_book.end()) {
 			ret = 421;
 			std::string msg(ERR_UNKNOWNCOMMAND(cmd));
 			send(client->get_fd(), msg.c_str(), msg.size(), 0 );
 			break ; // if first command line(in case of multiple \n) is wrong, not even launching the next ones
 		}
+		ret = (this->*(found->second))(client, tokens); // why not send tokens[0] on top to have cmd directly ?
 	}
 	return ret;
 }
@@ -121,4 +115,25 @@ std::vector<std::string>	ExecutionManager::_split(std::string const &buf, std::s
 	}
 	return vec;
 }
+
+int	ExecutionManager::_find_fd_client_by_name(std::string nickname) {
+
+	int ret = 0;
+	for (client_iterator it = _client_book.begin(); it != _client_book.end(); ++it) {
+		if (it->second->get_nickname() == nickname)
+			return it->second->get_fd();
+	}
+	return ret;
+}
+
+std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
+
+	std::string msg;
+
+	for (size_t i = 2; i < token_msg.size(); ++i) {
+		msg.append(token_msg[i]);
+	}
+	return msg;
+}
+
 //----------------------------------------------------------------------------

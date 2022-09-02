@@ -32,7 +32,6 @@ class Client
 		~Client();
 
 		Client &		operator=( Client const & rhs );
-		// send_priv_msg(); //??
 
 		// methods
 		ssize_t				read_data();
