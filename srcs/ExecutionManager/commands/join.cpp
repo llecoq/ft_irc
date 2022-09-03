@@ -16,20 +16,22 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 		// to lower cases
 		for (std::string::size_type j = 0; j < channels[i].length(); ++j)
 			channels[i][j] = std::tolower(channels[i][j]);
-		if (channels[i][0] == '#'){ // channel name starts with #
+		if (channels[i][0] == '#'){ // channel name starts with # (# alone is a valid name)
 			std::string			channel_name = channels[i];
 			Channel::iterator	chan_it = _channel_book.find(channel_name);
 
 			if (chan_it == _channel_book.end()){ // channel does not exists
 				if (channel_name.size() > 50){
-					return _send_rpl(client, ERR_BADCHANNAME(channel_name), 479);
+					_send_rpl(client, ERR_BADCHANNAME(channel_name), 479);
+					continue;
 				}
 				Channel	*new_channel = new Channel(channel_name);
 				// add channel to book
 				_channel_book.insert(Channel::pair(channel_name, new_channel));
 				client->join_channel(new_channel); // add channel to client's joined_channel and client to channel's members
 				new_channel->set_operator(client);
-				return _send_channel_update(new_channel, client, MSG_JOIN(channel_name, client->get_nickname()));				
+				_send_channel_update(new_channel, client, MSG_JOIN(channel_name, client->get_nickname()));				
+				continue;
 			}
 			else { // channel exists
 				Channel	*channel = chan_it->second;
@@ -45,7 +47,8 @@ unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
 					return 473;
 				}
 				client->join_channel(channel); // add channel to client's joined_channel and client to channel's members
-				return _send_channel_update(channel, client, MSG_JOIN(channel_name, client->get_nickname()));
+				_send_channel_update(channel, client, MSG_JOIN(channel_name, client->get_nickname()));
+				continue;
 			}
 		}
 	}
