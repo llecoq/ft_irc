@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-unsigned int ExecutionManager::nick(Client *client, token_vector tokens) {
+int ExecutionManager::nick(Client *client, token_vector tokens) {
 	std::string	cmd("NICK");
 
 	if (tokens.size() < 2){

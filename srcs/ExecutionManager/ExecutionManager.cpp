@@ -60,9 +60,9 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 	new_client->set_ipstr(ipstr);
 }
 
-unsigned int	ExecutionManager::run(Client* client) {
+int	ExecutionManager::run(Client* client) {
 
-	unsigned int ret = 0;
+	int ret = 0;
 
 	if (client->get_input().empty())  // if we enter this function, it means that it should not be empty anyway
 		return ret;

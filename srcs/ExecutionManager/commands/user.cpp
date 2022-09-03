@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-unsigned int ExecutionManager::user(Client *client, token_vector tokens) {
+int ExecutionManager::user(Client *client, token_vector tokens) {
 	std::string	cmd("USER");
 
 	if (tokens.size() < 5){

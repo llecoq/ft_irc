@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-unsigned int ExecutionManager::join(Client *client, token_vector tokens) {
+int ExecutionManager::join(Client *client, token_vector tokens) {
 	std::string	cmd("JOIN");
 
 	if (client->get_authentication() == false) {

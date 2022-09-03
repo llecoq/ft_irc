@@ -1,6 +1,6 @@
 #include "ExecutionManager.hpp"
 
-unsigned int ExecutionManager::pass(Client *client, token_vector tokens) {
+int ExecutionManager::pass(Client *client, token_vector tokens) {
 	std::string	cmd("PASS");
 
 	if (tokens.size() < 2){

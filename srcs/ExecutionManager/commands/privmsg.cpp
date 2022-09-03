@@ -2,7 +2,7 @@
 
 #define RPL(nickname, msg)		"PRIVMSG " + nickname + " :" + msg + CRLF
 
-unsigned int	ExecutionManager::_err_msg(Client *client, token_vector tokens) {
+int	ExecutionManager::_err_msg(Client *client, token_vector tokens) {
 
 	std::string cmd("PRIVMSG");
 	std::string msg;
@@ -35,7 +35,7 @@ std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
 	return msg;
 }
 
-unsigned int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd) {
+int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd) {
 	std::string dest = tokens[1];
 	std::string text = tokens[2];
 
@@ -46,7 +46,7 @@ unsigned int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd
 	return SUCCESS;
 }
 
-unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it) {
+int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it) {
 	std::string dest = tokens[1];
 	std::string text = tokens[2];
 	Channel* chan = chan_it->second;
@@ -64,9 +64,9 @@ unsigned int	ExecutionManager::_msg_to_channel(Client *client, token_vector toke
 }
 
 
-unsigned int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
+int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 
-	unsigned int ret = _err_msg(client, tokens);
+	int ret = _err_msg(client, tokens);
 	if (ret != SUCCESS)
 		return ret;
 
