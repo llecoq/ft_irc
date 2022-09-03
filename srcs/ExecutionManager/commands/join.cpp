@@ -54,24 +54,19 @@ static int	find_channel(Channel::map &channel_book, std::string &channel_name, C
 	for (std::string::size_type i = 0; i < channel_name.length(); ++i) // channel_name to lower
 		channel_name[i] = std::tolower(channel_name[i]);
 	
-	if (channel_name[0] == '#') { // channel name starts with # (# alone is a valid name)
-		Channel::iterator	chan_it = channel_book.find(channel_name);
-		Channel	*channel = chan_it->second;
+	// channel name should start with # (# alone is a valid name)
+	if (channel_name[0] != '#' || channel_name.size() > 50)
+		return BAD_CHANNEL_NAME;
+	Channel::iterator	chan_it = channel_book.find(channel_name);
+	Channel	*channel = chan_it->second;
 
-		if (chan_it == channel_book.end()) {
-			if (channel_name.size() > 50)
-				return BAD_CHANNEL_NAME;
-			return CHANNEL_NOT_FOUND;
-		}
-		else {
-			if (channel->user_is_in_channel(client) == true)
-				return USER_IS_IN_CHAN;
-			if (channel->get_mode() == INVITE_ONLY)
-				return INVITE_ONLY;
-			return CHANNEL_FOUND;
-		}
-	}
-	return BAD_CHANNEL_NAME; // channel_name doesn't start with #
+	if (chan_it == channel_book.end())
+		return CHANNEL_NOT_FOUND;
+	if (channel->user_is_in_channel(client) == true)
+		return USER_IS_IN_CHAN;
+	if (channel->get_mode() == INVITE_ONLY)
+		return INVITE_ONLY;
+	return CHANNEL_FOUND;
 }
 
 // Create new channel, adding it to ExecutionManager::_channel_book &&
