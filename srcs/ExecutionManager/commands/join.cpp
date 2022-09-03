@@ -1,7 +1,6 @@
 #include "ExecutionManager.hpp"
 
 enum e_channel {
-	IGNORE,
 	INVITE_ONLY,
 	CHANNEL_FOUND,
 	USER_IS_IN_CHAN,
@@ -10,7 +9,7 @@ enum e_channel {
 };
 
 static int	find_channel(Channel::map &channel_book, std::string &channel_name, Client *client);
-static void	create_new_channel(Channel::map &channel_book, Client *client, std::string channel_name);
+static void	create_new_channel(Channel::map &channel_book, Client *client, std::string &channel_name);
 
 int ExecutionManager::join(Client *client, token_vector tokens) {
 	std::string	cmd("JOIN");
@@ -25,39 +24,41 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 	token_vector			channels = _split(tokens[1], ",");
 
 	for (size_t  i = 0; i < channels.size(); i++) {
-		switch (find_channel(_channel_book, channels[i], client))
-		{
+		switch (find_channel(_channel_book, channels[i], client)) {
+			
 		case BAD_CHANNEL_NAME:
 			_send_rpl(client, ERR_BADCHANNAME(channels[i]), 479);
 			break;
 		case CHANNEL_NOT_FOUND:
 			create_new_channel(_channel_book, client, channels[i]);
-			_send_channel_update(channels[i], client, MSG_JOIN(channels[i], client->get_nickname()));				
+			_send_channel_infos(channels[i], client, MSG_JOIN(channels[i], client->get_nickname()));				
 			break;
 		case USER_IS_IN_CHAN:
-			// send ERR_USERONCHANNEL and continue //this err is not in rfc join section
+			_send_rpl(client, ERR_USERONCHANNEL(client->get_nickname(), channels[i]), 443);
 			break;
 		case INVITE_ONLY:
+			_send_rpl(client, ERR_INVITEONLYCHAN(channels[i]), 443);
 			break;
 		case CHANNEL_FOUND:
 			client->join_channel(_channel_book.find(channels[i])->second); // add channel to client's joined_channel and client to channel's members
-			_send_channel_update(channels[i], client, MSG_JOIN(channels[i], client->get_nickname()));
+			_send_channel_infos(channels[i], client, MSG_JOIN(channels[i], client->get_nickname()));
 			break;
 		}
 	}
 	return SUCCESS;
 }
 
-static int	find_channel(Channel::map &channel_book, std::string &channel_name, Client *client)
-{
-	for (std::string::size_type i = 0; i < channel_name.length(); ++i)
+// Process channel_name (to lower cases) and if it starts with '#', checking if the channel 
+// exists or not with error management (USER_IS_IN_CHAN, BAD_CHANNEL_NAME, INVITE_ONLY)
+static int	find_channel(Channel::map &channel_book, std::string &channel_name, Client *client) {
+	for (std::string::size_type i = 0; i < channel_name.length(); ++i) // channel_name to lower
 		channel_name[i] = std::tolower(channel_name[i]);
 	
 	if (channel_name[0] == '#') { // channel name starts with # (# alone is a valid name)
 		Channel::iterator	chan_it = channel_book.find(channel_name);
 		Channel	*channel = chan_it->second;
 
-		if (chan_it == channel_book.end()) { // if channel not found
+		if (chan_it == channel_book.end()) {
 			if (channel_name.size() > 50)
 				return BAD_CHANNEL_NAME;
 			return CHANNEL_NOT_FOUND;
@@ -70,13 +71,32 @@ static int	find_channel(Channel::map &channel_book, std::string &channel_name, C
 			return CHANNEL_FOUND;
 		}
 	}
-	return IGNORE;
+	return BAD_CHANNEL_NAME; // channel_name doesn't start with #
 }
 
-static void	create_new_channel(Channel::map &channel_book, Client *client, std::string channel_name)
-{
+// Create new channel, adding it to ExecutionManager::_channel_book &&
+static void	create_new_channel(Channel::map &channel_book, Client *client, std::string &channel_name) {
 	Channel	*new_channel = new Channel(channel_name);
-	channel_book.insert(Channel::pair(channel_name, new_channel)); // add channel to _channel_book
+	channel_book.insert(Channel::pair(channel_name, new_channel));
 	client->join_channel(new_channel); // add channel to client's joined_channel and client to channel's members
 	new_channel->set_operator(client);
+}
+
+// sending JOIN msg + RPL_TOPIC/NOTOPIC + RPL_NAMREPLY + RPL_ENDOFNAMES to client
+int	ExecutionManager::_send_channel_infos(std::string channel_name, Client *client, std::string msg) {
+	Channel *channel = _channel_book.find(channel_name)->second;
+	std::string	channel_topic = channel->get_topic();
+	std::string	client_nickname = client->get_nickname();
+	// channel->broadcast(NULL, msg); // NULL => send to EVERYONE
+	// send  bimbadaboumboum (~bimbadabo@freenode/user/bimbadaboumboum) a rejoint #freenode 
+	
+	// :llecoq!~llecoq@127.0.0.1 JOIN #baba
+	channel->broadcast(NULL, msg);
+	if (channel_topic.empty() == 1)
+		_send_rpl(client, RPL_NOTOPIC(client_nickname, channel_name), 331);
+	else
+		_send_rpl(client, RPL_TOPIC(client_nickname, channel_name, channel_topic), 332);
+	_send_rpl(client, RPL_NAMREPLY(channel_name, client_nickname), 353);
+	_send_rpl(client, RPL_ENDOFNAMES(channel_name, client_nickname), 366);
+	return SUCCESS;
 }
