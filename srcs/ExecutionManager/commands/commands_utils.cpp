@@ -1,8 +1,8 @@
 #include "ExecutionManager.hpp"
 
-int	ExecutionManager::_send_channel_update(Channel *channel, Client *client, std::string msg)
+int	ExecutionManager::_send_channel_update(std::string channel_name, Client *client, std::string msg)
 {
-	std::string	channel_name = channel->get_name();
+	Channel *channel = _channel_book.find(channel_name)->second;
 	std::string	channel_topic = channel->get_topic();
 	std::string	client_nickname = client->get_nickname();
 	// channel->broadcast(NULL, msg); // NULL => send to EVERYONE

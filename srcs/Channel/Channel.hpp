@@ -6,11 +6,6 @@
 
 class Client;
 
-enum e_mode
-{
-	INVITE_ONLY
-};
-
 class Channel
 {
 

@@ -35,7 +35,7 @@ class ExecutionManager
 	
 //--------------------------------- METHODS ----------------------------------
 		void						init_client(int client_fd, char* ipstr);
-		int				run(Client *client);
+		int							run(Client *client);
 
 	private:
 
@@ -45,9 +45,9 @@ class ExecutionManager
 		Client::map			_client_book;
 		Channel::map		_channel_book;
 		std::string			_password;
-		
+
 		token_vector		_split(std::string const &buf, std::string sep);
-		int					_send_channel_update(Channel *channel, Client *client, std::string msg);
+		int					_send_channel_update(std::string channel_name, Client *client, std::string msg);
 		int					_send_rpl(Client *client, std::string msg, int numeric);
 		int					_find_fd_client_by_name(std::string nickname);
 		int					_err_msg(Client *client, token_vector tokens);
