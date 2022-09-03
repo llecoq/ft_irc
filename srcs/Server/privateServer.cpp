@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/01 18:59:35 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/03 11:54:40 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ void	Server::_listen_for_incoming_connections()
 
 void	Server::_signal_handler(int signum)
 {
-	(void)signum;
-	throw serverExceptions("Server: ", "shutting down...");
+	if (signum == SIGINT)
+		throw serverExceptions("Server: ", "shutting down...");
 }
 
 void	Server::_poll_events()

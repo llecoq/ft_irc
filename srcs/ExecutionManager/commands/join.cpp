@@ -41,6 +41,7 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 			break;
 		case CHANNEL_FOUND:
 			client->join_channel(_channel_book.find(channels[i])->second); // add channel to client's joined_channel and client to channel's members
+			// ATTENTION ! MSG_JOIN IS INCOMPLETE
 			_send_channel_infos(channels[i], client, MSG_JOIN(channels[i], client->get_nickname()));
 			break;
 		}
@@ -78,15 +79,15 @@ static void	create_new_channel(Channel::map &channel_book, Client *client, std::
 }
 
 // sending JOIN msg + RPL_TOPIC/NOTOPIC + RPL_NAMREPLY + RPL_ENDOFNAMES to client
+// ATTENTION ! NAMEREPLY() IS INCOMPLETE
 int	ExecutionManager::_send_channel_infos(std::string channel_name, Client *client, std::string msg) {
 	Channel *channel = _channel_book.find(channel_name)->second;
 	std::string	channel_topic = channel->get_topic();
 	std::string	client_nickname = client->get_nickname();
-	// channel->broadcast(NULL, msg); // NULL => send to EVERYONE
 	// send  bimbadaboumboum (~bimbadabo@freenode/user/bimbadaboumboum) a rejoint #freenode 
 	
 	// :llecoq!~llecoq@127.0.0.1 JOIN #baba
-	channel->broadcast(NULL, msg);
+	channel->broadcast(NULL, msg); // NULL = send to everyone included the client itself
 	if (channel_topic.empty() == 1)
 		_send_rpl(client, RPL_NOTOPIC(client_nickname, channel_name), 331);
 	else
