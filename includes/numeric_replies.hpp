@@ -18,7 +18,10 @@
 
 // ERROR REPLIES 1459
 #define ERR_NOSUCHNICK(nickname)				"401 " + nickname + " :No such nick/channel" + CRLF
+#define ERR_NOSUCHCHANNEL(channel)				"403 " + channel + " :No such channel" + CRLF
 #define ERR_UNKNOWNCOMMAND(command)				"421 " + command + " :Unknown command" + CRLF
+#define ERR_NOTONCHANNEL(channel)				"442 " + channel + " :You're not on that channel" + CRLF
+#define ERR_CHANOPRIVSNEEDED(channel)			"482 " + channel + " :You're not channel operator" + CRLF
 
 // ERROR REPLIES 2812
 #define ERR_CANNOTSENDTOCHAN(channel)			"404 " + channel + " :Cannot send to channel" + CRLF
