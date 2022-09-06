@@ -129,4 +129,9 @@ int	ExecutionManager::_find_fd_client_by_name(std::string nickname) {
 	return ret;
 }
 
+int	_send_rpl(Client* client, std::string msg, int code) {
+
+	send(client->get_fd(), msg.c_str(), msg.size(), 0);
+	return code;
+}
 //----------------------------------------------------------------------------
