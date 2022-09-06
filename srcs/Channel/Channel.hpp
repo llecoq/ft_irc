@@ -24,7 +24,9 @@ class Channel
 		std::string	get_name() const;
 		std::string	get_topic() const;
 		int			get_mode() const;
+		Client* 	get_operator();
 		void		set_operator(Client *client);
+		void		set_topic(std::string topic);
 		
 		// methods
 		void		broadcast(Client *client, std::string msg);

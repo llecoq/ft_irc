@@ -54,6 +54,10 @@ class ExecutionManager
 		std::string			_assemble_msg(token_vector token_msg);
 		int					_msg_to_nickname(token_vector tokens, int dest_fd);
 		int					_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it);
+		int 				_topic_query(Client *client, Channel *channel);
+		int 				_set_topic(Client *client, Channel *channel, std::string &topic);
+
+
 	
 		int					nick(Client *client, token_vector tokens);
 		int					user(Client *client, token_vector tokens);

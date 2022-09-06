@@ -88,9 +88,20 @@ int	Channel::get_mode() const
 	return _mode;
 }
 
+Client* 	Channel::get_operator()
+{
+	return _operator;
+};
+
+
 void	Channel::set_operator(Client *client)
 {
 	_operator = client;
 }
+
+void	Channel::set_topic(std::string topic)
+{
+	_topic = topic;
+};
 
 /* ************************************************************************** */
