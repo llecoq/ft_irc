@@ -2,7 +2,7 @@
 
 #define RPL(nickname, msg)		"PRIVMSG " + nickname + " :" + msg + CRLF
 
-int	ExecutionManager::_err_msg(Client *client, token_vector tokens) {
+int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens) {
 
 	std::string cmd("PRIVMSG");
 	std::string msg;
@@ -66,7 +66,7 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 
-	int ret = _err_msg(client, tokens);
+	int ret = _err_privmsg_handling(client, tokens);
 	if (ret != SUCCESS)
 		return ret;
 
@@ -91,10 +91,10 @@ int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 // // 411 ERR_NORECIPIENT ":No recipient given (<commande>)" = pas de destinataire
 // // 401 ERR_NOSUCHNICK "<pseudonyme> :No such nick/channel"
 // // 404 ERR_CANNOTSENDTOCHAN "<nom de canal> :Cannot send to channel" =
-						// Envoyé à un utilisateur qui (a) soit n'est pas dans
-						// un canal en mode +n ou (b) n'est pas opérateur (ou mode +v)
-						// sur un canal en mode +m ; et essaie d'envoyer un PRIVMSG à ce canal.
-						// !!! We don't have to do it because we don't do those flags (n, b, m, v)
+// 						Envoyé à un utilisateur qui (a) soit n'est pas dans
+// 						un canal en mode +n ou (b) n'est pas opérateur (ou mode +v)
+// 						sur un canal en mode +m ; et essaie d'envoyer un PRIVMSG à ce canal.
+// 						!!! We don't have to do it because we don't do those flags (n, b, m, v)
 // //-------------------------
 
 

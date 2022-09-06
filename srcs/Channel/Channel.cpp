@@ -88,6 +88,11 @@ int	Channel::get_mode() const
 	return _mode;
 }
 
+Client*	Channel::get_operator() const
+{
+	return _operator;
+}
+
 void	Channel::set_operator(Client *client)
 {
 	_operator = client;
