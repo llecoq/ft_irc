@@ -6,18 +6,11 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/07 14:24:11 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/07 14:49:02 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-# include <sys/types.h>
-// # include <sys/socket.h>
-# include <netdb.h>
-# include <cstring>
-// # include <errno.h>  
-# include <arpa/inet.h>
 
 # define BACKLOG 	10 
 # define NO_TIMEOUT -1

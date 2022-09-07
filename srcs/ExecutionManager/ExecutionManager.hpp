@@ -6,7 +6,6 @@
 #include "commons.hpp"
 #include "numeric_replies.hpp"
 
-#include <algorithm>
 
 #define SUCCESS 0 // msg return for commands
 

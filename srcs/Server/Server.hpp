@@ -1,24 +1,9 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+#include "commons.hpp"
 #include "Client.hpp"
-// #include "Channel.hpp"
 #include "ExecutionManager.hpp"
-// #include "exceptions.hpp"
-#include "numeric_replies.hpp"
-// à mettre dans common ?
-// # include <iostream>
-// # include <string>
-# include <vector>
-// # include <map>
-# include <stdlib.h>
-# include <poll.h>
-# include <stdio.h>
-# include <utility>
-# include <csignal>
-
-// # include <unistd.h>
-# include <fcntl.h>
 
 enum	e_event
 {

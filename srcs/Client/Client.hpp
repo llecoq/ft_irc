@@ -5,11 +5,6 @@
 #include "exceptions.hpp"
 #include "commons.hpp"
 
-#include <sys/socket.h>
-#include <cstring>
-#include <map>
-#include <vector>
-
 #define BUFFER_SIZE 512
 #define FAILED 	-1
 

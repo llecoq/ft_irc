@@ -6,6 +6,7 @@
 #include <deque>
 #include <string>
 #include <sys/types.h>
+#include <sys/socket.h>
 #include <poll.h>
 #include <cstdio>
 #include <cstdlib>
@@ -14,5 +15,11 @@
 #include <iostream>
 #include <errno.h>
 #include <string>
+#include <utility>
+#include <csignal>
+#include <fcntl.h>
+#include <algorithm>
+#include <netdb.h>
+#include <arpa/inet.h>
 
 #endif
