@@ -23,13 +23,14 @@ class Channel
 		// accessors
 		std::string	get_name() const;
 		std::string	get_topic() const;
-		int			get_mode() const;
+		std::string	get_mode() const;
 		void		set_operator(Client *client);
 		
 		// methods
 		void		broadcast(Client *client, std::string msg);
 		void		add_member(Client *client);
 		bool		user_is_in_channel(Client *client);
+		std::string	list_members();
 
 	private:
 		
@@ -37,7 +38,7 @@ class Channel
 		
 		std::string				_name;
 		std::string				_topic;
-		int						_mode;
+		std::string				_mode;
 		Client					*_operator;
 		std::vector<Client *>	_members;
 

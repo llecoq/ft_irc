@@ -54,7 +54,6 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 static int	find_channel(Channel::map &channel_book, std::string &channel_name, Client *client) {
 	for (std::string::size_type i = 0; i < channel_name.length(); ++i) // channel_name to lower
 		channel_name[i] = std::tolower(channel_name[i]);
-	
 	// channel name should start with # (# alone is a valid name)
 	if (channel_name[0] != '#' || channel_name.size() > 50)
 		return BAD_CHANNEL_NAME;
@@ -65,8 +64,8 @@ static int	find_channel(Channel::map &channel_book, std::string &channel_name, C
 		return CHANNEL_NOT_FOUND;
 	if (channel->user_is_in_channel(client) == true)
 		return USER_IS_IN_CHAN;
-	if (channel->get_mode() == INVITE_ONLY)
-		return INVITE_ONLY;
+	// if (channel->get_mode() == INVITE_ONLY)
+	// 	return INVITE_ONLY;
 	return CHANNEL_FOUND;
 }
 
@@ -92,7 +91,7 @@ int	ExecutionManager::_send_channel_infos(std::string channel_name, Client *clie
 		_send_rpl(client, RPL_NOTOPIC(client_nickname, channel_name), 331);
 	else
 		_send_rpl(client, RPL_TOPIC(client_nickname, channel_name, channel_topic), 332);
-	_send_rpl(client, RPL_NAMREPLY(channel_name, client_nickname), 353);
+	_send_rpl(client, RPL_NAMREPLY(channel_name, client_nickname, channel->list_members()), 353);
 	_send_rpl(client, RPL_ENDOFNAMES(channel_name, client_nickname), 366);
 	return SUCCESS;
 }

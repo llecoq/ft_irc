@@ -69,6 +69,15 @@ bool	Channel::user_is_in_channel(Client *client)
 	return false;	
 }
 
+std::string	Channel::list_members()
+{
+	std::string	members;
+
+	for (size_t i = 0; i < _members.size(); i++)
+		members.append(_members[i]->get_nickname() + " ");
+	return members;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
@@ -83,7 +92,7 @@ std::string	Channel::get_topic() const
 	return _topic;
 }
 
-int	Channel::get_mode() const
+std::string	Channel::get_mode() const
 {
 	return _mode;
 }
