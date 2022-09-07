@@ -44,6 +44,7 @@ class Client
 		// methods
 		ssize_t				read_data();
 		void				join_channel(Channel *channel);
+		void				clear_recv_data();
 
 		// accessor
 		void				set_fd(int fd);

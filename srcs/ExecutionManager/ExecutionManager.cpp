@@ -64,11 +64,12 @@ int	ExecutionManager::run(Client* client) {
 
 	int ret = 0;
 
-	if (client->get_input().empty())  // if we enter this function, it means that it should not be empty anyway
+	if (client->get_input().empty())
 		return ret;
 
 	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n");
 	//for multiple \n
+	client->clear_recv_data();
 
 	for (size_t i = 0; i < multiple_cmds.size(); ++i) { // for each \n
 		token_vector tokens = _split(multiple_cmds[i], " ");
