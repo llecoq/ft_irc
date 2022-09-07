@@ -1,5 +1,6 @@
 #include "ExecutionManager.hpp"
 
+// on est cense pouvoir set un user avec ses params : USER t t t t
 int ExecutionManager::user(Client *client, token_vector tokens) {
 	std::string	cmd("USER");
 

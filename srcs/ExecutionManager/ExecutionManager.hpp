@@ -60,7 +60,10 @@ private:
 
 	// mode
 	int							_err_mode_handling(Client *client, token_vector tokens);
-
+	bool						_is_valid_mode_param(char c);
+	std::string					_add_flags(Channel* chan, std::string new_flags);
+	std::string					_remove_flags(Channel* chan, std::string new_flags);
+;
 
 
 	int							nick(Client *client, token_vector tokens);
