@@ -20,11 +20,14 @@ class Channel
 
 		Channel &			operator=( Channel const & rhs );
 
+		std::string				flags;
+
 		// accessors
 		std::string	get_name() const;
 		std::string	get_topic() const;
 		int			get_mode() const;
 		Client*		get_operator() const;
+		std::string	get_flags() const ;
 		void		set_operator(Client *client);
 		
 		// methods

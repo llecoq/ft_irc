@@ -1,5 +1,8 @@
 #include "ExecutionManager.hpp"
 
+#define REMOVE '-'
+#define ADD '+'
+
 int	ExecutionManager::_err_mode_handling(Client *client, token_vector tokens) {
 	std::string cmd = "MODE";
 
@@ -15,9 +18,59 @@ int	ExecutionManager::_err_mode_handling(Client *client, token_vector tokens) {
 		return _send_rpl(client, ERR_NOTONCHANNEL(tokens[1]), 403);
 	else if (client != chan->get_operator())
 		return _send_rpl(client, ERR_CHANOPRIVSNEEDED(tokens[1]), 482);
+
+	// parsing
+	std::string valid_modes("+-it");
+	for (size_t i = 0; i < tokens[2].size(); ++i) {
+		if (valid_modes.find(tokens[2][i]) == std::string::npos) {
+			return _send_rpl(client, ERR_UNKNOWNMODE((tokens[2].substr(i, 1))), 472);
+		}
+	}
 	return SUCCESS;
 }
 
+std::string	ExecutionManager::_add_flags(Channel* chan, std::string new_flags) {
+
+	std::string set;
+	size_t start = 0;
+	size_t end = 0;
+
+	while ((start = new_flags.find_first_not_of(ADD, end)) != std::string::npos) {
+		end = new_flags.find(ADD, start);
+		for (size_t i = start; (i < new_flags.size() && new_flags[i] != REMOVE); ++i) {
+			char to_add = new_flags[i];
+			if (chan->flags.find(to_add) == std::string::npos) {
+				chan->flags.append(1, to_add);
+				if (set.empty())
+					set.append(1, ADD);
+				set.append(1, to_add);
+			}
+		}
+	}
+	return set;
+}
+
+std::string ExecutionManager::_remove_flags(Channel* chan, std::string new_flags) {
+
+	std::string set;
+	size_t start = 0;
+	size_t end = new_flags.find_first_of(REMOVE, start);
+
+	while ((start = new_flags.find_first_not_of(REMOVE, end)) != std::string::npos) {
+		end = new_flags.find(REMOVE, start);
+		for (size_t i = start; (i < new_flags.size() && new_flags[i] != ADD); ++i) {
+			char to_rmv = new_flags[i];
+			size_t pos_to_rmv = chan->flags.find(to_rmv);
+			if (pos_to_rmv != std::string::npos) {
+				chan->flags.erase(pos_to_rmv, 1);
+				if (set.empty())
+					set.append(1, REMOVE);
+				set.append(1, to_rmv);
+			}
+		}
+	}
+	return set;
+}
 
 int	ExecutionManager::mode(Client *client, token_vector tokens) {
 
@@ -25,10 +78,18 @@ int	ExecutionManager::mode(Client *client, token_vector tokens) {
 	if (ret != SUCCESS)
 		return ret;
 
-	// check and store correctly the flags
+	Channel::iterator chan_it = _channel_book.find(tokens[1]);
+	Channel* chan = chan_it->second;
 
-	return ret;
+	std::string ret_add = _add_flags(chan, tokens[2]);
+	std::string ret_rmv = _remove_flags(chan, tokens[2]);
+
+	if (!ret_add.empty() || !ret_rmv.empty())
+		return _send_rpl(client, RPL_CHANNELMODEIS(chan->get_name(), ret_add, ret_rmv), 324);
+	return SUCCESS;
 }
+// return SUCCESS if no flag was removed or added
+
 
 // // RFC 1459
 // ------ USER MODES <nickname> {+/- o|i|w|s}

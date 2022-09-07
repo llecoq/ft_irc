@@ -4,9 +4,9 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel() {}
+Channel::Channel() : flags(), _name() {}
 
-Channel::Channel(std::string name) : _name(name){(void)_name;}
+Channel::Channel(std::string name) : flags(), _name(name) {(void)_name;}
 
 Channel::Channel( const Channel & src )
 {
