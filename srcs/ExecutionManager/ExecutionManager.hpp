@@ -63,7 +63,8 @@ private:
 	bool						_is_valid_mode_param(char c);
 	std::string					_add_flags(Channel* chan, std::string new_flags);
 	std::string					_remove_flags(Channel* chan, std::string new_flags);
-;
+	bool						_is_add_rmv(char c);
+
 
 
 	int							nick(Client *client, token_vector tokens);
@@ -76,7 +77,7 @@ private:
 	int							privmsg(Client *client, token_vector tokens);
 	int							notice(Client *client, token_vector tokens);
 	int							pass(Client *client, token_vector tokens);
- };
+};
 
 std::ostream					&operator<<(std::ostream &o, ExecutionManager const &i);
 
