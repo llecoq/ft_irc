@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/03 11:51:17 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/09 10:55:52 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 
 // ERROR REPLIES 1459
-#define RPL_CHANNELMODEIS(channel, mode, mode_params)	"324 " + channel + " " + mode + mode_params + CRLF
 #define ERR_NOSUCHNICK(nickname)						"401 " + nickname + " :No such nick/channel" + CRLF
 #define ERR_NOSUCHCHANNEL(channel)						"403 " + channel + " :No such channel" + CRLF
 #define ERR_UNKNOWNCOMMAND(command)						"421 " + command + " :Unknown command" + CRLF
@@ -37,17 +36,15 @@
 
 // COMMAND RESPONSES RFC_2812
 #define RPL_WELCOME(nickname)							"001 " + nickname + " :Bijour " + nickname + CRLF
+#define RPL_CHANNELMODEIS(channel, mode, mode_params)	"324 " + channel + " " + mode + mode_params + CRLF
 #define RPL_NOTOPIC(nickname, channel) 					"331 " + nickname + " " + channel + " :No topic is set" + CRLF
 #define RPL_TOPIC(nickname, channel, topic) 			"332 " + nickname + " " + channel + " :" + topic + CRLF
-#define RPL_NAMREPLY(channel, nickname)					"353 " + nickname + " " + channel + " :" + nickname + CRLF
+#define RPL_NAMREPLY(channel, nickname, members)		"353 " + nickname + " " + channel + " :" + members + CRLF
 #define RPL_ENDOFNAMES(channel, nickname)				"366 " + nickname + " " + channel + " :End of /NAMES list" + CRLF
 
-    //    473    ERR_INVITEONLYCHAN
-            //   "<channel> :Cannot join channel (+i)"
-
 // MSG_BUILDER
-#define MSG_JOIN(channel, nickname)				":" + nickname + " JOIN " + channel + CRLF
-
+#define MSG_JOIN(channel, nickname)					":" + nickname + " JOIN " + channel + CRLF
+#define MSG_PART(channel, nickname, part_msg)		":" + nickname + " PART " + channel +  " " + part_msg + CRLF
 
 // COMMAND RESPONSES RFC_1459
 

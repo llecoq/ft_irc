@@ -67,6 +67,7 @@ int	ExecutionManager::run(Client* client) {
 	if (client->get_input().empty())
 		return ret;
 
+	std::cout << client->get_input() << std::endl;
 	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n");
 	//for multiple \n
 	client->clear_recv_data();
