@@ -7,21 +7,12 @@ int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens)
 	std::string cmd("PRIVMSG");
 	std::string msg;
 
-	if (tokens.size() == 1) {
-		msg = ERR_NORECIPIENT(cmd);
-		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		return 411;
-	}
-	else if (tokens.size() == 2) {
-		msg = ERR_NEEDMOREPARAMS(cmd); // or ERR_NOTEXTTOSEND
-		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		return 461;
-	}
-	if (client->get_authentication() == false) {
-		msg = ERR_NOTREGISTERED;
-		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		return 451;
-	}
+	if (tokens.size() == 1)
+		return _send_rpl(client, ERR_NORECIPIENT(cmd), 411);
+	else if (tokens.size() == 2)
+		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
+	if (client->get_authentication() == false)
+		return _send_rpl(client,ERR_NOTREGISTERED, 451);
 	return SUCCESS;
 }
 
@@ -53,11 +44,8 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	if (chan->user_is_in_channel(client) == false) {
-		std::string msg = ERR_CANNOTSENDTOCHAN(chan_it->first);
-		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		return 404;
-	}
+	if (chan->user_is_in_channel(client) == false)
+		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
 	std::string msg = RPL(dest, text);
 	chan->broadcast(client, msg);
 	return SUCCESS;
@@ -79,11 +67,8 @@ int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 	else if (chan_it != _channel_book.end()) {
 		ret = _msg_to_channel(client, tokens, chan_it);
 	}
-	else {
-		std::string msg = ERR_NOSUCHNICK(tokens[1]);
-		send(client->get_fd(), msg.c_str(), msg.size(), 0);
-		ret = 401;
-	}
+	else
+		_send_rpl(client, ERR_NOSUCHNICK(tokens[1]), 401);
 	return ret;
 }
 
