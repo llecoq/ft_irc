@@ -59,7 +59,7 @@ class Server
 		pollfd_vector			_pollfd;
 		t_server_info			_server_info;					
 
-		ExecutionManager			_exec;
+		ExecutionManager		_exec;
 
 		// init()
 		void				_get_address_info();
@@ -75,7 +75,6 @@ class Server
 		void				_process_data(pollfd_iterator it);
 		void				_close_connection(pollfd_iterator it);
 		// error and log management
-		void				_error_exit(int error, std::string error_msg);
 		void				_log(std::string log_msg);
 		void				_err_log(std::string err_msg);
 		void				_close_all_fds();

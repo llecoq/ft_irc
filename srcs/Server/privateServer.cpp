@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/03 11:54:40 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/07 14:24:11 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,6 @@
 
 # define BACKLOG 	10 
 # define NO_TIMEOUT -1
-
-enum	e_errors
-{
-	PERROR,
-	NO_PERROR,
-	ERR_BIND = -2,
-	ERR_SOCKET = -3,
-	ERR_SETSOCKOPT = -4
-};
 
 /*
 ** ----------------------------------- INIT -----------------------------------
@@ -47,14 +38,7 @@ void	Server::_get_address_info()
 
 	status = getaddrinfo(NULL, _server_info.port, &hints, &_server_info.servinfo);
 	if (status != 0)
-	{
-		// throw serverExceptions("getaddrinfo error: ", gai_strerror(status));
-		std::string	err_msg("getaddrinfo error: ");
-		
-		err_msg.append(gai_strerror(status));
-		_err_log(err_msg);
-		exit(EXIT_FAILURE);
-	}
+		throw ServerExceptions::err_addrinfo(gai_strerror(status));
 }
 
 void	Server::_get_listening_socket()
@@ -72,7 +56,7 @@ void	Server::_get_listening_socket()
 	}
 	freeaddrinfo(_server_info.servinfo);
 	if (ptr == NULL)
-		_error_exit(NO_PERROR, "Couldn't create socket and bind to the port. Server shutting down.");
+		throw ServerExceptions::err_socket();
 }
 
 int	Server::_create_and_bind_socket(addrinfo* ptr)
@@ -84,7 +68,7 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 	{
 		perror("Server: socket");
 		_err_log("Trying to create and bind another socket...");
-		return ERR_SOCKET;
+		return FAILED;
 	}
 	if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int)) == FAILED)
 	{
@@ -96,7 +80,7 @@ int	Server::_create_and_bind_socket(addrinfo* ptr)
 		close(socket_fd);
 		perror("Server: bind");
 		_err_log("Trying to create and bind another socket...");
-		return ERR_BIND;
+		return FAILED;
 	}
 	_server_info.listening_socket = socket_fd;
 	return socket_fd;
@@ -112,10 +96,9 @@ void	Server::_add_socket_to_pollfd(int socket_fd)
 void	Server::_listen_for_incoming_connections()
 {
 	std::string		log_msg("Server: waiting for connections on port ");
-	std::string		err_msg("Server: listen ");
 
-	if (listen(_server_info.listening_socket, BACKLOG) == -1)
-		_error_exit(NO_PERROR, err_msg.append(strerror(errno)));
+	if (listen(_server_info.listening_socket, BACKLOG) == FAILED)
+		throw ServerExceptions::err_listen(strerror(errno));
 	else
 	{
 		log_msg.append(_server_info.port);
@@ -127,12 +110,6 @@ void	Server::_listen_for_incoming_connections()
 ** ----------------------------------- RUN -----------------------------------
 */
 
-void	Server::_signal_handler(int signum)
-{
-	if (signum == SIGINT)
-		throw serverExceptions("Server: ", "shutting down...");
-}
-
 void	Server::_poll_events()
 {
 	int				pfds;
@@ -140,7 +117,7 @@ void	Server::_poll_events()
 	signal(SIGINT, _signal_handler);
 	pfds = poll(_pollfd.data(), _pollfd.size(), NO_TIMEOUT);
 	if (pfds == FAILED)
-		_error_exit(PERROR, "Server: poll");
+		throw ServerExceptions::err_poll(strerror(errno));
 }
 
 int	Server::_find_event(struct pollfd current_pollfd)
@@ -179,8 +156,6 @@ void	Server::_accept_pending_connection()
 		_add_socket_to_pollfd(new_fd);
 		ipstr = _sockaddr_to_string(client_addr);
 		_exec.init_client(new_fd, ipstr);
-		// ExecutionManager::exec.init_client(fd, ipstr);
-		// _add_client_to_book(new_fd, ipstr);
 	}
 	else
 		perror("Server: accept");
@@ -223,15 +198,6 @@ void	Server::_close_connection(pollfd_iterator it)
 /*
 ** --------------------------------- ERROR / LOG ---------------------------------
 */
-
-void	Server::_error_exit(int error, std::string error_msg)
-{
-	if (error == PERROR)
-		perror(error_msg.c_str());
-	else if (error_msg.empty() != 1)
-		_err_log(error_msg);
-	exit(EXIT_FAILURE);
-}
 
 void	Server::_log(std::string log_msg)
 {

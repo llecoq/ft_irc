@@ -1,5 +1,7 @@
 #include "Server.hpp"
 
+static volatile bool	server_running = true;
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -21,6 +23,7 @@ Server::Server(const char* port, const char* password)
 
 Server::~Server()
 {
+	std::cout << "Server shutting down..." << std::endl;
 	_close_all_fds();
 }
 
@@ -37,7 +40,7 @@ void	Server::init()
 
 void	Server::run()
 {
-	while (1) 					// main loop
+	while (server_running == true) 					// main loop
 	{
 		_poll_events(); 		// wait for events
 		for (pollfd_iterator it = _pollfd.begin(); it < _pollfd.end(); it++)
@@ -61,4 +64,10 @@ void	Server::run()
 			}
 		}	
 	}
+}
+
+void	Server::_signal_handler(int signum)
+{
+	if (signum == SIGINT)
+		server_running = false;
 }
