@@ -4,9 +4,9 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Channel::Channel() : flags(), _name() {}
+Channel::Channel() : _name() {}
 
-Channel::Channel(std::string name) : flags(), _name(name) {(void)_name;}
+Channel::Channel(std::string name) : _name(name) {(void)_name;}
 
 Channel::Channel( const Channel & src )
 {
@@ -83,9 +83,9 @@ std::string	Channel::get_topic() const
 	return _topic;
 }
 
-int	Channel::get_mode() const
+std::string	Channel::get_modes() const
 {
-	return _mode;
+	return _modes;
 }
 
 Client*	Channel::get_operator() const
@@ -98,4 +98,11 @@ void	Channel::set_operator(Client *client)
 	_operator = client;
 }
 
+void	Channel::set_modes(char c, size_t pos, char add_rmv)
+{
+	if (add_rmv == '+')
+		_modes.append(1, c);
+	else if (add_rmv == '-')
+		_modes.erase(pos, 1);
+}
 /* ************************************************************************** */

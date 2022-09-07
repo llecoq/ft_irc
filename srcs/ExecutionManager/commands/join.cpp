@@ -65,8 +65,8 @@ static int	find_channel(Channel::map &channel_book, std::string &channel_name, C
 		return CHANNEL_NOT_FOUND;
 	if (channel->user_is_in_channel(client) == true)
 		return USER_IS_IN_CHAN;
-	if (channel->get_mode() == INVITE_ONLY)
-		return INVITE_ONLY;
+	// if (channel->get_modes() == INVITE_ONLY)
+	// 	return INVITE_ONLY;
 	return CHANNEL_FOUND;
 }
 

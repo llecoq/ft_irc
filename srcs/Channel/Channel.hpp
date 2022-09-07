@@ -20,15 +20,13 @@ class Channel
 
 		Channel &			operator=( Channel const & rhs );
 
-		std::string				flags;
-
 		// accessors
 		std::string	get_name() const;
 		std::string	get_topic() const;
-		int			get_mode() const;
+		std::string	get_modes() const;
 		Client*		get_operator() const;
-		std::string	get_flags() const ;
 		void		set_operator(Client *client);
+		void		set_modes(char c, size_t pos, char add_rmv);
 		
 		// methods
 		void		broadcast(Client *client, std::string msg);
@@ -41,7 +39,7 @@ class Channel
 		
 		std::string				_name;
 		std::string				_topic;
-		int						_mode;
+		std::string				_modes;
 		Client					*_operator;
 		std::vector<Client *>	_members;
 

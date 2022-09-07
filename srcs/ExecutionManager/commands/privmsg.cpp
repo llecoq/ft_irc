@@ -1,10 +1,10 @@
 #include "ExecutionManager.hpp"
 
-#define RPL(nickname, msg)		"PRIVMSG " + nickname + " :" + msg + CRLF
+#define CMD	"PRIVMSG"
+#define RPL(rpl, nickname, msg)		rpl + " " + nickname + " :" + msg + CRLF
 
-int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens) {
+int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens, std::string cmd) {
 
-	std::string cmd("PRIVMSG");
 	std::string msg;
 
 	if (tokens.size() == 1)
@@ -26,18 +26,18 @@ std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
 	return msg;
 }
 
-int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd) {
+int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd, std::string rpl) {
 	std::string dest = tokens[1];
 	std::string text = tokens[2];
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	std::string msg = RPL(dest, text);
+	std::string msg = RPL(rpl, dest, text);
 	send(dest_fd, msg.c_str(), msg.size(), 0);
 	return SUCCESS;
 }
 
-int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it) {
+int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it, std::string rpl) {
 	std::string dest = tokens[1];
 	std::string text = tokens[2];
 	Channel* chan = chan_it->second;
@@ -46,7 +46,7 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 		text = _assemble_msg(tokens);
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
-	std::string msg = RPL(dest, text);
+	std::string msg = RPL(rpl, dest, text);
 	chan->broadcast(client, msg);
 	return SUCCESS;
 }
@@ -54,7 +54,7 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 
-	int ret = _err_privmsg_handling(client, tokens);
+	int ret = _err_privmsg_handling(client, tokens, CMD);
 	if (ret != SUCCESS)
 		return ret;
 
@@ -62,10 +62,10 @@ int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 	Channel::iterator chan_it = _channel_book.find(tokens[1]);
 
 	if (dest_fd) {
-		ret = _msg_to_nickname(tokens, dest_fd);
+		ret = _msg_to_nickname(tokens, dest_fd, CMD);
 	}
 	else if (chan_it != _channel_book.end()) {
-		ret = _msg_to_channel(client, tokens, chan_it);
+		ret = _msg_to_channel(client, tokens, chan_it, CMD);
 	}
 	else
 		_send_rpl(client, ERR_NOSUCHNICK(tokens[1]), 401);

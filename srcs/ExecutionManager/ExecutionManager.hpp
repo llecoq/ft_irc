@@ -52,11 +52,11 @@ private:
 									Client *client, std::string msg);
 
 	// privmsg
-	int							_err_privmsg_handling(Client *client, token_vector tokens);
+	int							_err_privmsg_handling(Client *client, token_vector tokens, std::string rpl);
 	std::string					_assemble_msg(token_vector token_msg);
-	int							_msg_to_nickname(token_vector tokens, int dest_fd);
+	int							_msg_to_nickname(token_vector tokens, int dest_fd, std::string rpl);
 	int							_msg_to_channel(Client *client, token_vector tokens,\
-									Channel::iterator chan_it);
+									Channel::iterator chan_it, std::string rpl);
 
 	// mode
 	int							_err_mode_handling(Client *client, token_vector tokens);
@@ -64,7 +64,6 @@ private:
 	std::string					_add_flags(Channel* chan, std::string new_flags);
 	std::string					_remove_flags(Channel* chan, std::string new_flags);
 	bool						_is_add_rmv(char c);
-
 
 
 	int							nick(Client *client, token_vector tokens);

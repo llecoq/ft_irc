@@ -45,8 +45,8 @@ std::string	ExecutionManager::_add_flags(Channel* chan, std::string new_flags) {
 		end = new_flags.find(ADD, start);
 		for (size_t i = start; (i < new_flags.size() && !_is_add_rmv(new_flags[i])); ++i) {
 			char to_add = new_flags[i];
-			if (chan->flags.find(to_add) == std::string::npos) {
-				chan->flags.append(1, to_add);
+			if ((chan->get_modes()).find(to_add) == std::string::npos) {
+				chan->set_modes(to_add, 0, ADD);
 				if (set.empty())
 					set.append(1, ADD);
 				set.append(1, to_add);
@@ -66,9 +66,9 @@ std::string ExecutionManager::_remove_flags(Channel* chan, std::string new_flags
 		end = new_flags.find(REMOVE, start);
 		for (size_t i = start; (i < new_flags.size() && !_is_add_rmv(new_flags[i])); ++i) {
 			char to_rmv = new_flags[i];
-			size_t pos_to_rmv = chan->flags.find(to_rmv);
+			size_t pos_to_rmv = (chan->get_modes()).find(to_rmv);
 			if (pos_to_rmv != std::string::npos) {
-				chan->flags.erase(pos_to_rmv, 1);
+				chan->set_modes(to_rmv, pos_to_rmv, REMOVE);
 				if (set.empty())
 					set.append(1, REMOVE);
 				set.append(1, to_rmv);
