@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/08 16:57:39 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/08 18:56:52 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@
 #define ERR_UNKNOWNCOMMAND(command)					"421 " + command + " :Unknown command" + CRLF
 
 // ERROR REPLIES 2812
+#define ERR_NOSUCHCHANNEL(channel)					"403 " + channel + " :No such channel" + CRLF
 #define ERR_CANNOTSENDTOCHAN(channel)				"404 " + channel + " :Cannot send to channel" + CRLF
 #define ERR_NORECIPIENT(command)					"411 :No recipient given " + command + CRLF
+#define ERR_NOTONCHANNEL(channel)					"442 " + channel + " :You're not on that channel" + CRLF
 #define ERR_USERONCHANNEL(nickname, channel)		"443 " + nickname + " " + channel + " :is already on channel" + CRLF
 #define ERR_NOTREGISTERED							"451 :You have not registrered\r\n"
 #define ERR_NEEDMOREPARAMS(command)					"461 " + command + " :Not enough parameters" + CRLF
@@ -37,12 +39,9 @@
 #define RPL_NAMREPLY(channel, nickname, members)	"353 " + nickname + " " + channel + " :" + members + CRLF
 #define RPL_ENDOFNAMES(channel, nickname)			"366 " + nickname + " " + channel + " :End of /NAMES list" + CRLF
 
-    //    473    ERR_INVITEONLYCHAN
-            //   "<channel> :Cannot join channel (+i)"
-
 // MSG_BUILDER
 #define MSG_JOIN(channel, nickname)					":" + nickname + " JOIN " + channel + CRLF
-#define MSG_PART(channel, nickname, message)		":" + nickname + " PART " + channel +  " :" + message + CRLF
+#define MSG_PART(channel, nickname, part_msg)		":" + nickname + " PART " + channel +  " " + part_msg + CRLF
 
 
 // COMMAND RESPONSES RFC_1459

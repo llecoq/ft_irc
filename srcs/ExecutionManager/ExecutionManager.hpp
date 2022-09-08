@@ -67,6 +67,7 @@ class ExecutionManager
 		int					pass(Client *client, token_vector tokens);
 		int					cap(Client *client, token_vector tokens);
 		int					part(Client *client, token_vector tokens);
+		int					ping(Client *client, token_vector tokens);
 
 };
 
