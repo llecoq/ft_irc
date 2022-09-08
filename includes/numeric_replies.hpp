@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/07 15:31:25 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/08 16:57:39 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 
 // MSG_BUILDER
 #define MSG_JOIN(channel, nickname)					":" + nickname + " JOIN " + channel + CRLF
+#define MSG_PART(channel, nickname, message)		":" + nickname + " PART " + channel +  " :" + message + CRLF
 
 
 // COMMAND RESPONSES RFC_1459

@@ -66,6 +66,7 @@ class ExecutionManager
 		int					notice(Client *client, token_vector tokens);
 		int					pass(Client *client, token_vector tokens);
 		int					cap(Client *client, token_vector tokens);
+		int					part(Client *client, token_vector tokens);
 
 };
 
