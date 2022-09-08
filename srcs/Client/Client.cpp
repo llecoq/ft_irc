@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/07 10:17:18 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/08 14:21:59 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,15 @@ void	Client::join_channel(Channel *channel)
 	_joined_channels.insert(Channel::pair(channel->get_name(), channel));
 	channel->add_member(this);
 }
+
+void	Client::leave_joined_channels()
+{
+	Channel::iterator it;
+
+	for (it = _joined_channels.begin(); it != _joined_channels.end(); it++)
+		it->second->erase_member(this);
+}
+
 
 void	Client::clear_recv_data()
 {

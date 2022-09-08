@@ -34,6 +34,7 @@ class ExecutionManager
 	
 //--------------------------------- METHODS ----------------------------------
 		void						init_client(int client_fd, char* ipstr);
+		void						erase_client(int fd);
 		int							run(Client *client);
 
 	private:
@@ -64,6 +65,7 @@ class ExecutionManager
 		int					privmsg(Client *client, token_vector tokens);
 		int					notice(Client *client, token_vector tokens);
 		int					pass(Client *client, token_vector tokens);
+		int					cap(Client *client, token_vector tokens);
 
 };
 
