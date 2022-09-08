@@ -61,6 +61,20 @@ void	Channel::add_member(Client *client)
 	_members.push_back(client);
 }
 
+void	Channel::erase_member(Client *client)
+{
+	std::vector<Client *>::iterator	it;
+
+	for (it = _members.begin(); it != _members.end(); it++)
+	{
+		if (*it == client)
+		{
+			_members.erase(it);
+			return ;
+		}
+	}
+}
+
 bool	Channel::user_is_in_channel(Client *client)
 {
 	for (size_t i = 0; i < _members.size(); i++)

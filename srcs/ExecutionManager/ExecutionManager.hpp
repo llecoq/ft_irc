@@ -34,6 +34,7 @@ public:
 	//--------------------------------- METHODS ----------------------------------
 	void						init_client(int client_fd, char *ipstr);
 	int							run(Client *client);
+	void						erase_client(int fd);
 
 private:
 	ExecutionManager();
@@ -76,6 +77,8 @@ private:
 	int							privmsg(Client *client, token_vector tokens);
 	int							notice(Client *client, token_vector tokens);
 	int							pass(Client *client, token_vector tokens);
+	int							cap(Client *client, token_vector tokens);
+
 };
 
 std::ostream					&operator<<(std::ostream &o, ExecutionManager const &i);

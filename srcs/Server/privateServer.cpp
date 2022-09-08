@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/07 14:49:02 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/08 14:10:19 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,9 +183,12 @@ void	Server::_process_data(pollfd_iterator it)
 
 void	Server::_close_connection(pollfd_iterator it)
 {
-	std::cout << "Connection closed by client " << it.base()->fd << std::endl;
-	close(it.base()->fd);
-	_pollfd.erase(it);
+	Client *client = _exec.get_client(it->fd);
+	
+	client->leave_joined_channels();
+	_exec.erase_client(it->fd);
+	close(it->fd);
+	std::cout << "Connection closed by client " << it->fd << std::endl;
 }
 
 /*

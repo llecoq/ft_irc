@@ -15,6 +15,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	_command_book["PRIVMSG"] = &ExecutionManager::privmsg;
 	_command_book["NOTICE"] = &ExecutionManager::notice;
 	_command_book["PASS"] = &ExecutionManager::pass;
+	_command_book["CAP"] = &ExecutionManager::cap;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -58,6 +59,10 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 	
 	_client_book.insert(Client::pair(fd, new_client));
 	new_client->set_ipstr(ipstr);
+}
+
+void	ExecutionManager::erase_client(int fd){
+	_client_book.erase(fd);
 }
 
 int	ExecutionManager::run(Client* client) {
