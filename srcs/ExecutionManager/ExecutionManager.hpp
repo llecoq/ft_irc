@@ -14,70 +14,60 @@ class Client;
 class ExecutionManager
 {
 
-public:
-	typedef std::vector<std::string>										token_vector;
-	typedef token_vector::iterator											token_iterator;
-	typedef int (ExecutionManager::*pf)(Client *, token_vector);
-	typedef std::map<std::string, pf>										cmd_map;
-	typedef cmd_map::iterator												cmd_iterator;
+	public:
+		typedef std::vector<std::string>										token_vector;
+		typedef token_vector::iterator											token_iterator;
+		typedef int (ExecutionManager::*pf)(Client *, token_vector);
+		typedef std::map<std::string, pf>										cmd_map;
+		typedef cmd_map::iterator												cmd_iterator;
 
-	ExecutionManager(std::string password);
-	ExecutionManager(ExecutionManager const &src);
-	~ExecutionManager();
+		ExecutionManager(std::string password);
+		ExecutionManager(ExecutionManager const & src);
+		~ExecutionManager();
 
-	ExecutionManager			&operator=(ExecutionManager const &rhs);
-
-	//--------------------------------- ACCESSORS --------------------------------
-
-	Client						*get_client(int fd) const;
-
-	//--------------------------------- METHODS ----------------------------------
-	void						init_client(int client_fd, char *ipstr);
-	int							run(Client *client);
-	void						erase_client(int fd);
-
-private:
-	ExecutionManager();
-
-	cmd_map						_command_book;
-	Client::map					_client_book;
-	Channel::map				_channel_book;
-	std::string					_password;
-
-	token_vector				_split(std::string const &buf, std::string sep);
-	int							_find_fd_client_by_name(std::string nickname);
-	int							_send_rpl(Client* client, std::string msg, int code);
-
-	// join
-	int							_send_channel_infos(std::string channel_name,\
-									Client *client, std::string msg);
-
-	// privmsg
-	int							_err_privmsg_handling(Client *client, token_vector tokens, std::string rpl);
-	std::string					_assemble_msg(token_vector token_msg);
-	int							_msg_to_nickname(token_vector tokens, int dest_fd, std::string rpl);
-	int							_msg_to_channel(Client *client, token_vector tokens,\
-									Channel::iterator chan_it, std::string rpl);
-
-	// mode
-	int							_err_mode_handling(Client *client, token_vector tokens);
-	bool						_is_valid_mode_param(char c);
-	std::string					_add_flags(Channel* chan, std::string new_flags);
-	std::string					_remove_flags(Channel* chan, std::string new_flags);
-	bool						_is_add_rmv(char c);
+		ExecutionManager			&operator=( ExecutionManager const & rhs );
 
 
-	int							nick(Client *client, token_vector tokens);
-	int							user(Client *client, token_vector tokens);
-	int							join(Client *client, token_vector tokens);
-	int							kick(Client *client, token_vector tokens);
-	int							invite(Client *client, token_vector tokens);
-	int							topic(Client *client, token_vector tokens);
-	int							mode(Client *client, token_vector tokens);
-	int							privmsg(Client *client, token_vector tokens);
-	int							notice(Client *client, token_vector tokens);
-	int							pass(Client *client, token_vector tokens);
-	int							cap(Client *client, token_vector tokens);
+//--------------------------------- ACCESSORS --------------------------------
+
+		Client*						get_client(int fd) const;
+	
+//--------------------------------- METHODS ----------------------------------
+		void						init_client(int client_fd, char* ipstr);
+		void						erase_client(int fd);
+		int							run(Client *client);
+
+	private:
+
+		ExecutionManager();
+
+		cmd_map				_command_book;
+		Client::map			_client_book;
+		Channel::map		_channel_book;
+		std::string			_password;
+
+		token_vector		_split(std::string const &buf, std::string sep);
+		int					_send_channel_infos(std::string channel_name, Client *client, std::string msg);
+		int					_send_rpl(Client *client, std::string msg, int numeric);
+		int					_find_fd_client_by_name(std::string nickname);
+		int					_err_msg(Client *client, token_vector tokens);
+		std::string			_assemble_msg(token_vector token_msg);
+		int					_msg_to_nickname(token_vector tokens, int dest_fd);
+		int					_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it);
+	
+		int					nick(Client *client, token_vector tokens);
+		int					user(Client *client, token_vector tokens);
+		int					join(Client *client, token_vector tokens);
+		int					kick(Client *client, token_vector tokens);
+		int					invite(Client *client, token_vector tokens);
+		int					topic(Client *client, token_vector tokens);
+		int					mode(Client *client, token_vector tokens);
+		int					privmsg(Client *client, token_vector tokens);
+		int					notice(Client *client, token_vector tokens);
+		int					pass(Client *client, token_vector tokens);
+		int					cap(Client *client, token_vector tokens);
+		int					part(Client *client, token_vector tokens);
+		int					ping(Client *client, token_vector tokens);
 
 };
 

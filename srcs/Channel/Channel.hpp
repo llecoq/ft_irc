@@ -31,7 +31,7 @@ class Channel
 		// methods
 		void		broadcast(Client *client, std::string msg);
 		void		add_member(Client *client);
-		void		erase_member(Client *client, std::string message);
+		void		erase_member(Client *client, std::string part_msg);
 		bool		user_is_in_channel(Client *client);
 		std::string	list_members();
 

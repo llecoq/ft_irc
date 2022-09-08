@@ -61,7 +61,7 @@ void	Channel::add_member(Client *client)
 	_members.push_back(client);
 }
 
-void	Channel::erase_member(Client *client, std::string message)
+void	Channel::erase_member(Client *client, std::string part_msg)
 {
 	std::vector<Client *>::iterator	it;
 
@@ -69,8 +69,8 @@ void	Channel::erase_member(Client *client, std::string message)
 	{
 		if (*it == client)
 		{
+			broadcast(NULL, MSG_PART(_name, client->get_nickname(), part_msg));
 			_members.erase(it);
-			broadcast(NULL, MSG_PART(_name, client->get_nickname(), message));
 			return ;
 		}
 	}
