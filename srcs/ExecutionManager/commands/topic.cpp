@@ -3,12 +3,13 @@
 
 int ExecutionManager::topic(Client *client, token_vector tokens) {
 	std::string	cmd("TOPIC");
-	Channel::iterator chan_iterator = _channel_book.find(tokens[1]);
 
 	if (client->get_authentication() == false)
 		return _send_rpl(client, ERR_NOTREGISTERED, 451);
 	if (tokens.size() < 2)
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
+		
+	Channel::iterator chan_iterator = _channel_book.find(tokens[1]);
 	if (chan_iterator == _channel_book.end())
 		return _send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 403);
 

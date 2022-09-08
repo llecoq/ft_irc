@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ariane <ariane@student.42.fr>              +#+  +:+       +#+        */
+/*   By: abonnel <abonnel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/06 16:56:30 by ariane           ###   ########.fr       */
+/*   Updated: 2022/09/08 14:03:41 by abonnel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 #define ERR_BADCHANNAME(channel)				"479 " + channel + " :Invalid channel name" + CRLF
 #define ERR_NOSUCHCHANNEL(channel)				"403 " + channel + " :No such channel" + CRLF
 #define ERR_NOTONCHANNEL(channel)				"442 " + channel + " :You're not on that channel" + CRLF
+#define ERR_CHANOPRIVSNEEDED(channel)			"482 " + channel + " :You're not channel operator" + CRLF
+#define ERR_USERNOTINCHANNEL(nickname, channel)	"441 " + nickname + " " + channel + " :They aren't on that channel" + CRLF
 
 // COMMAND RESPONSES RFC_2812
 #define RPL_WELCOME(nickname)					"001 " + nickname + " :Bijour " + nickname + CRLF

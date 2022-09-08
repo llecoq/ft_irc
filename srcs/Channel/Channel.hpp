@@ -32,6 +32,7 @@ class Channel
 		void		broadcast(Client *client, std::string msg);
 		void		add_member(Client *client);
 		bool		user_is_in_channel(Client *client);
+		bool		user_is_in_channel_by_name(std::string client_name);
 
 	private:
 		

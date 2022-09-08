@@ -69,6 +69,14 @@ bool	Channel::user_is_in_channel(Client *client)
 	return false;	
 }
 
+bool	Channel::user_is_in_channel_by_name(std::string client_name) {
+	for (size_t i = 0; i < _members.size(); i++)
+		if (_members[i]->get_nickname() == client_name)
+			return true;
+	return false;	
+};
+
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */

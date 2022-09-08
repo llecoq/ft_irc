@@ -138,4 +138,5 @@ int	ExecutionManager::_find_fd_client_by_name(std::string nickname) {
 	return ret;
 }
 
+
 //----------------------------------------------------------------------------
