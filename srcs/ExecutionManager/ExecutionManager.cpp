@@ -16,6 +16,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	_command_book["NOTICE"] = &ExecutionManager::notice;
 	_command_book["PASS"] = &ExecutionManager::pass;
 	_command_book["CAP"] = &ExecutionManager::cap;
+	_command_book["PART"] = &ExecutionManager::part;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {

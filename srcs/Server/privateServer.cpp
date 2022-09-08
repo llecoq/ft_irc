@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/08 14:10:19 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/08 17:05:10 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ void	Server::_close_connection(pollfd_iterator it)
 {
 	Client *client = _exec.get_client(it->fd);
 	
-	client->leave_joined_channels();
+	client->leave_joined_channels("Connection lost");
 	_exec.erase_client(it->fd);
 	close(it->fd);
 	std::cout << "Connection closed by client " << it->fd << std::endl;
