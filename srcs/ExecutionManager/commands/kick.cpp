@@ -1,7 +1,7 @@
 #include "ExecutionManager.hpp"
 
 //KICK <channel> <client> :[<message>]
-//ATTENTION there can be several channels / clients and in that case there CANNOT be a kick message
+//ATTENTION there can be several channels / clients 
 //soit 
 	//KICK <channel> <client>,<client>,<client>,<client>
 //soit 3 channels->3 users
@@ -29,7 +29,7 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 		return (_send_rpl(client, ERR_CHANOPRIVSNEEDED(channel->get_name()), 482));
 	if (channel->user_is_in_channel_by_name(tokens[2]) == false)
 		return (_send_rpl(client, ERR_USERNOTINCHANNEL(tokens[2],channel->get_name()), 441));
-	//if I am kicking myself --> NO
+	//if I am kicking myself --> OK
 
 
 	// [<message>]
@@ -39,6 +39,10 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 	//Remove channel from client._joined_channels
 
 	//SEND broadcast msg to the entire channel to let them now target has been kicked
+	//ex : airano has kicked abonnel (airano)
+	//:WiZ KICK #Finnish John --> VOIR MSG_ dans numeric_replies
+	//Avec comment : airano has kicked abonnel (t trop une merde)
+	//from the kicking user : :airano!~arianus@freenode-ts4.94b.uj4jb0.IP KICK #chaninu abonnel :t trop une merde
 	//send msg to target to let him know he has been kicked
 
 	return SUCCESS;
