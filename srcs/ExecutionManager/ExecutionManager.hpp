@@ -47,13 +47,26 @@ class ExecutionManager
 		std::string			_password;
 
 		token_vector		_split(std::string const &buf, std::string sep);
-		int					_send_channel_infos(std::string channel_name, Client *client, std::string msg);
-		int					_send_rpl(Client *client, std::string msg, int numeric);
 		int					_find_fd_client_by_name(std::string nickname);
-		int					_err_msg(Client *client, token_vector tokens);
+		int					_send_rpl(Client* client, std::string msg, int code);
+
+		// join
+		int					_send_channel_infos(std::string channel_name,\
+										Client *client, std::string msg);
+
+		// privmsg
+		int					_err_privmsg_handling(Client *client, token_vector tokens, std::string rpl);
 		std::string			_assemble_msg(token_vector token_msg);
-		int					_msg_to_nickname(token_vector tokens, int dest_fd);
-		int					_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it);
+		int					_msg_to_nickname(token_vector tokens, int dest_fd, std::string rpl);
+		int					_msg_to_channel(Client *client, token_vector tokens,\
+								Channel::iterator chan_it, std::string rpl);
+
+		// mode
+		int					_err_mode_handling(Client *client, token_vector tokens);
+		bool				_is_valid_mode_param(char c);
+		std::string			_add_flags(Channel* chan, std::string new_flags);
+		std::string			_remove_flags(Channel* chan, std::string new_flags);
+		bool				_is_add_rmv(char c);
 	
 		int					nick(Client *client, token_vector tokens);
 		int					user(Client *client, token_vector tokens);
