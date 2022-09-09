@@ -33,9 +33,10 @@ int ExecutionManager::_set_topic(Client *client, Channel *channel, std::string &
 
 	if (channel->user_is_in_channel(client) == false)
 		return (_send_rpl(client, ERR_NOTONCHANNEL(channel_name), 442));
-	//if channel mode is t (topic settable by chan operator only) && client is NOT operator
-	// if (channel->get_mode().find("t") != std::string::npos && channel->get_operator() != client)
-		// return (_send_rpl(client, ERR_CHANOPRIVSNEEDED(channel_name), 482));
+
+	if (channel->get_modes().find("t") != std::string::npos && channel->get_operator() != client)
+		return (_send_rpl(client, ERR_CHANOPRIVSNEEDED(channel_name), 482)); //tested and works
+
 	channel->set_topic(topic);
 	channel->broadcast(NULL, RPL_TOPIC(client->get_nickname(), channel->get_name(), channel->get_topic()));
 	return (332);
