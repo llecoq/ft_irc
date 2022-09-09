@@ -51,8 +51,9 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 			kick_msg = client->get_nickname();
 		else
 			kick_msg = tokens[3];
-		*it->leave_channel(channel->get_name(), kick_msg, KICK);
-		_remove_empty_channels(chan_iterator);
+		//look for target as a Client class, not a string
+		// (*it)->leave_channel(channel->get_name(), kick_msg, KICK);
+		_remove_empty_channel(chan_iterator);
 		*/
 
 		//tester KICK_MSG
