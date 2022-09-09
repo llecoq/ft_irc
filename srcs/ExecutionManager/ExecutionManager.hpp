@@ -68,6 +68,9 @@ class ExecutionManager
 		std::string			_add_flags(Channel* chan, std::string new_flags);
 		std::string			_remove_flags(Channel* chan, std::string new_flags);
 		bool				_is_add_rmv(char c);
+		int 				_topic_query(Client *client, Channel *channel);
+		int 				_set_topic(Client *client, Channel *channel, std::string &topic);
+		int 				_kick_errors(Client *client, token_vector tokens, Channel *channel);
 	
 		int					nick(Client *client, token_vector tokens);
 		int					user(Client *client, token_vector tokens);

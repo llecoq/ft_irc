@@ -18,6 +18,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	_command_book["CAP"] = &ExecutionManager::cap;
 	_command_book["PART"] = &ExecutionManager::part;
 	_command_book["PING"] = &ExecutionManager::ping;
+	_command_book["TOPIC"] = &ExecutionManager::topic;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -83,6 +84,14 @@ int	ExecutionManager::run(Client* client) {
 		token_vector tokens = _split(multiple_cmds[i], " ");
 		std::string cmd = tokens[0];
 		cmd_iterator found = _command_book.find(cmd);
+
+		//===========================
+		//FOR DEBUGG ONLY
+		// for (token_iterator it = tokens.begin(); it != tokens.end(); it++)
+			// std::cout << *it << " ";
+		// std::cout << std::endl;
+		//===========================
+		
 		if (found == _command_book.end()) {
 			ret = 421;
 			std::string msg(ERR_UNKNOWNCOMMAND(cmd));

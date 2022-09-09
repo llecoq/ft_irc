@@ -87,6 +87,13 @@ bool	Channel::user_is_in_channel(Client *client)
 	return false;	
 }
 
+bool	Channel::user_is_in_channel_by_name(std::string client_name) {
+	for (size_t i = 0; i < _members.size(); i++)
+		if (_members[i]->get_nickname() == client_name)
+			return true;
+	return false;	
+};
+
 bool	Channel::empty()
 {
 	return _members.empty();
@@ -100,6 +107,7 @@ std::string	Channel::list_members()
 		members.append(_members[i]->get_nickname() + " ");
 	return members;
 }
+
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
@@ -137,4 +145,9 @@ void	Channel::set_modes(char c, size_t pos, char add_rmv)
 	else if (add_rmv == '-')
 		_modes.erase(pos, 1);
 }
+void	Channel::set_topic(std::string topic)
+{
+	_topic = topic;
+};
+
 /* ************************************************************************** */
