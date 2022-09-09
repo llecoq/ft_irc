@@ -19,6 +19,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	_command_book["PART"] = &ExecutionManager::part;
 	_command_book["PING"] = &ExecutionManager::ping;
 	_command_book["TOPIC"] = &ExecutionManager::topic;
+	_command_book["QUIT"] = &ExecutionManager::quit;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -151,8 +152,10 @@ void	ExecutionManager::_remove_empty_channel(Channel::iterator chan_it) {
 
 	Channel	*channel = chan_it->second;
 
-	if (channel->empty() == true)
+	if (channel->empty() == true) {
 		_channel_book.erase(chan_it);
+		delete channel;
+	}
 }
 
 //----------------------------------------------------------------------------

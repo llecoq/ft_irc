@@ -104,7 +104,11 @@ std::string	Channel::list_members()
 	std::string	members;
 
 	for (size_t i = 0; i < _members.size(); i++)
+	{
+		if (_members[i] == get_operator())
+			members.append("@");
 		members.append(_members[i]->get_nickname() + " ");
+	}
 	return members;
 }
 
