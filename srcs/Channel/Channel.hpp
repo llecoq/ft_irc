@@ -4,6 +4,11 @@
 #include "commons.hpp"
 #include "numeric_replies.hpp"
 
+enum e_cmd {
+	KICK,
+	PART
+};
+
 class Client;
 
 class Channel
@@ -31,7 +36,7 @@ class Channel
 		// methods
 		void		broadcast(Client *client, std::string msg);
 		void		add_member(Client *client);
-		void		erase_member(Client *client, std::string part_msg);
+		void		erase_member(Client *client, std::string msg, int cmd);
 		bool		user_is_in_channel(Client *client);
 		std::string	list_members();
 
