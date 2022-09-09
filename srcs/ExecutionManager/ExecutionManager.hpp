@@ -56,6 +56,8 @@ class ExecutionManager
 		int					_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it);
 		int 				_topic_query(Client *client, Channel *channel);
 		int 				_set_topic(Client *client, Channel *channel, std::string &topic);
+		int 				_kick_errors(Client *client, token_vector tokens, Channel *channel);
+
 
 
 	

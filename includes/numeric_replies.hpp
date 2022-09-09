@@ -6,7 +6,7 @@
 /*   By: abonnel <abonnel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/08 14:03:41 by abonnel          ###   ########.fr       */
+/*   Updated: 2022/09/09 11:29:15 by abonnel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,6 @@
 
 #define RPL_NAMREPLY(channel, nickname)			"353 " + nickname + " " + channel + " :" + nickname + CRLF
 #define RPL_ENDOFNAMES(channel, nickname)		"366 " + nickname + " " + channel + " :End of /NAMES list" + CRLF
-
-    //    473    ERR_INVITEONLYCHAN
-            //   "<channel> :Cannot join channel (+i)"
 
 // MSG_BUILDER
 #define MSG_JOIN(channel, nickname)				":" + nickname + " JOIN " + channel + CRLF

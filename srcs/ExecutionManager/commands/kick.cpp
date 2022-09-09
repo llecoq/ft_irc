@@ -1,12 +1,10 @@
 #include "ExecutionManager.hpp"
 
 //KICK <channel> <client> :[<message>]
-//ATTENTION there can be several channels / clients 
-//soit 
-	//KICK <channel> <client>,<client>,<client>,<client>
-//soit 3 channels->3 users
-	//KICK <channel>,<channel>,<channel> <client>,<client>,<client>
-int ExecutionManager::kick(Client *client, token_vector tokens) {
+//Only ONE channel but multiple client is ok and client parameter is ALWAYS parsed 
+	//KICK #lalala abonnel,,,,, WORKS bc remove ","
+
+int ExecutionManager::_kick_errors(Client *client, token_vector tokens, Channel *channel) {
 	std::string	cmd("KICK");
 
 	if (client->get_authentication() == false)
@@ -14,36 +12,57 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 	if (tokens.size() < 3)
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
 
-	//========
-	//On weechat, chan always exist bc command kick can only be done IN a channel
-	Channel::iterator chan_iterator = _channel_book.find(tokens[1]);
-	if (chan_iterator == _channel_book.end())
-		return _send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 403);
-	Channel *channel = chan_iterator->second;
-	if (channel->user_is_in_channel(client) == false)
-		return (_send_rpl(client, ERR_NOTONCHANNEL(channel->get_name()), 442));
-	//========
-
 	//NEED MODE to test those -> try on freenode
 	if (channel->get_operator() != client)
 		return (_send_rpl(client, ERR_CHANOPRIVSNEEDED(channel->get_name()), 482));
-	if (channel->user_is_in_channel_by_name(tokens[2]) == false)
-		return (_send_rpl(client, ERR_USERNOTINCHANNEL(tokens[2],channel->get_name()), 441));
-	//if I am kicking myself --> OK
+	return (SUCCESS);
+}
 
+int ExecutionManager::kick(Client *client, token_vector tokens) {
+	Channel::iterator chan_iterator = _channel_book.find(tokens[1]);
+	Channel *channel = NULL;
+	if (chan_iterator != _channel_book.end())
+		channel = chan_iterator->second;
 
-	// [<message>]
-	//CLIENT IS in channel and is operator AND target is in the channel so now kick him out
-	//USE PART COMMAND
-	//Remove target from channel._members
-	//Remove channel from client._joined_channels
+	if (int error = _kick_errors(client, tokens, channel))
+		return (error);
 
-	//SEND broadcast msg to the entire channel to let them now target has been kicked
-	//ex : airano has kicked abonnel (airano)
-	//:WiZ KICK #Finnish John --> VOIR MSG_ dans numeric_replies
-	//Avec comment : airano has kicked abonnel (t trop une merde)
-	//from the kicking user : :airano!~arianus@freenode-ts4.94b.uj4jb0.IP KICK #chaninu abonnel :t trop une merde
-	//send msg to target to let him know he has been kicked
+	//From here, iterate on target vector
+	//KICK #channel user1,user2 -> user1 does not exist, user2 will still be kicked so
+	//NO RETURN inside for loop except if operator kicks himself first
+	token_vector targets = _split(tokens[2], ",");
+	for (token_iterator it = targets.begin(); it != targets.end(); it++) {
+		//On weechat, chan always exist bc command kick can only be done IN a channel
+		chan_iterator = _channel_book.find(tokens[1]);
+		if (chan_iterator == _channel_book.end())
+			return _send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 403);
+		//OK to kick myself BUT if kicking myself first THEN STOPS
+		if (channel->user_is_in_channel(client) == false)
+			return (_send_rpl(client, ERR_NOTONCHANNEL(channel->get_name()), 442));
+		if (channel->user_is_in_channel_by_name(*it) == false) {
+			_send_rpl(client, ERR_USERNOTINCHANNEL(tokens[2],channel->get_name()), 441);
+			continue;
+		}
+	
+		/*
+		//KICK target out (PART?) with or without special <message>
+		std::string kick_msg;
+		if (tokens.size() < 4)
+			kick_msg = client->get_nickname();
+		else
+			kick_msg = tokens[3];
+		*it->leave_channel(channel->get_name(), kick_msg, KICK);
+		_remove_empty_channels(chan_iterator);
+		*/
+
+		//tester KICK_MSG
+		//SEND broadcast msg to the entire channel to let them now target has been kicked
+		//ex : airano has kicked abonnel (airano)
+		//:WiZ KICK #Finnish John --> VOIR MSG_ dans numeric_replies
+		//Avec comment : airano has kicked abonnel (t trop une merde)
+		//from the kicking user : :airano!~arianus@freenode-ts4.94b.uj4jb0.IP KICK #chaninu abonnel :t trop une merde
+		//send msg to target to let him know he has been kicked
+	}
 
 	return SUCCESS;
 }
