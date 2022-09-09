@@ -49,6 +49,7 @@ class ExecutionManager
 		token_vector		_split(std::string const &buf, std::string sep);
 		int					_find_fd_client_by_name(std::string nickname);
 		int					_send_rpl(Client* client, std::string msg, int code);
+		void				_remove_empty_channel(Channel::iterator chan_it);
 
 		// join
 		int					_send_channel_infos(std::string channel_name,\

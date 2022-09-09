@@ -25,6 +25,7 @@ int ExecutionManager::part(Client *client, token_vector tokens) {
 		}
 		if (channel->user_is_in_channel(client) == true) {
 			client->leave_channel(channels[i], part_msg, PART);
+			_remove_empty_channel(chan_it);
 			continue;
 		}
 		_send_rpl(client, ERR_NOTONCHANNEL(channels[i]), 442);

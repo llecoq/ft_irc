@@ -87,6 +87,11 @@ bool	Channel::user_is_in_channel(Client *client)
 	return false;	
 }
 
+bool	Channel::empty()
+{
+	return _members.empty();
+}
+
 std::string	Channel::list_members()
 {
 	std::string	members;

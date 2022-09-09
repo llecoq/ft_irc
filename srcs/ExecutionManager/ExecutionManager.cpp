@@ -138,9 +138,12 @@ int	ExecutionManager::_find_fd_client_by_name(std::string nickname) {
 	return ret;
 }
 
-int	_send_rpl(Client* client, std::string msg, int code) {
+void	ExecutionManager::_remove_empty_channel(Channel::iterator chan_it) {
 
-	send(client->get_fd(), msg.c_str(), msg.size(), 0);
-	return code;
+	Channel	*channel = chan_it->second;
+
+	if (channel->empty() == true)
+		_channel_book.erase(chan_it);
 }
+
 //----------------------------------------------------------------------------
