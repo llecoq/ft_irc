@@ -6,7 +6,7 @@
 /*   By: abonnel <abonnel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/09 12:01:32 by abonnel          ###   ########.fr       */
+/*   Updated: 2022/09/09 14:42:36 by abonnel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 #define MSG_JOIN(channel, nickname)						":" + nickname + " JOIN " + channel + CRLF
 #define MSG_PART(channel, nickname, part_msg)			":" + nickname + " PART " + channel +  " " + part_msg + CRLF
 #define MSG_KICK(channel, nickname, kick_msg)			":" + nickname + " KICK " + channel +  " " + kick_msg + CRLF
+//change to :WiZ KICK #Finnish John
 
 // COMMAND RESPONSES RFC_1459
 

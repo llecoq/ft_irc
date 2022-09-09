@@ -39,7 +39,6 @@ class Channel
 		void		add_member(Client *client);
 		void		erase_member(Client *client, std::string msg, int cmd);
 		bool		user_is_in_channel(Client *client);
-		bool		user_is_in_channel_by_name(std::string client_name);
 		bool		empty();
 		std::string	list_members();
 

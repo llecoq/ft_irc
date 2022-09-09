@@ -18,6 +18,7 @@ int ExecutionManager::_kick_errors(Client *client, token_vector tokens, Channel 
 	return (SUCCESS);
 }
 
+
 int ExecutionManager::kick(Client *client, token_vector tokens) {
 	Channel::iterator chan_iterator = _channel_book.find(tokens[1]);
 	Channel *channel = NULL;
@@ -27,7 +28,6 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 	if (int error = _kick_errors(client, tokens, channel))
 		return (error);
 
-	//From here, iterate on target vector
 	//KICK #channel user1,user2 -> user1 does not exist, user2 will still be kicked so
 	//NO RETURN inside for loop except if operator kicks himself first
 	token_vector targets = _split(tokens[2], ",");
@@ -39,23 +39,21 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 		//OK to kick myself BUT if kicking myself first THEN STOPS
 		if (channel->user_is_in_channel(client) == false)
 			return (_send_rpl(client, ERR_NOTONCHANNEL(channel->get_name()), 442));
-		if (channel->user_is_in_channel_by_name(*it) == false) {
+
+		Client *target_client = _get_client_by_name(*it);
+		if (channel->user_is_in_channel(target_client) == false) {
 			_send_rpl(client, ERR_USERNOTINCHANNEL(tokens[2],channel->get_name()), 441);
 			continue;
 		}
 	
-		/*
-		//KICK target out (PART?) with or without special <message>
-		std::string kick_msg;
-		if (tokens.size() < 4)
-			kick_msg = client->get_nickname();
-		else
-			kick_msg = tokens[3];
-		//look for target as a Client class, not a string
-		// (*it)->leave_channel(channel->get_name(), kick_msg, KICK);
+		std::string kick_msg = ((tokens.size() < 4) ? client->get_nickname() : tokens[3]);
+		target_client->leave_channel(channel->get_name(), kick_msg, KICK);
 		_remove_empty_channel(chan_iterator);
-		*/
-
+		//When kicking someone, they are still in the list of members on the right of the channel
+		//problem with the KICK msg, lolo has kicked abonnel when it should be the other way around
+	}
+	return SUCCESS;
+}
 		//tester KICK_MSG
 		//SEND broadcast msg to the entire channel to let them now target has been kicked
 		//ex : airano has kicked abonnel (airano)
@@ -63,10 +61,7 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 		//Avec comment : airano has kicked abonnel (t trop une merde)
 		//from the kicking user : :airano!~arianus@freenode-ts4.94b.uj4jb0.IP KICK #chaninu abonnel :t trop une merde
 		//send msg to target to let him know he has been kicked
-	}
 
-	return SUCCESS;
-}
 /*
 ERR_CHANOPRIVSNEEDED
 ERR_NEEDMOREPARAMS

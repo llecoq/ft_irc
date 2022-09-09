@@ -158,4 +158,11 @@ void	ExecutionManager::_remove_empty_channel(Channel::iterator chan_it) {
 	}
 }
 
+Client *ExecutionManager::_get_client_by_name(std::string client_name) {
+	for (Client::iterator it = _client_book.begin(); it != _client_book.end(); it++)
+		if (it->second->get_nickname() == client_name)
+			return it->second;
+	return NULL;
+}
+
 //----------------------------------------------------------------------------
