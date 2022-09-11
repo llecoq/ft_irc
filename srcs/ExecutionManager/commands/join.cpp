@@ -64,14 +64,15 @@ static int	find_channel(Channel::map &channel_book, std::string &channel_name, C
 		return CHANNEL_NOT_FOUND;
 	if (channel->user_is_in_channel(client) == true)
 		return USER_IS_IN_CHAN;
-	// if (channel->get_modes() == INVITE_ONLY)
-	// 	return INVITE_ONLY;
+	if (channel->get_modes().find('i') != std::string::npos)
+		return INVITE_ONLY;
 	return CHANNEL_FOUND;
 }
 
 // Create new channel, adding it to ExecutionManager::_channel_book &&
 static void	create_new_channel(Channel::map &channel_book, Client *client, std::string &channel_name) {
 	Channel	*new_channel = new Channel(channel_name);
+	
 	channel_book.insert(Channel::pair(channel_name, new_channel));
 	client->join_channel(new_channel); // add channel to client's joined_channel and client to channel's members
 	new_channel->set_operator(client);
@@ -80,7 +81,7 @@ static void	create_new_channel(Channel::map &channel_book, Client *client, std::
 // sending JOIN msg + RPL_TOPIC/NOTOPIC + RPL_NAMREPLY + RPL_ENDOFNAMES to client
 // ATTENTION ! NAMEREPLY() IS INCOMPLETE
 int	ExecutionManager::_send_channel_infos(std::string channel_name, Client *client, std::string msg) {
-	Channel *channel = _channel_book.find(channel_name)->second;
+	Channel 	*channel = _channel_book.find(channel_name)->second;
 	std::string	channel_topic = channel->get_topic();
 	std::string	client_nickname = client->get_nickname();
 	// send  bimbadaboumboum (~bimbadabo@freenode/user/bimbadaboumboum) a rejoint #freenode 
