@@ -40,7 +40,7 @@ class Client
 		ssize_t				read_data();
 		void				join_channel(Channel *channel);
 		void				leave_channel(std::string channel_name, std::string msg, int cmd);
-		void				leave_joined_channels(std::string part_msg);
+		int					leave_joined_channels(std::string part_msg);
 		void				clear_recv_data();
 		// va_arg				
 

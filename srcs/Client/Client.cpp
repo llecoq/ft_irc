@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/09 13:57:17 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/11 10:24:36 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,13 @@ void	Client::join_channel(Channel *channel)
 	channel->add_member(this);
 }
 
-void	Client::leave_joined_channels(std::string part_msg)
+int	Client::leave_joined_channels(std::string part_msg)
 {
 	Channel::iterator it;
 
 	for (it = _joined_channels.begin(); it != _joined_channels.end(); it++)
 		it->second->erase_member(this, part_msg, PART);
+	return 0;
 }
 
 void	Client::leave_channel(std::string channel_name, std::string msg, int cmd)

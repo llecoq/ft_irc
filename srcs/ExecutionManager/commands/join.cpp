@@ -17,12 +17,12 @@ static void	create_new_channel(Channel::map &channel_book, Client *client, std::
 int ExecutionManager::join(Client *client, token_vector tokens) {
 	std::string	cmd("JOIN");
 
-	if (client->get_authentication() == false) {
+	if (client->get_authentication() == false)
 		return _send_rpl(client, ERR_NOTREGISTERED, 451);
-	}
-	if (tokens.size() < 2){
+	if (tokens.size() < 2)
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
-	}
+	if (tokens[1] == "0")
+		return client->leave_joined_channels(client->get_nickname());
 	// too many params does not exists because server just create chan with first param (tested on freenode)
 	token_vector			channels = _split(tokens[1], ",");
 
