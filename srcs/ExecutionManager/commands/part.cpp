@@ -5,9 +5,8 @@ int ExecutionManager::part(Client *client, token_vector tokens) {
 	std::string	nickname = client->get_nickname();
 	std::string	part_msg;
 
-	if (tokens.size() < 2){
+	if (tokens.size() < 2)
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
-	}
 	if (tokens.size() > 2)
 		part_msg = tokens[2];
 	else

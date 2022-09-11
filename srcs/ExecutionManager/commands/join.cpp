@@ -11,9 +11,6 @@ enum e_channel {
 static int	find_channel(Channel::map &channel_book, std::string &channel_name, Client *client);
 static void	create_new_channel(Channel::map &channel_book, Client *client, std::string &channel_name);
 
-//    JOIN 0                          ; Leave all currently joined
-//                                    channels.
-
 int ExecutionManager::join(Client *client, token_vector tokens) {
 	std::string	cmd("JOIN");
 
