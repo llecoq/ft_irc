@@ -5,6 +5,7 @@
 #include <map>
 #include <deque>
 #include <string>
+#include <string.h> // linux memset
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <poll.h>

@@ -22,6 +22,7 @@ int	ExecutionManager::_err_mode_handling(Client *client, token_vector tokens) {
 	// parsing
 	std::string valid_modes("+-it");
 	for (size_t i = 0; i < tokens[2].size(); ++i) {
+		// SEGFAULT
 		if (valid_modes.find(tokens[2][i]) == std::string::npos) {
 			return _send_rpl(client, ERR_UNKNOWNMODE((tokens[2].substr(i, 1))), 472);
 		}
@@ -79,6 +80,10 @@ std::string ExecutionManager::_remove_flags(Channel* chan, std::string new_flags
 }
 
 int	ExecutionManager::mode(Client *client, token_vector tokens) {
+
+	// std::cout << "get_mode = " << _channel_book.find(tokens[1])->second->get_modes() << std::endl;
+	if (tokens.size() == 2)
+		return SUCCESS;
 
 	int ret = _err_mode_handling(client, tokens);
 	if (ret != SUCCESS)
