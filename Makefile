@@ -6,7 +6,7 @@
 #    By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/26 09:22:35 by llecoq            #+#    #+#              #
-#    Updated: 2022/08/28 18:25:52 by llecoq           ###   ########.fr        #
+#    Updated: 2022/09/11 16:18:31 by llecoq           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ OBJS_FILES = 	$(SRCS_FILES:.cpp=.o)
 OBJS = 			$(addprefix $(OBJS_PATH),$(OBJS_FILES))
 
 CXXC	=		@clang++
-CFLAGS	= 		-Wall -Wextra -Werror -std=c++98 
+CFLAGS	= 		-Wall -Wextra -Werror -std=c++98
 
 RM		= 		@rm -rf
 

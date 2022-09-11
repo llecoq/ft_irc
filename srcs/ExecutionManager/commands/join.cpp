@@ -18,8 +18,11 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 		return _send_rpl(client, ERR_NOTREGISTERED, 451);
 	if (tokens.size() < 2)
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
-	if (tokens[1] == "0")
-		return client->leave_joined_channels(client->get_nickname());
+	if (tokens[1] == "0") {
+		client->leave_joined_channels(client->get_nickname(), PART);
+		return 0;
+		// remove empty chans
+	}
 	// too many params does not exists because server just create chan with first param (tested on freenode)
 	token_vector			channels = _split(tokens[1], ",");
 

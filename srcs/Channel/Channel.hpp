@@ -6,7 +6,8 @@
 
 enum e_cmd {
 	KICK,
-	PART
+	PART,
+	QUIT
 };
 
 class Client;

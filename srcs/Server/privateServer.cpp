@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/09 13:49:49 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/11 15:44:03 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,16 +115,19 @@ void	Server::_poll_events()
 
 int	Server::_find_event(struct pollfd current_pollfd)
 {
-	if (current_pollfd.revents & POLLIN)
+	if (current_pollfd.revents & (POLLIN | POLLHUP))
 	{
 		if (current_pollfd.fd == _server_info.listening_socket)
 			return PENDING_CONNECTION;
 		else
 		{
 			Client*	client = _exec.get_client(current_pollfd.fd);
+
+			if (client == NULL)
+				return CONNECTION_LOST;
 			ssize_t	nbytes = client->read_data();
 
-			if (nbytes > 1) // ignore empty msg
+			if (nbytes > 0)
 				return DATA_RECEIVED;
 			else if (nbytes == 0)
 				return CONNECTION_LOST;
@@ -176,21 +179,21 @@ void	Server::_process_data(pollfd_iterator it)
 {
 	Client *client = _exec.get_client(it->fd);
 
-	_exec.run(_exec.get_client(it->fd));
-	(void)client;
-	// std::cout << *client << std::endl;
+	_exec.run(client);
 }
 
 void	Server::_close_connection(pollfd_iterator it)
 {
 	int		fd = it->fd;
 	Client	*client = _exec.get_client(fd);
-	
-	client->leave_joined_channels("Connection lost");
-	_exec.erase_client(fd);
+
+	if (client != NULL)
+	{
+		client->set_input_to_quit();
+		_exec.run(client);
+	}
 	_pollfd.erase(it);
 	close(fd);
-	delete client;
 	std::cout << "Connection closed by client " << fd << std::endl;
 }
 

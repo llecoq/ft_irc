@@ -56,7 +56,8 @@ void	Channel::broadcast(Client *client, std::string msg)
 		if (_members[i] != client)
 		{
 			std::cout << "Sent to nick: " << _members[i]->get_nickname() << std::endl;
-			send(_members[i]->get_fd(), msg.c_str(), msg.size(), 0);
+			if (send(_members[i]->get_fd(), msg.c_str(), msg.size(), 0) == FAILED)
+				perror("Channel: send");
 		}
 }
 
@@ -75,7 +76,9 @@ void	Channel::erase_member(Client *client, std::string msg, int cmd)
 		{
 			if (cmd == PART)
 				broadcast(NULL, MSG_PART(_name, client->get_nickname(), msg));
-			else // cmd == KICK
+			if (cmd == QUIT)
+				broadcast(client, MSG_PART(_name, client->get_nickname(), msg));
+			if (cmd == KICK)
 				broadcast(NULL, MSG_KICK(_name, client->get_nickname(), msg));
 			_members.erase(it);
 			return ;

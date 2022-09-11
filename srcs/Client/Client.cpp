@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/11 10:24:36 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/11 16:53:59 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,20 @@ void	Client::join_channel(Channel *channel)
 	channel->add_member(this);
 }
 
-int	Client::leave_joined_channels(std::string part_msg)
+std::vector<std::string>	Client::leave_joined_channels(std::string part_msg, int cmd)
 {
-	Channel::iterator it;
+	Channel::iterator 	it;
+	Channel				*channel;
+	std::vector<std::string>		empty_channels;
 
 	for (it = _joined_channels.begin(); it != _joined_channels.end(); it++)
-		it->second->erase_member(this, part_msg, PART);
-	return 0;
+	{
+		channel = it->second;
+		channel->erase_member(this, part_msg, cmd);
+		if (channel->empty() == true)
+			empty_channels.push_back(channel->get_name());
+	}
+	return empty_channels;
 }
 
 void	Client::leave_channel(std::string channel_name, std::string msg, int cmd)
@@ -120,6 +127,12 @@ void	Client::clear_recv_data()
 	_recv_data.buf_len = 0;
 	_recv_data.buf[0] = 0;
 }
+
+void Client::set_input_to_quit()
+{
+	_recv_data.input = "QUIT :connection lost\n";
+}
+
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

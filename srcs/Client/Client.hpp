@@ -28,6 +28,8 @@ class Client
 		typedef std::map<int, Client *>					map;
 		typedef std::vector<Client *>					vector;
 		typedef map::iterator							iterator;
+		typedef map::const_iterator						const_iterator;
+		// typedef	std::vector<std::string>				std::vector<std::string>;
 
 		Client();
 		Client( int fd );
@@ -40,9 +42,9 @@ class Client
 		ssize_t				read_data();
 		void				join_channel(Channel *channel);
 		void				leave_channel(std::string channel_name, std::string msg, int cmd);
-		int					leave_joined_channels(std::string part_msg);
+		std::vector<std::string>		leave_joined_channels(std::string part_msg, int cmd);
 		void				clear_recv_data();
-		// va_arg				
+		void				set_input_to_quit();
 
 		// accessor
 		void				set_fd(int fd);
@@ -76,7 +78,7 @@ class Client
 		std::string		_ipstr;
 		t_recv_data 	_recv_data;
 
-		std::map<std::string, Channel *> _joined_channels; // channel name, obj channel
+		std::map<std::string, Channel *> _joined_channels;
 };
 
 std::ostream &			operator<<( std::ostream & o, Client const & i );

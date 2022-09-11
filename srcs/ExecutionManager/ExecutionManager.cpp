@@ -65,10 +65,6 @@ void	ExecutionManager::init_client(int fd, char* ipstr) {
 	new_client->set_ipstr(ipstr);
 }
 
-void	ExecutionManager::erase_client(int fd){
-	_client_book.erase(fd);
-}
-
 int	ExecutionManager::run(Client* client) {
 
 	int ret = 0;
@@ -108,7 +104,11 @@ int	ExecutionManager::run(Client* client) {
 
 //--------------------------------- ACCESSORS --------------------------------
 Client*	ExecutionManager::get_client(int fd) const {
-	return _client_book.find(fd)->second;
+	Client::const_iterator	it = _client_book.find(fd);
+
+	if (it == _client_book.end())
+		return NULL;
+	return it->second;
 }
 //----------------------------------------------------------------------------
 
@@ -149,7 +149,6 @@ int	ExecutionManager::_find_fd_client_by_name(std::string nickname) {
 }
 
 void	ExecutionManager::_remove_empty_channel(Channel::iterator chan_it) {
-
 	Channel	*channel = chan_it->second;
 
 	if (channel->empty() == true) {
