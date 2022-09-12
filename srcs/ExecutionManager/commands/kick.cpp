@@ -1,9 +1,5 @@
 #include "ExecutionManager.hpp"
 
-//KICK <channel> <client> :[<message>]
-//Only ONE channel but multiple client is ok and client parameter is ALWAYS parsed 
-	//KICK #lalala abonnel,,,,, WORKS bc remove ","
-
 int ExecutionManager::_kick_errors(Client *client, token_vector tokens, Channel *channel) {
 	std::string	cmd("KICK");
 
@@ -11,15 +7,10 @@ int ExecutionManager::_kick_errors(Client *client, token_vector tokens, Channel 
 		return _send_rpl(client, ERR_NOTREGISTERED, 451);
 	if (tokens.size() < 3)
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
-
-	//NEED MODE to test those -> try on freenode
 	if (channel->get_operator() != client)
 		return (_send_rpl(client, ERR_CHANOPRIVSNEEDED(channel->get_name()), 482));
 	return (SUCCESS);
 }
-
-//KICK #channel user1,user2 -> user1 does not exist, user2 will still be kicked so
-//NO RETURN inside for loop except if operator kicks himself first
 
 int ExecutionManager::kick(Client *client, token_vector tokens) {
 	Channel::iterator chan_iterator = _find_chan_in_lowercase(tokens[1]);
