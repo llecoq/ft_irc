@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/12 09:49:55 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/12 12:12:14 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,16 +102,19 @@ int	Client::leave_joined_channels(std::string part_msg, int cmd, Channel::map &c
 	Channel::iterator 	it;
 	Channel				*channel;
 
+
 	for (it = _joined_channels.begin(); it != _joined_channels.end(); it++)
 	{
 		channel = it->second;
 		channel->erase_member(this, part_msg, cmd);
 		if (channel->empty() == true)
 		{
+			// segfault dans erase
 			channel_book.erase(channel->get_name());
 			delete channel;
 		}
 	}
+	_joined_channels.clear();
 	return 0;
 }
 
@@ -134,7 +137,6 @@ void Client::set_input_to_quit()
 {
 	_recv_data.input = "QUIT :connection lost\n";
 }
-
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------

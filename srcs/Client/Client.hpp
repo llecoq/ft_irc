@@ -21,7 +21,6 @@ struct t_recv_data
 class Client
 {
 
-
 	public:
 
 		typedef	std::pair<int, Client *>				pair;
@@ -29,7 +28,6 @@ class Client
 		typedef std::vector<Client *>					vector;
 		typedef map::iterator							iterator;
 		typedef map::const_iterator						const_iterator;
-		// typedef	std::vector<std::string>				std::vector<std::string>;
 
 		Client();
 		Client( int fd );
