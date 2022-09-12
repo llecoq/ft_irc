@@ -17,7 +17,7 @@
 
 
 // ERROR REPLIES 1459
-#define RPL_CHANNELMODEIS(channel, mode, mode_params)	"324 " + channel + " " + mode + mode_params + CRLF
+#define RPL_CHANNELMODEIS(nickname, channel, mode, mode_params)	"324 " + nickname + " " + channel + " :" + mode + mode_params + CRLF
 #define ERR_NOSUCHNICK(nickname)						"401 " + nickname + " :No such nick/channel" + CRLF
 #define ERR_NOSUCHCHANNEL(channel)						"403 " + channel + " :No such channel" + CRLF
 #define ERR_UNKNOWNCOMMAND(command)						"421 " + command + " :Unknown command" + CRLF

@@ -6,14 +6,11 @@
 int ExecutionManager::_display_infos_mode(Client *client, token_vector tokens, Channel* chan) {
 
 	Channel::iterator chan_it = _channel_book.find(tokens[1]);
-	Channel* chan = chan_it->second;
 
 	if (chan_it == _channel_book.end())
 		return _send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 403);
 
-	//display
-
-	return SUCCESS;
+	return _send_rpl(client, RPL_CHANNELMODEIS(client->get_nickname(), chan->get_name(), chan->get_modes(), std::string()), 324);
 }
 
 int	ExecutionManager::_err_mode_handling(Client *client, token_vector tokens,\
@@ -94,7 +91,7 @@ int	ExecutionManager::mode(Client *client, token_vector tokens) {
 	Channel::iterator chan_it = _channel_book.find(tokens[1]);
 	Channel* chan = chan_it->second;
 
-	if (tokens.size() == 1)
+	if (tokens.size() == 2)
 		return _display_infos_mode(client, tokens, chan);
 
 	int ret = _err_mode_handling(client, tokens, chan_it, chan);
@@ -105,7 +102,7 @@ int	ExecutionManager::mode(Client *client, token_vector tokens) {
 	ret_flags += _remove_flags(chan, tokens[2]);
 
 	if (!ret_flags.empty())
-		return _send_rpl(client, RPL_CHANNELMODEIS(chan->get_name(), ret_flags, std::string()), 324);
+		return _send_rpl(client, RPL_CHANNELMODEIS(client->get_nickname(), chan->get_name(), ret_flags, std::string()), 324);
 	return SUCCESS;
 }
 // return SUCCESS if no flag was removed or added
