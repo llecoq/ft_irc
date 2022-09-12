@@ -20,6 +20,7 @@ public:
 	typedef int (ExecutionManager::*pf)(Client *, token_vector);
 	typedef std::map<std::string, pf>										cmd_map;
 	typedef cmd_map::iterator												cmd_iterator;
+	typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 
 	ExecutionManager(std::string password);
 	ExecutionManager(ExecutionManager const &src);
@@ -54,9 +55,10 @@ private:
 	// privmsg
 	int							_err_privmsg_handling(Client *client, token_vector tokens, std::string rpl);
 	std::string					_assemble_msg(token_vector token_msg);
-	int							_msg_to_nickname(token_vector tokens, int dest_fd, std::string rpl);
-	int							_msg_to_channel(Client *client, token_vector tokens,\
-									Channel::iterator chan_it, std::string rpl);
+	info_dest					_infos_dests(std::string str);
+	bool						_dests_fd_valid(std::vector<int> dests);
+	int							_msg_to_nicknames(Client *client, token_vector tokens, info_dest dests);
+	int							_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it);
 
 	// mode
 	int							_display_infos_mode(Client *client, token_vector tokens, Channel* chan);

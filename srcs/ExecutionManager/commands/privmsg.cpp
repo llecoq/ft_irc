@@ -1,8 +1,9 @@
 #include "ExecutionManager.hpp"
 
-#define CMD	"PRIVMSG"
-#define RPL(rpl, nickname, msg)		rpl + " " + nickname + " :" + msg + CRLF
+typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 
+#define CMD	"PRIVMSG"
+#define RPL(sending_nickname, recipient, msg)		":" + sending_nickname + " PRIVMSG " + recipient + " " + msg + CRLF
 int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens, std::string cmd) {
 
 	std::string msg;
@@ -26,18 +27,39 @@ std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
 	return msg;
 }
 
-int	ExecutionManager::_msg_to_nickname(token_vector tokens, int dest_fd, std::string rpl) {
-	std::string dest = tokens[1];
+
+info_dest	ExecutionManager::_infos_dests(std::string str) {
+	std::vector<std::string> str_dests = _split(str, ",");
+	std::vector<int> dests_fd;
+	for (size_t i = 0; i < str_dests.size(); ++i) {
+		dests_fd.push_back(_find_fd_client_by_name(str_dests[i]));
+	}
+	return std::make_pair(str_dests, dests_fd);
+}
+
+bool	ExecutionManager::_dests_fd_valid(std::vector<int> dests) {
+	for (size_t i = 0; i < dests.size(); ++i)
+		if (!dests[i])
+			return false;
+	return true;
+}
+
+int	ExecutionManager::_msg_to_nicknames(Client *client, token_vector tokens, info_dest dests) {
+	std::vector<std::string> str_dests = dests.first;
+	std::vector<int> fd_dests = dests.second;
 	std::string text = tokens[2];
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	std::string msg = RPL(rpl, dest, text);
-	send(dest_fd, msg.c_str(), msg.size(), 0);
+
+	for (size_t i = 0; i < str_dests.size(); ++i) {
+		std::string msg = RPL(client->get_nickname(), str_dests[i], text);
+		send(fd_dests[i], msg.c_str(), msg.size(), 0);
+	}
 	return SUCCESS;
 }
 
-int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it, std::string rpl) {
+int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Channel::iterator chan_it) {
 	std::string dest = tokens[1];
 	std::string text = tokens[2];
 	Channel* chan = chan_it->second;
@@ -46,11 +68,10 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 		text = _assemble_msg(tokens);
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
-	std::string msg = RPL(rpl, dest, text);
+	std::string msg = RPL(client->get_nickname(), dest, text);
 	chan->broadcast(client, msg);
 	return SUCCESS;
 }
-
 
 int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 
@@ -58,16 +79,15 @@ int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 	if (ret != SUCCESS)
 		return ret;
 
-	int dest_fd = _find_fd_client_by_name(tokens[1]);
+	std::pair<std::vector<std::string>, std::vector<int> > dests = _infos_dests(tokens[1]);
 	Channel::iterator chan_it = _channel_book.find(tokens[1]);
 
-	if (dest_fd) {
-		ret = _msg_to_nickname(tokens, dest_fd, CMD);
-	}
+	if (_dests_fd_valid(dests.second))
+		ret = _msg_to_nicknames(client, tokens, dests);
 	else if (chan_it != _channel_book.end()) {
-		ret = _msg_to_channel(client, tokens, chan_it, CMD);
+		ret = _msg_to_channel(client, tokens, chan_it);
 	}
-	else
+	if (ret != SUCCESS)
 		_send_rpl(client, ERR_NOSUCHNICK(tokens[1]), 401);
 	return ret;
 }
