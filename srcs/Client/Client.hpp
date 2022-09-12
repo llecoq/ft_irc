@@ -42,7 +42,7 @@ class Client
 		ssize_t				read_data();
 		void				join_channel(Channel *channel);
 		void				leave_channel(std::string channel_name, std::string msg, int cmd);
-		std::vector<std::string>		leave_joined_channels(std::string part_msg, int cmd);
+		int					leave_joined_channels(std::string part_msg, int cmd, Channel::map &channel_book);
 		void				clear_recv_data();
 		void				set_input_to_quit();
 
