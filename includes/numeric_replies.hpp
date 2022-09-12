@@ -16,6 +16,7 @@
 #define CRLF "\r\n"
 
 // ERROR REPLIES 1459
+#define RPL_CHANNELMODEIS(nickname, channel, mode, mode_params)	"324 " + nickname + " " + channel + " :" + mode + mode_params + CRLF
 #define ERR_NOSUCHNICK(nickname)						"401 " + nickname + " :No such nick/channel" + CRLF
 #define ERR_NOSUCHCHANNEL(channel)						"403 " + channel + " :No such channel" + CRLF
 #define ERR_UNKNOWNCOMMAND(command)						"421 " + command + " :Unknown command" + CRLF
@@ -38,7 +39,6 @@
 
 // COMMAND RESPONSES RFC_2812
 #define RPL_WELCOME(nickname)							"001 " + nickname + " :Bijour " + nickname + CRLF
-#define RPL_CHANNELMODEIS(channel, mode, mode_params)	"324 " + channel + " " + mode + mode_params + CRLF
 #define RPL_NOTOPIC(nickname, channel) 					"331 " + nickname + " " + channel + " :No topic is set" + CRLF
 #define RPL_TOPIC(nickname, channel, topic) 			"332 " + nickname + " " + channel + " :" + topic + CRLF
 #define RPL_NAMREPLY(channel, nickname, members)		"353 " + nickname + " " + channel + " :" + members + CRLF
