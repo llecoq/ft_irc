@@ -72,7 +72,7 @@ int	ExecutionManager::run(Client* client) {
 	if (client->get_input().empty())
 		return ret;
 
-	std::cout << client->get_input() << std::endl;
+	// std::cout << client->get_input() << std::endl;
 	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n");
 	//for multiple \n
 	client->clear_recv_data();
@@ -95,7 +95,7 @@ int	ExecutionManager::run(Client* client) {
 			send(client->get_fd(), msg.c_str(), msg.size(), 0 );
 			break ; // if first command line(in case of multiple \n) is wrong, not even launching the next ones
 		}
-		ret = (this->*(found->second))(client, tokens); // why not send tokens[0] on top to have cmd directly ?
+		ret = (this->*(found->second))(client, tokens);
 	}
 	return ret;
 }

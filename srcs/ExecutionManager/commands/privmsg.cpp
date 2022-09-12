@@ -80,7 +80,7 @@ int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 		return ret;
 
 	std::pair<std::vector<std::string>, std::vector<int> > dests = _infos_dests(tokens[1]);
-	Channel::iterator chan_it = _channel_book.find(tokens[1]);
+	Channel::iterator chan_it = _find_chan_in_lowercase(tokens[1]);
 
 	if (_dests_fd_valid(dests.second))
 		ret = _msg_to_nicknames(client, tokens, dests);
