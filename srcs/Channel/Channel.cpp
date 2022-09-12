@@ -79,7 +79,7 @@ void	Channel::erase_member(Client *client, std::string msg, int cmd)
 			if (cmd == QUIT)
 				broadcast(client, MSG_PART(_name, client->get_nickname(), msg));
 			if (cmd == KICK)
-				broadcast(NULL, MSG_KICK(_name, client->get_nickname(), msg));
+				broadcast(NULL, msg);
 			_members.erase(it);
 			return ;
 		}
