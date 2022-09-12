@@ -66,6 +66,22 @@ void	Channel::add_member(Client *client)
 	_members.push_back(client);
 }
 
+void	Channel::add_to_invited(Client *client) 
+{
+	_invited_clients.push_back(client);
+}
+
+void	Channel::remove_invitation(Client *client) 
+{
+	for (Client::vector::iterator it = _invited_clients.begin(); it != _invited_clients.end(); it++) 
+	{
+		if (client == *it) {
+			_invited_clients.erase(it);
+			return;
+		}
+	}
+}
+
 void	Channel::erase_member(Client *client, std::string msg, int cmd)
 {
 	std::vector<Client *>::iterator	it;
@@ -93,6 +109,14 @@ bool	Channel::user_is_in_channel(Client *client)
 			return true;
 	return false;	
 }
+
+bool	Channel::client_got_invited(Client *client) {
+	for (size_t i = 0; i < _invited_clients.size(); i++)
+		if (_invited_clients[i] == client)
+			return true;
+	return false;
+}
+
 
 bool	Channel::empty()
 {

@@ -16,7 +16,7 @@ int ExecutionManager::kick(Client *client, token_vector tokens) {
 	Channel::iterator chan_iterator = _find_chan_in_lowercase(tokens[1]);
 	Channel *channel = NULL;
 	if (chan_iterator == _channel_book.end())
-		return (_send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 482));
+		return (_send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 403));
 	else
 		channel = chan_iterator->second;
 

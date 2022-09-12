@@ -79,6 +79,10 @@ class ExecutionManager
 		int 				_kick_errors(Client *client, token_vector tokens, Channel *channel);
 		Client *			_get_client_by_name(std::string client_name);
 
+		//invite
+		int 				_invite_errors(Client *client, token_vector tokens);
+
+
 	
 		int					nick(Client *client, token_vector tokens);
 		int					user(Client *client, token_vector tokens);

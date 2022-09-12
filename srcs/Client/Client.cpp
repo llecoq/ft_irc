@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
+/*   By: abonnel <abonnel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/12 12:12:14 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/12 16:50:57 by abonnel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	Client::join_channel(Channel *channel)
 {
 	_joined_channels.insert(Channel::pair(channel->get_name(), channel));
 	channel->add_member(this);
+	channel->remove_invitation(this);
 }
 
 int	Client::leave_joined_channels(std::string part_msg, int cmd, Channel::map &channel_book)

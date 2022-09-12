@@ -38,8 +38,11 @@ class Channel
 		// methods
 		void		broadcast(Client *client, std::string msg);
 		void		add_member(Client *client);
+		void		add_to_invited(Client *client);
+		void		remove_invitation(Client *client);
 		void		erase_member(Client *client, std::string msg, int cmd);
 		bool		user_is_in_channel(Client *client);
+		bool		client_got_invited(Client *client);
 		bool		empty();
 		std::string	list_members();
 
@@ -52,6 +55,7 @@ class Channel
 		std::string				_modes;
 		Client					*_operator;
 		std::vector<Client *>	_members;
+		std::vector<Client *>	_invited_clients;
 
 };
 
