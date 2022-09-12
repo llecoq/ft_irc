@@ -1,0 +1,9 @@
+weechat -t
+
+/server add local 127.0.0.1/8000 -password=XXXX
+/set irc.server.local.username "henry"
+/set irc.server.local.realname "henry"
+/connect local
+
+/nick henry
+/set xfer.file.download_path ~/Downloads/
