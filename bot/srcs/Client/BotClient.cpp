@@ -16,7 +16,6 @@ BotClient::BotClient(const char* port) : _port(port) {}
 
 BotClient::~BotClient()
 {
-	delete _pollfd;
 }
 
 
@@ -55,6 +54,7 @@ void	BotClient::init()
 
 void	BotClient::run()
 {
+	std::cout << "Bot is now conneted to server !" << std::endl;
 	while (bot_running == true)
 	{
 		_poll_events();

@@ -27,7 +27,11 @@ void	Bot::process_data()
 
 void	Bot::init_bot(int fd)
 {
+	std::string	msg("BOT bot :motdepassecomplique\r\n"); // shouldn't be visible on github
+
 	_fd = fd;
+	if (send(_fd, msg.c_str(), msg.size(), 0) == FAILED)
+		perror("Bot: send");
 }
 
 ssize_t	Bot::read_data()

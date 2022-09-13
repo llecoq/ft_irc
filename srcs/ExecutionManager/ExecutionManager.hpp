@@ -99,6 +99,7 @@ class ExecutionManager
 		int					part(Client *client, token_vector tokens);
 		int					ping(Client *client, token_vector tokens);
 		int					quit(Client *client, token_vector tokens);
+		int					bot(Client *client, token_vector tokens);
 
 };
 
