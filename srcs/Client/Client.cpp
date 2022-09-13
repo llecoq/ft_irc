@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 09:59:10 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 10:41:23 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	Client::join_channel(Channel *channel)
 {
 	_joined_channels.insert(Channel::pair(channel->get_name(), channel));
 	channel->add_member(this);
+	channel->remove_invitation(this);
 }
 
 int	Client::leave_joined_channels(std::string part_msg, int cmd, Channel::map &channel_book)
