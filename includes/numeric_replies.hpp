@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 10:41:32 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 11:19:03 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #define ERR_ERRONEUSNICKNAME(nickname)					"432 " + nickname + " :Erroneous nickname" + CRLF		
 #define ERR_NICKNAMEINUSE(nickname)						"433 " + nickname + " :Nickname is already in use" + CRLF
 #define ERR_NOTONCHANNEL(channel)						"442 " + channel + " :You're not on that channel" + CRLF
+#define ERR_INVALIDUSERNAME								"468 * USER :Your username is not valid\n\r"
 #define ERR_UNKNOWNMODE(char)							"472 " + char + " :is unknown mode char to me" + CRLF
 #define ERR_CHANOPRIVSNEEDED(channel)					"482 " + channel + " :You're not channel operator" + CRLF
 
