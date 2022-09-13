@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/26 10:57:01 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/11 15:44:03 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 16:28:43 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ char*	Server::_sockaddr_to_string(sockaddr_storage client_addr)
 {
 	static char	ipstr[INET6_ADDRSTRLEN];
 
-	// deal with both IPv4 and IPv6:
+	// deal with Clienth IPv4 and IPv6:
 	if (client_addr.ss_family == AF_INET)
 	{
 		struct sockaddr_in *s = (struct sockaddr_in *)&client_addr;

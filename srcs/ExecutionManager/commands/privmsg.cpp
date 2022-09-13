@@ -24,7 +24,7 @@ std::string	ExecutionManager::_moderate(std::string str, std::ifstream *infile) 
 	return str;
 }
 
-std::string	ExecutionManager::_bot_moderate(std::string str) {
+std::string	ExecutionManager::_Client_moderate(std::string str) {
 
 	std::ifstream infile_engl("dict_insult_engl.txt");
 	std::ifstream infile_fr("dict_insult_fr.txt");
@@ -83,7 +83,7 @@ int	ExecutionManager::_msg_to_nicknames(Client *client, token_vector tokens, inf
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	text = _bot_moderate(text);
+	text = _Client_moderate(text);
 
 	for (size_t i = 0; i < str_dests.size(); ++i) {
 		std::string msg = RPL(client->get_nickname(), str_dests[i], text);
@@ -99,7 +99,7 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	text = _bot_moderate(text);
+	text = _Client_moderate(text);
 
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
