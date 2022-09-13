@@ -3,7 +3,38 @@
 typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 
 #define CMD	"PRIVMSG"
-#define RPL(sending_nickname, recipient, msg)		":" + sending_nickname + " PRIVMSG " + recipient + " " + msg + CRLF
+#define RPL(sending_nickname, recipient, msg)	":" + sending_nickname + " PRIVMSG " + recipient + " " + msg + CRLF
+
+std::string	ExecutionManager::_moderate(std::string str, std::ifstream *infile) {
+	if (!infile) {
+		infile->close();
+		return str;
+	}
+
+	std::string word;
+	while (*infile >> word) {
+		size_t pos = str.find(word);
+		if (pos != std::string::npos) {
+			size_t word_size = word.size();
+			std::string replace(word_size, '*');
+			str.replace(pos, word_size, replace);
+		}
+	}
+	infile->close();
+	return str;
+}
+
+std::string	ExecutionManager::_bot_moderate(std::string str) {
+
+	std::ifstream infile_engl("dict_insult_engl.txt");
+	std::ifstream infile_fr("dict_insult_fr.txt");
+
+	str = _moderate(str, &infile_engl);
+	str = _moderate(str, &infile_fr);
+
+	return str;
+}
+
 int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens, std::string cmd) {
 
 	std::string msg;
@@ -22,6 +53,7 @@ std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
 	std::string msg;
 
 	for (size_t i = 2; i < token_msg.size(); ++i) {
+		msg.push_back(' ');
 		msg.append(token_msg[i]);
 	}
 	return msg;
@@ -51,6 +83,7 @@ int	ExecutionManager::_msg_to_nicknames(Client *client, token_vector tokens, inf
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
+	text = _bot_moderate(text);
 
 	for (size_t i = 0; i < str_dests.size(); ++i) {
 		std::string msg = RPL(client->get_nickname(), str_dests[i], text);
@@ -66,6 +99,8 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
+	text = _bot_moderate(text);
+
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
 	std::string msg = RPL(client->get_nickname(), dest, text);
@@ -80,7 +115,7 @@ int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
 		return ret;
 
 	std::pair<std::vector<std::string>, std::vector<int> > dests = _infos_dests(tokens[1]);
-	Channel::iterator chan_it = _channel_book.find(tokens[1]);
+	Channel::iterator chan_it = _find_chan_in_lowercase(tokens[1]);
 
 	if (_dests_fd_valid(dests.second))
 		ret = _msg_to_nicknames(client, tokens, dests);

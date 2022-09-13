@@ -5,7 +5,7 @@
 
 int ExecutionManager::_display_infos_mode(Client *client, token_vector tokens, Channel* chan) {
 
-	Channel::iterator chan_it = _channel_book.find(tokens[1]);
+	Channel::iterator chan_it = _find_chan_in_lowercase(tokens[1]);
 
 	if (chan_it == _channel_book.end())
 		return _send_rpl(client, ERR_NOSUCHCHANNEL(tokens[1]), 403);
@@ -89,7 +89,7 @@ std::string ExecutionManager::_remove_flags(Channel* chan, std::string new_flags
 
 int	ExecutionManager::mode(Client *client, token_vector tokens) {
 
-	Channel::iterator chan_it = _channel_book.find(tokens[1]);
+	Channel::iterator chan_it = _find_chan_in_lowercase(tokens[1]);
 	Channel* chan = chan_it->second;
 
 	if (tokens.size() == 2)
