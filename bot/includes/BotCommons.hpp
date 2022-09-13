@@ -18,5 +18,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <time.h>   
 
 #endif

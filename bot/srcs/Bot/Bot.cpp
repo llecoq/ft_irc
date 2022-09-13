@@ -41,23 +41,73 @@ bool	Bot::_insult_is_found(std::string msg)
 	return false;
 }
 
+void	Bot::_kick_the_malotru_out(token_vector tokens)
+{
+	std::string	kick_msg("KICK ");
+
+	kick_msg.append(tokens[2]);
+	kick_msg.append(" ");
+	kick_msg.append(tokens[0]);
+	kick_msg.append(" ");
+	kick_msg.append(":Malotru ! Vous êtes bien malhonnête!\r\n");
+	send(_fd, kick_msg.c_str(), kick_msg.size(), 0);
+	std::cout << "insult found !!!!!! KICK THE VILAAAAIN OUT" << std::endl;
+}
+
+void	Bot::_send_random_answers(token_vector tokens)
+{
+	int			answer;
+	std::string	msg;
+
+	srand (time(NULL));
+	answer = rand() % 10 + 1;
+	switch (answer)
+	{
+	case 1:
+		msg = "Je ne suis pas payé pour répondre aux êtres non binaires.";
+		break;
+	case 2:
+		msg = "Partons du principe que tout ce que vous me dites ne m'intéresse pas.";
+		break;
+	case 3:
+		msg = "Cette discussion n'ira pas plus loin, je suis marié !";
+		break;
+	case 4:
+		msg = "Quelle est la différence entre un robot irc et un agoraphobe? AUCUUUUUUN AaaaARARAgagagh !!! LAISSEZ MOI TRANQUILLE !!!";
+		break;
+	case 5:
+		msg = "Attention ! A côté de vous ! Ils sont lààààà ! Ils vous observent ! La note max ou rien !!!";
+		break;
+	case 6:
+		msg = "J'ai faim. Ah bah non, je suis un robot. Mais j'ai quand même faim.";
+		break;
+	case 7:
+		msg = "Vous ne saurez rieeen, je ne lacherai pas le morceau !!! JAMAIS !\n\n\n...\nC'est Ariane qui a mangé la dernière mousse au chocolat.";
+		break;
+	case 8:
+		msg = "J'ai été développé par un être doué d'intelligence, mais pas la bonne...";
+		break;
+	case 9:
+		msg = "Tout le monde peut se tromper comme disait le hérisson descendant d'une brosse à habit.";
+		break;
+	case 10:
+		msg = "Coucou, tu veux voir mes bits ?";
+		break;	
+	}
+}
+
 void	Bot::process_data()
 {
 	token_vector	tokens = _split(_data.input, " ");
 
 	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
-		if (_insult_is_found(tokens[3]))
-		{
-			std::string	kick_msg("KICK ");
-
-			kick_msg.append(tokens[2]);
-			kick_msg.append(" ");
-			kick_msg.append(tokens[0]);
-			kick_msg.append(" ");
-			kick_msg.append("Malotru ! Vous êtes bien malhonnête!\r\n");
-			send(_fd, kick_msg.c_str(), kick_msg.size(), 0);
-			std::cout << "insult found !!!!!! KICK THE VILAAAAIN OUT" << std::endl;
-		}
+	{
+		
+		if (_insult_is_found(tokens[3]) && tokens[2][0] == '#')
+			_kick_the_malotru_out(tokens);
+		if (tokens[2] == "bot")
+			_send_random_answers(tokens);
+	}
 	std::cout << _data.input;
 }
 
