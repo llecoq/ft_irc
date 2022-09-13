@@ -43,6 +43,7 @@ class ExecutionManager
 		Client::map			_client_book;
 		Channel::map		_channel_book;
 		std::string			_password;
+		int					_bot_fd;
 
 		token_vector		_split(std::string const &buf, std::string sep);
 		int					_find_fd_client_by_name(std::string nickname);

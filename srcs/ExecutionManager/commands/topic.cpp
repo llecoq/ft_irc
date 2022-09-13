@@ -39,6 +39,10 @@ int ExecutionManager::_set_topic(Client *client, Channel *channel, std::string &
 
 	channel->set_topic(topic);
 	channel->broadcast(NULL, RPL_TOPIC(client->get_nickname(), channel->get_name(), channel->get_topic()));
+	if (_bot_fd != 0) {
+		std::string msg = RPL_TOPIC(client->get_nickname(), channel->get_name(), channel->get_topic());
+		send(_bot_fd, msg.c_str(), msg.size(), 0);
+	}
 	return (332);
 }
 

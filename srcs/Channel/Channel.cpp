@@ -51,11 +51,9 @@ std::ostream &			operator<<( std::ostream & o, Channel const & i )
 
 void	Channel::broadcast(Client *client, std::string msg)
 {
-	std::cout << "Broadcast: " << msg.c_str();
 	for (size_t i = 0; i < _members.size(); i++)
 		if (_members[i] != client)
 		{
-			std::cout << "Sent to nick: " << _members[i]->get_nickname() << std::endl;
 			if (send(_members[i]->get_fd(), msg.c_str(), msg.size(), 0) == FAILED)
 				perror("Channel: send");
 		}

@@ -88,6 +88,8 @@ int	ExecutionManager::_msg_to_nicknames(Client *client, token_vector tokens, inf
 	for (size_t i = 0; i < str_dests.size(); ++i) {
 		std::string msg = RPL(client->get_nickname(), str_dests[i], text);
 		send(fd_dests[i], msg.c_str(), msg.size(), 0);
+		if (_bot_fd != 0)
+			send(_bot_fd, msg.c_str(), msg.size(), 0);
 	}
 	return SUCCESS;
 }
@@ -104,6 +106,8 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
 	std::string msg = RPL(client->get_nickname(), dest, text);
+	if (_bot_fd != 0)
+		send(_bot_fd, msg.c_str(), msg.size(), 0);
 	chan->broadcast(client, msg);
 	return SUCCESS;
 }

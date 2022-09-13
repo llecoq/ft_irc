@@ -66,6 +66,7 @@ void	BotClient::run()
 			break;
 		case CONNECTION_LOST:
 			std::cout << "CONNECTION_LOST" << std::endl;
+			bot_running = false;
 			// _bot.kill_connection();
 			break;
 		}

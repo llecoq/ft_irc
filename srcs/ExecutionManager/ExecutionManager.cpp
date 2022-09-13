@@ -2,10 +2,10 @@
 
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
 ExecutionManager::ExecutionManager() 
-: _command_book(), _client_book(), _channel_book(), _password() {}
+: _command_book(), _client_book(), _channel_book(), _password(), _bot_fd(0) {}
 
 ExecutionManager::ExecutionManager(std::string password)
-: _command_book(), _client_book(), _channel_book(), _password(password) {
+: _command_book(), _client_book(), _channel_book(), _password(password), _bot_fd(0) {
 	_command_book["NICK"] = &ExecutionManager::nick;
 	_command_book["USER"] = &ExecutionManager::user;
 	_command_book["JOIN"] = &ExecutionManager::join;
