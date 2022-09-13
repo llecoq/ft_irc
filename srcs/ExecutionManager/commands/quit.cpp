@@ -9,7 +9,6 @@ int ExecutionManager::quit(Client *client, token_vector tokens) {
 		msg = tokens[1];
 	client->leave_joined_channels(msg, QUIT, _channel_book);
 	_client_book.erase(client->get_fd());
-	// close(client->get_fd());
 	delete client;
 	return SUCCESS;
 }

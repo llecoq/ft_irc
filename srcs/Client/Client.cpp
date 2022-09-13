@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 10:41:23 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 20:45:42 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ int	Client::leave_joined_channels(std::string part_msg, int cmd, Channel::map &c
 	{
 		channel = it->second;
 		channel->erase_member(this, part_msg, cmd);
+		if (this == channel->get_operator())
+			channel->set_operator(NULL);
 		if (channel->empty() == true)
 		{
 			channel_book.erase(channel->get_name());

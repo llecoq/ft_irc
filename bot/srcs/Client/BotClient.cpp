@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 20:28:08 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 20:35:20 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 20:44:24 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,11 @@ BotClient::BotClient(const char* port) : _port(port), _pollfd(new pollfd) {}
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-BotClient::~BotClient() {delete _pollfd;};
+BotClient::~BotClient() 
+{
+	delete _pollfd;
+	close(_receiving_socket);
+}
 
 
 /*
@@ -55,7 +59,6 @@ void	BotClient::run()
 		case CONNECTION_LOST:
 			std::cout << "CONNECTION_LOST" << std::endl;
 			bot_running = false;
-			// _bot.kill_connection();
 			break;
 		}
 	}

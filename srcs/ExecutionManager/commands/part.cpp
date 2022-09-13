@@ -24,6 +24,8 @@ int ExecutionManager::part(Client *client, token_vector tokens) {
 		}
 		if (channel->user_is_in_channel(client) == true) {
 			client->leave_channel(channels[i], part_msg, PART);
+			if (client == channel->get_operator())
+				channel->set_operator(NULL);
 			_remove_empty_channel(chan_it);
 			continue;
 		}
