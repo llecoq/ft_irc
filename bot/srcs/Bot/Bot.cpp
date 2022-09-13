@@ -48,8 +48,15 @@ void	Bot::process_data()
 	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
 		if (_insult_is_found(tokens[3]))
 		{
-			std::cout << "insult found §!!!!!!!!!!!!" << std::endl;
-			// send KICK
+			std::string	kick_msg("KICK ");
+
+			kick_msg.append(tokens[2]);
+			kick_msg.append(" ");
+			kick_msg.append(tokens[0]);
+			kick_msg.append(" ");
+			kick_msg.append("Malotru ! Vous êtes bien malhonnête!\r\n");
+			send(_fd, kick_msg.c_str(), kick_msg.size(), 0);
+			std::cout << "insult found !!!!!! KICK THE VILAAAAIN OUT" << std::endl;
 		}
 	std::cout << _data.input;
 }
