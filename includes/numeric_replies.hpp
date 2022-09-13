@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abonnel <abonnel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/09 14:42:36 by abonnel          ###   ########.fr       */
+/*   Updated: 2022/09/13 10:28:54 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 #define ERR_NOSUCHNICK(nickname)						"401 " + nickname + " :No such nick/channel" + CRLF
 #define ERR_NOSUCHCHANNEL(channel)						"403 " + channel + " :No such channel" + CRLF
 #define ERR_UNKNOWNCOMMAND(command)						"421 " + command + " :Unknown command" + CRLF
+#define ERR_NONICKNAMEGIVEN								"431 :No nickname given\n\r"
+#define ERR_ERRONEUSNICKNAME(nickname)					"432 " + nickname + " :Erroneous nickname" + CRLF		
+#define ERR_NICKNAMEINUSE(nickname)						"433 " + nickname + " :Nickname is already in use" + CRLF
 #define ERR_NOTONCHANNEL(channel)						"442 " + channel + " :You're not on that channel" + CRLF
 #define ERR_UNKNOWNMODE(char)							"472 " + char + " :is unknown mode char to me" + CRLF
 #define ERR_CHANOPRIVSNEEDED(channel)					"482 " + channel + " :You're not channel operator" + CRLF
