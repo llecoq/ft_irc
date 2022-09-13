@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   BotClient.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/13 20:28:08 by llecoq            #+#    #+#             */
+/*   Updated: 2022/09/13 20:35:20 by llecoq           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "BotClient.hpp"
 
 static volatile bool	bot_running = true;
@@ -8,37 +20,13 @@ static volatile bool	bot_running = true;
 
 BotClient::BotClient() {}
 
-BotClient::BotClient(const char* port) : _port(port) {}
+BotClient::BotClient(const char* port) : _port(port), _pollfd(new pollfd) {}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-BotClient::~BotClient()
-{
-}
-
-
-/*
-** --------------------------------- OVERLOAD ---------------------------------
-*/
-
-BotClient &				BotClient::operator=( BotClient const & rhs )
-{
-	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
-	return *this;
-}
-
-std::ostream &			operator<<( std::ostream & o, BotClient const & i )
-{
-	(void)i;
-	//o << "Value = " << i.getValue();
-	return o;
-}
+BotClient::~BotClient() {delete _pollfd;};
 
 
 /*

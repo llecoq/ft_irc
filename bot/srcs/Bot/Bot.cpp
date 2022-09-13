@@ -4,9 +4,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Bot::Bot()
-{
-}
+Bot::Bot() {}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -14,11 +12,51 @@ Bot::Bot()
 
 Bot::~Bot()
 {
+	std::cout << "Bot is dying a litle bit inside..." << std::endl;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+void	Bot::init_bot(int fd)
+{
+	std::string	msg("BOT bot :motdepassecomplique\r\n"); // shouldn't be visible on github
+
+	_fd = fd;
+	if (send(_fd, msg.c_str(), msg.size(), 0) == FAILED)
+		perror("Bot: send");
+}
+
+ssize_t	Bot::read_data()
+{
+	_data.nbytes = recv(_fd, _data.buf, sizeof _data.buf, 0);
+	if (_data.nbytes == FAILED)
+		perror("Bot: recv");
+	else
+	{
+		_data.buf[_data.nbytes] = '\0';
+		_data.input = _data.buf;
+		if (_data.input.empty() == false && _data.input[0] == ':')
+			_data.input.erase(0, 1);
+	}
+	return _data.nbytes;
+}
+
+void	Bot::process_data()
+{
+	token_vector	tokens = _split(_data.input, " ");
+
+	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
+	{
+		std::cout << "token 0 = " << tokens[0] << std::endl;	
+		if (_insult_is_found(tokens[3]) && tokens[2][0] == '#')
+			_kick_the_malotru_out(tokens);
+		if (tokens[2] == "bot")
+			_send_random_answers(tokens);
+	}
+	std::cout << _data.input;
+}
 
 bool	Bot::_insult_is_found(std::string msg)
 {
@@ -93,45 +131,6 @@ void	Bot::_send_random_answers(token_vector tokens)
 	}
 	msg.append(tokens[0] + answer + "\r\n");
 	send(_fd, msg.c_str(), msg.size(), 0);
-}
-
-void	Bot::process_data()
-{
-	token_vector	tokens = _split(_data.input, " ");
-
-	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
-	{
-		std::cout << "token 0 = " << tokens[0] << std::endl;	
-		if (_insult_is_found(tokens[3]) && tokens[2][0] == '#')
-			_kick_the_malotru_out(tokens);
-		if (tokens[2] == "bot")
-			_send_random_answers(tokens);
-	}
-	std::cout << _data.input;
-}
-
-void	Bot::init_bot(int fd)
-{
-	std::string	msg("BOT bot :motdepassecomplique\r\n"); // shouldn't be visible on github
-
-	_fd = fd;
-	if (send(_fd, msg.c_str(), msg.size(), 0) == FAILED)
-		perror("Bot: send");
-}
-
-ssize_t	Bot::read_data()
-{
-	_data.nbytes = recv(_fd, _data.buf, sizeof _data.buf, 0);
-	if (_data.nbytes == FAILED)
-		perror("Bot: recv");
-	else
-	{
-		_data.buf[_data.nbytes] = '\0';
-		_data.input = _data.buf;
-		if (_data.input.empty() == false && _data.input[0] == ':')
-			_data.input.erase(0, 1);
-	}
-	return _data.nbytes;
 }
 
 std::vector<std::string>	Bot::_split(std::string const &buf, std::string sep)

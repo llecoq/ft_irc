@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   BotClient.hpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/13 20:28:03 by llecoq            #+#    #+#             */
+/*   Updated: 2022/09/13 20:28:05 by llecoq           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef BOTCLIENT_HPP
 # define BOTCLIENT_HPP
 
@@ -25,8 +37,6 @@ class BotClient
 		void	init();
 		void	run();
 
-		BotClient &		operator=( BotClient const & rhs );
-
 	private:
 
 		BotClient();
@@ -44,7 +54,5 @@ class BotClient
 		int				_receiving_socket;
 		Bot				_bot;
 };
-
-std::ostream &			operator<<( std::ostream & o, BotClient const & i );
 
 #endif /* ************************************************************* Client_H */

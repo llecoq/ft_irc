@@ -23,7 +23,6 @@ void	BotClient::_get_receiving_socket()
 	{
 		if (_connect_to_socket(ptr) > 0)
 		{
-			_pollfd = new pollfd();
 			_pollfd->fd = _receiving_socket;
 			_pollfd->events = POLLIN;
 			break;
