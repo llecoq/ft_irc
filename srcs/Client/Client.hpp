@@ -43,6 +43,7 @@ class Client
 		int					leave_joined_channels(std::string part_msg, int cmd, Channel::map &channel_book);
 		void				clear_recv_data();
 		void				set_input_to_quit();
+		void				announce_new_nickname(std::string msg);
 
 		// accessor
 		void				set_fd(int fd);

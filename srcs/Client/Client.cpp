@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 20:45:42 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 21:01:25 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,14 @@ void	Client::clear_recv_data()
 void Client::set_input_to_quit()
 {
 	_recv_data.input = "QUIT :connection lost\n";
+}
+
+void	Client::announce_new_nickname(std::string msg)
+{
+	Channel::iterator	chan_it;
+
+	for (chan_it = _joined_channels.begin(); chan_it != _joined_channels.end(); chan_it++)
+		chan_it->second->broadcast(NULL, msg);
 }
 
 /*

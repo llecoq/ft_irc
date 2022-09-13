@@ -12,10 +12,15 @@ int ExecutionManager::nick(Client *client, token_vector tokens) {
 	if (nickname_is_valid(nickname) == true) {
 		if (_find_fd_client_by_name(nickname) > 0)
 			return _send_rpl(client, ERR_NICKNAMEINUSE(nickname), 433);
+		std::string	old_nickname = client->get_nickname();
 		client->set_nickname(tokens[1]);
-		client->set_authentication(_password, client->get_password());
-		if (client->get_authentication() == true)
-			_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
+		if (client->get_authentication() == false) {
+			client->set_authentication(_password, client->get_password());
+			if (client->get_authentication() == true)
+				_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
+		}
+		else
+			client->announce_new_nickname(MSG_NICK(old_nickname, tokens[1]));
 		return SUCCESS;
 	} // nickname is not valid
 	return _send_rpl(client, ERR_ERRONEUSNICKNAME(nickname), 432);

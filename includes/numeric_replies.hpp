@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 11:19:03 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/13 20:57:18 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@
 #define MSG_PART(channel, nickname, part_msg)			":" + nickname + " PART " + channel +  " " + part_msg + CRLF
 #define MSG_KICK(operator, channel, kicked, kick_msg)	":" + operator + " KICK " + channel +  " " + kicked + " " + kick_msg + CRLF
 #define MSG_INVITE(inviting, invited, channel)			":" + inviting + " INVITE " + invited +  " " + channel + CRLF
+#define MSG_NICK(old_nickname, new_nickname)			":" + old_nickname + " NICK " + new_nickname + CRLF
 //should I put ":" even when there is no msg ?"
 														//:WiZ KICK #Finnish John
 														//:airano KICK #chaninu abonnel :t trop une merde
