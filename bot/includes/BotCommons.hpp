@@ -15,5 +15,8 @@
 #include <iostream>
 #include <poll.h>
 #include <csignal>
+#include <vector>
+#include <iostream>
+#include <fstream>
 
 #endif

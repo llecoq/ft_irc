@@ -50,8 +50,6 @@ class ExecutionManager
 		int					_send_rpl(Client* client, std::string msg, int code);
 		void				_remove_empty_channel(Channel::iterator chan_it);
 		Channel::iterator 	_find_chan_in_lowercase(std::string channel_name);
-		std::string			_Client_moderate(std::string str);
-		std::string			_moderate(std::string str, std::ifstream *infile);
 
 		// join
 		int					_send_channel_infos(std::string channel_name,\

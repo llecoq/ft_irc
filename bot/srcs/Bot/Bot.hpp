@@ -19,6 +19,7 @@ class Bot
 {
 
 	public:
+		typedef std::vector<std::string>		token_vector;
 
 		Bot();
 		~Bot();
@@ -29,8 +30,12 @@ class Bot
 
 	private:
 
-		t_recv_data	_data;
-		int			_fd;
+		t_recv_data		_data;
+		int				_fd;
+
+		token_vector	_split(std::string const &buf, std::string sep);
+		bool			_insult_is_found(std::string msg);
+		std::string		_moderate(std::string str, std::ifstream *infile);
 
 };
 
