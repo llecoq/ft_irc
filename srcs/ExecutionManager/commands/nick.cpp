@@ -4,10 +4,11 @@ static bool	nickname_is_valid(std::string nickname);
 
 int ExecutionManager::nick(Client *client, token_vector tokens) {
 	std::string	cmd("NICK");
-	std::string	nickname = tokens[1];
 
 	if (tokens.size() < 2)
 		return _send_rpl(client, ERR_NONICKNAMEGIVEN, 431);
+
+	std::string	nickname = tokens[1];
 	if (nickname_is_valid(nickname) == true) {
 		if (_find_fd_client_by_name(nickname) > 0)
 			return _send_rpl(client, ERR_NICKNAMEINUSE(nickname), 433);
