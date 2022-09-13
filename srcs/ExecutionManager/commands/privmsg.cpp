@@ -5,17 +5,14 @@ typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 #define CMD	"PRIVMSG"
 #define RPL(sending_nickname, recipient, msg)	":" + sending_nickname + " PRIVMSG " + recipient + " " + msg + CRLF
 
-std::string	ExecutionManager::_bot_moderate(std::string str) {
-	std::ifstream infile("dict_insult_engl.txt");
-
+std::string	ExecutionManager::_moderate(std::string str, std::ifstream *infile) {
 	if (!infile) {
-		infile.close();
+		infile->close();
 		return str;
 	}
 
-	std::cout << "text :" << str << "\n";
 	std::string word;
-	while (infile >> word) {
+	while (*infile >> word) {
 		size_t pos = str.find(word);
 		if (pos != std::string::npos) {
 			size_t word_size = word.size();
@@ -23,7 +20,18 @@ std::string	ExecutionManager::_bot_moderate(std::string str) {
 			str.replace(pos, word_size, replace);
 		}
 	}
-	infile.close();
+	infile->close();
+	return str;
+}
+
+std::string	ExecutionManager::_bot_moderate(std::string str) {
+
+	std::ifstream infile_engl("dict_insult_engl.txt");
+	std::ifstream infile_fr("dict_insult_fr.txt");
+
+	str = _moderate(str, &infile_engl);
+	str = _moderate(str, &infile_fr);
+
 	return str;
 }
 
