@@ -87,7 +87,7 @@ int	ExecutionManager::_send_channel_infos(std::string channel_name, Client *clie
 	// send  bimbadaboumboum (~bimbadabo@freenode/user/bimbadaboumboum) a rejoint #freenode 
 	
 	// :llecoq!~llecoq@127.0.0.1 JOIN #baba
-	if (_bot_fd != 0)
+	if (_bot_fd != 0 && client->get_fd() != _bot_fd)
 		send(_bot_fd, msg.c_str(), msg.size(), 0);
 	channel->broadcast(NULL, msg); // NULL = send to everyone included the client itself
 	if (channel_topic.empty() == 1)

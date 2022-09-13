@@ -33,7 +33,7 @@ class ExecutionManager
 		Client				*get_client(int fd) const;
 
 		//--------------------------------- METHODS ----------------------------------
-		void				init_client(int client_fd, char *ipstr);
+		void				init_client(int client_fd, const char *ipstr);
 		int					run(Client *client);
 
 	private:

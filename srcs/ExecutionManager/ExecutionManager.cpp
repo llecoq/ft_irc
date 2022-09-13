@@ -58,7 +58,7 @@ std::ostream	&operator<<( std::ostream & o, ExecutionManager const & i ) {
 
 
 //--------------------------------- METHODS ----------------------------------
-void	ExecutionManager::init_client(int fd, char* ipstr) {
+void	ExecutionManager::init_client(int fd, const char	*ipstr) {
 
 	Client*	new_client = new Client(fd); // delete afterwards
 	
