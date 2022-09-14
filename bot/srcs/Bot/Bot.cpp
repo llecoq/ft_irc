@@ -49,11 +49,13 @@ void	Bot::process_data()
 
 	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
 	{
-		if (_insult_is_found(tokens[3]) && tokens[2][0] == '#')
-			_kick_the_malotru_out_of_chan(tokens);
-		// else // insult sent to a single user
-		// 	if (tokens[2] == "bot") // insult sent to the bot
-		// 		_kill_the_malotru(tokens);
+		if (_insult_is_found(tokens[3]))
+		{
+			if (tokens[2][0] == '#')
+				_kick_the_malotru_out_of_chan(tokens);
+			else // msg to user
+				_kill_the_malotru(tokens);
+		}
 		if (tokens[2] == "bot")
 			_send_random_answers(tokens);
 	}
