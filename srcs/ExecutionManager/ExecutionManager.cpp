@@ -2,10 +2,10 @@
 
 //-------------------------- CONSTRUCTOR/DESTRUCTOR --------------------------
 ExecutionManager::ExecutionManager() 
-: _command_book(), _client_book(), _channel_book(), _password() {}
+: _command_book(), _client_book(), _channel_book(), _password(), _bot_fd(0) {}
 
 ExecutionManager::ExecutionManager(std::string password)
-: _command_book(), _client_book(), _channel_book(), _password(password) {
+: _command_book(), _client_book(), _channel_book(), _password(password), _bot_fd(0) {
 	_command_book["NICK"] = &ExecutionManager::nick;
 	_command_book["USER"] = &ExecutionManager::user;
 	_command_book["JOIN"] = &ExecutionManager::join;
@@ -20,6 +20,8 @@ ExecutionManager::ExecutionManager(std::string password)
 	_command_book["PING"] = &ExecutionManager::ping;
 	_command_book["TOPIC"] = &ExecutionManager::topic;
 	_command_book["QUIT"] = &ExecutionManager::quit;
+	_command_book["BOT"] = &ExecutionManager::bot;
+	_command_book["KILL"] = &ExecutionManager::kill;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {
@@ -27,7 +29,7 @@ ExecutionManager::ExecutionManager(const ExecutionManager & src) {
 }
 
 ExecutionManager::~ExecutionManager() {
-	Client::iterator		client_it;
+	Client::iterator	client_it;
 	Channel::iterator	chan_it;
 
 	for (client_it = _client_book.begin(); client_it != _client_book.end(); client_it++)
@@ -41,23 +43,18 @@ ExecutionManager::~ExecutionManager() {
 //--------------------------------- OVERLOADS --------------------------------
 ExecutionManager	&ExecutionManager::operator=( ExecutionManager const & rhs ) {
 	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
 	return *this;
 }
 
 std::ostream	&operator<<( std::ostream & o, ExecutionManager const & i ) {
 	(void)i;
-	//o << "Value = " << i.getValue();
 	return o;
 }
 //----------------------------------------------------------------------------
 
 
 //--------------------------------- METHODS ----------------------------------
-void	ExecutionManager::init_client(int fd, char* ipstr) {
+void	ExecutionManager::init_client(int fd, const char	*ipstr) {
 
 	Client*	new_client = new Client(fd); // delete afterwards
 	
@@ -72,7 +69,6 @@ int	ExecutionManager::run(Client* client) {
 	if (client->get_input().empty())
 		return ret;
 
-	// std::cout << client->get_input() << std::endl;
 	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n");
 	//for multiple \n
 	client->clear_recv_data();
@@ -162,6 +158,62 @@ Client *ExecutionManager::_get_client_by_name(std::string client_name) {
 		if (it->second->get_nickname() == client_name)
 			return it->second;
 	return NULL;
+}
+
+int	ExecutionManager::_send_rpl(Client *client, std::string msg, int numeric) {
+	if (send(client->get_fd(), msg.c_str(), msg.size(), 0) == FAILED){
+		perror("ExecutionManager: send");
+		return FAILED;
+	}
+	return numeric;
+}
+
+//does not modify original token bc that is what freenode does
+Channel::iterator ExecutionManager::_find_chan_in_lowercase(std::string token) {
+	std::string chan_name_lowercase;
+	for (std::string::size_type i = 0; i < token.length(); i++) // token to lower
+		chan_name_lowercase.push_back(std::tolower(token[i]));
+	return (_channel_book.find(chan_name_lowercase));
+}
+
+int	ExecutionManager::_send_welcome_msg(Client *client) {
+	std::string msg;
+
+	_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
+	_send_rpl(client, RPL_YOURHOST(client->get_nickname()), 002);
+	_send_rpl(client, RPL_LUSERCLIENT(client->get_nickname(), std::to_string(_client_book.size())), 251);
+	_send_rpl(client, RPL_LUSERCHANNELS(client->get_nickname(), std::to_string(_channel_book.size())), 254);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "███████╗████████╗     ██╗██████╗  ██████╗");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "██╔════╝╚══██╔══╝     ██║██╔══██╗██╔════╝");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "█████╗     ██║        ██║██████╔╝██║     ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "██╔══╝     ██║        ██║██╔══██╗██║     ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "██║        ██║███████╗██║██║  ██║╚██████╗");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "╚═╝        ╚═╝╚══════╝╚═╝╚═╝  ╚═╝ ╚═════╝");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "Type /join #<channel>");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "Thank you for using the forbidden ft_irc !");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "Be careful, the bot has escaped and is out of control...");
+	_send_rpl(client, msg, 372);
+	_send_rpl(client, RPL_ENDOFMOTD(client->get_nickname()), 376);
+	_send_rpl(client, MSG_MODE(client->get_nickname()), 0);
+	return SUCCESS;
 }
 
 //----------------------------------------------------------------------------

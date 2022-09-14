@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/27 15:37:24 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 10:41:23 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/14 10:39:10 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,16 @@ Client::Client(int fd)
 {}
 
 Client::Client( const Client & src )
-{
-	(void)src;
-}
-
+:
+	_fd(src._fd),
+	_authentication(src._authentication),
+	_password(src._password),
+	_nickname(src._nickname),
+	_username(src._username),
+	_realname(src._realname),
+	_ipstr(src._ipstr),
+	_recv_data(src._recv_data)
+{}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -36,18 +42,20 @@ Client::Client( const Client & src )
 
 Client::~Client(){}
 
-
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
 Client &				Client::operator=( Client const & rhs )
 {
-	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	_fd = rhs._fd;
+	_authentication = rhs._authentication;
+	_password = rhs._password;
+	_nickname = rhs._nickname;
+	_username = rhs._username;
+	_realname = rhs._realname;
+	_ipstr = rhs._ipstr;
+	_recv_data = rhs._recv_data;
 	return *this;
 }
 
@@ -60,7 +68,6 @@ std::ostream &			operator<<( std::ostream & o, Client const & i )
 	o << "nickname = " << i.get_nickname() << std::endl;
 	o << "username = " << i.get_username() << std::endl;
 	o << "realname = " << i.get_realname() << std::endl;
-	i.display_recv_data();
 	o << "---------------------------------------------" << std::endl;
 	return o;
 }
@@ -79,7 +86,6 @@ ssize_t	Client::read_data()
 	{
 		_recv_data.buf_len += _recv_data.nbytes;
 		_recv_data.buf[_recv_data.buf_len] = '\0';
-		// A TESTER SUR MAC
 		if (_recv_data.buf[_recv_data.buf_len - 1] == '\n') // if last char is '\n' then input is ready to be processed
 		{
 			_recv_data.input = _recv_data.buf;
@@ -103,11 +109,12 @@ int	Client::leave_joined_channels(std::string part_msg, int cmd, Channel::map &c
 	Channel::iterator 	it;
 	Channel				*channel;
 
-
 	for (it = _joined_channels.begin(); it != _joined_channels.end(); it++)
 	{
 		channel = it->second;
 		channel->erase_member(this, part_msg, cmd);
+		if (this == channel->get_operator())
+			channel->set_operator(NULL);
 		if (channel->empty() == true)
 		{
 			channel_book.erase(channel->get_name());
@@ -138,15 +145,17 @@ void Client::set_input_to_quit()
 	_recv_data.input = "QUIT :connection lost\n";
 }
 
+void	Client::announce_new_nickname(std::string msg)
+{
+	Channel::iterator	chan_it;
+
+	for (chan_it = _joined_channels.begin(); chan_it != _joined_channels.end(); chan_it++)
+		chan_it->second->broadcast(NULL, msg);
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
-
-// will probably have to delete it, it should be of no use but keeping it for testing in case
-void	Client::set_fd(int fd)
-{
-	_fd = fd;
-}
 
 void	Client::set_authentication(std::string server_pass, std::string client_pass)
 {
@@ -226,19 +235,6 @@ std::string	Client::get_buf() const
 std::string	Client::get_input() const
 {
 	return _recv_data.input;
-}
-
-/*
-** ----------------------------------- DEBUG -----------------------------------
-*/
-
-void	Client::display_recv_data() const
-{
-	std::cout << "------------------recv_data------------------" << std::endl;
-	std::cout << "nbytes = " << _recv_data.nbytes << std::endl;
-	std::cout << "buffer = '" << _recv_data.buf << "'" << std::endl;
-	std::cout << "input = " << _recv_data.input << std::endl;
-	std::cout << "---------------------------------------------" << std::endl;
 }
 
 /* ************************************************************************** */

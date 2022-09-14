@@ -14,14 +14,8 @@ int ExecutionManager::user(Client *client, token_vector tokens) {
 	client->set_username(tokens[1]);
 	client->set_realname(tokens[4]);
 	client->set_authentication(_password, client->get_password());
-	if (client->get_authentication() == true){
-		_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
-		// upon successful registration, send:
-			// - welcome msg
-			// - basic informations about server
-			// - basic help or cmds like join #channel 
-			// - user mode 
-	}
+	if (client->get_authentication() == true)
+		_send_welcome_msg(client);
 	return SUCCESS;
 }
 

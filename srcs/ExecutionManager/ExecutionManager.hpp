@@ -23,38 +23,36 @@ class ExecutionManager
 		typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 
 		ExecutionManager(std::string password);
-		ExecutionManager(ExecutionManager const & src);
 		~ExecutionManager();
-
-		ExecutionManager	&operator=(ExecutionManager const &rhs);
 
 		//--------------------------------- ACCESSORS --------------------------------
 
 		Client				*get_client(int fd) const;
 
 		//--------------------------------- METHODS ----------------------------------
-		void				init_client(int client_fd, char *ipstr);
+		void				init_client(int client_fd, const char *ipstr);
 		int					run(Client *client);
 
 	private:
 		ExecutionManager();
+		ExecutionManager(ExecutionManager const & src);
+		ExecutionManager	&operator=(ExecutionManager const &rhs);
 
 		cmd_map				_command_book;
 		Client::map			_client_book;
 		Channel::map		_channel_book;
 		std::string			_password;
+		int					_bot_fd;
 
 		token_vector		_split(std::string const &buf, std::string sep);
 		int					_find_fd_client_by_name(std::string nickname);
 		int					_send_rpl(Client* client, std::string msg, int code);
 		void				_remove_empty_channel(Channel::iterator chan_it);
 		Channel::iterator 	_find_chan_in_lowercase(std::string channel_name);
-		std::string			_bot_moderate(std::string str);
-		std::string			_moderate(std::string str, std::ifstream *infile);
+		int					_send_welcome_msg(Client *client);
 
 		// join
-		int					_send_channel_infos(std::string channel_name,\
-								Client *client, std::string msg);
+		int					_send_channel_infos(std::string channel_name, Client *client, std::string msg);
 
 		// privmsg
 		int					_err_privmsg_handling(Client *client, token_vector tokens, std::string rpl);
@@ -83,8 +81,6 @@ class ExecutionManager
 		//invite
 		int 				_invite_errors(Client *client, token_vector tokens);
 
-
-	
 		int					nick(Client *client, token_vector tokens);
 		int					user(Client *client, token_vector tokens);
 		int					join(Client *client, token_vector tokens);
@@ -99,6 +95,8 @@ class ExecutionManager
 		int					part(Client *client, token_vector tokens);
 		int					ping(Client *client, token_vector tokens);
 		int					quit(Client *client, token_vector tokens);
+		int					bot(Client *client, token_vector tokens);
+		int					kill(Client *client, token_vector tokens);
 
 };
 

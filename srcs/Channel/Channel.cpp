@@ -6,22 +6,28 @@
 
 Channel::Channel() : _name() {}
 
-Channel::Channel(std::string name) : _name(name), _modes("+") {(void)_name;}
+Channel::Channel(std::string name)
+:
+	_name(name),
+	_modes("+")
+{}
 
 Channel::Channel( const Channel & src )
-{
-	(void)src;
-}
+: 
+	_name(src._name),
+	_topic(src._topic),
+	_modes(src._modes),
+	_operator(src._operator),
+	_members(src._members),
+	_invited_clients(src._invited_clients)
+{}
 
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-Channel::~Channel()
-{
-}
-
+Channel::~Channel() {}
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
@@ -29,33 +35,33 @@ Channel::~Channel()
 
 Channel &				Channel::operator=( Channel const & rhs )
 {
-	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	_name = rhs._name;
+	_topic = rhs._topic;
+	_modes = rhs._modes;
+	_operator = rhs._operator;
+	_members = rhs._members;
+	_invited_clients = rhs._invited_clients;
 	return *this;
 }
 
 std::ostream &			operator<<( std::ostream & o, Channel const & i )
 {
-	(void)i;
-	//o << "Value = " << i.getValue();
+	o << "Channel name = " << i.get_name();
+	o << "Channel topic = " << i.get_topic();
+	o << "Channel modes = " << i.get_modes();
 	return o;
 }
-
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
 
+// set client to NULL to broadcast msg to the sending client itself too
 void	Channel::broadcast(Client *client, std::string msg)
 {
-	std::cout << "Broadcast: " << msg.c_str();
 	for (size_t i = 0; i < _members.size(); i++)
 		if (_members[i] != client)
 		{
-			std::cout << "Sent to nick: " << _members[i]->get_nickname() << std::endl;
 			if (send(_members[i]->get_fd(), msg.c_str(), msg.size(), 0) == FAILED)
 				perror("Channel: send");
 		}
@@ -173,9 +179,10 @@ void	Channel::set_modes(char c, size_t pos, char add_rmv)
 	else if (add_rmv == '-')
 		_modes.erase(pos, 1);
 }
+
 void	Channel::set_topic(std::string topic)
 {
 	_topic = topic;
-};
+}
 
 /* ************************************************************************** */

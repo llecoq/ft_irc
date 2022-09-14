@@ -23,49 +23,46 @@ class Client
 
 	public:
 
-		typedef	std::pair<int, Client *>				pair;
-		typedef std::map<int, Client *>					map;
-		typedef std::vector<Client *>					vector;
-		typedef map::iterator							iterator;
-		typedef map::const_iterator						const_iterator;
+		typedef	std::pair<int, Client *>	pair;
+		typedef std::map<int, Client *>		map;
+		typedef std::vector<Client *>		vector;
+		typedef map::iterator				iterator;
+		typedef map::const_iterator			const_iterator;
 
 		Client();
 		Client( int fd );
-		Client( Client const & src );
 		~Client();
 
-		Client &		operator=( Client const & rhs );
-
 		// methods
-		ssize_t				read_data();
-		void				join_channel(Channel *channel);
-		void				leave_channel(std::string channel_name, std::string msg, int cmd);
-		int					leave_joined_channels(std::string part_msg, int cmd, Channel::map &channel_book);
-		void				clear_recv_data();
-		void				set_input_to_quit();
+		ssize_t			read_data();
+		void			join_channel(Channel *channel);
+		void			leave_channel(std::string channel_name, std::string msg, int cmd);
+		int				leave_joined_channels(std::string part_msg, int cmd, Channel::map &channel_book);
+		void			clear_recv_data();
+		void			set_input_to_quit();
+		void			announce_new_nickname(std::string msg);
 
 		// accessor
-		void				set_fd(int fd);
-		void				set_authentication(std::string server_pass, std::string client_pass);
-		void				set_username(std::string username);
-		void				set_password(std::string password);
-		void				set_realname(std::string realname);
-		void				set_nickname(std::string nickname);
-		void				set_ipstr(std::string ipstr);
-		int					get_fd() const;
-		bool				get_authentication() const;
-		std::string			get_password() const;
-		std::string			get_username() const;
-		std::string			get_nickname() const;
-		std::string			get_realname() const;
-		std::string			get_ipstr() const;
-		std::string			get_buf() const;
-		std::string			get_input() const;
-
-		// debug
-		void				display_recv_data() const;
+		void			set_authentication(std::string server_pass, std::string client_pass);
+		void			set_username(std::string username);
+		void			set_password(std::string password);
+		void			set_realname(std::string realname);
+		void			set_nickname(std::string nickname);
+		void			set_ipstr(std::string ipstr);
+		int				get_fd() const;
+		bool			get_authentication() const;
+		std::string		get_password() const;
+		std::string		get_username() const;
+		std::string		get_nickname() const;
+		std::string		get_realname() const;
+		std::string		get_ipstr() const;
+		std::string		get_buf() const;
+		std::string		get_input() const;
 
 	private:
+
+		Client( Client const & src );
+		Client &operator=( Client const & rhs );
 
 		int				_fd;
 		bool			_authentication;
@@ -75,8 +72,7 @@ class Client
 		std::string 	_realname;
 		std::string		_ipstr;
 		t_recv_data 	_recv_data;
-
-		std::map<std::string, Channel *> _joined_channels;
+		Channel::map	_joined_channels;
 };
 
 std::ostream &			operator<<( std::ostream & o, Client const & i );

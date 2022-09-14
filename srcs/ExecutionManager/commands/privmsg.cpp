@@ -5,36 +5,6 @@ typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 #define CMD	"PRIVMSG"
 #define RPL(sending_nickname, recipient, msg)	":" + sending_nickname + " PRIVMSG " + recipient + " " + msg + CRLF
 
-std::string	ExecutionManager::_moderate(std::string str, std::ifstream *infile) {
-	if (!infile) {
-		infile->close();
-		return str;
-	}
-
-	std::string word;
-	while (*infile >> word) {
-		size_t pos = str.find(word);
-		if (pos != std::string::npos) {
-			size_t word_size = word.size();
-			std::string replace(word_size, '*');
-			str.replace(pos, word_size, replace);
-		}
-	}
-	infile->close();
-	return str;
-}
-
-std::string	ExecutionManager::_bot_moderate(std::string str) {
-
-	std::ifstream infile_engl("dict_insult_engl.txt");
-	std::ifstream infile_fr("dict_insult_fr.txt");
-
-	str = _moderate(str, &infile_engl);
-	str = _moderate(str, &infile_fr);
-
-	return str;
-}
-
 int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens, std::string cmd) {
 
 	std::string msg;
@@ -59,7 +29,6 @@ std::string	ExecutionManager::_assemble_msg(token_vector token_msg) {
 	return msg;
 }
 
-
 info_dest	ExecutionManager::_infos_dests(std::string str) {
 	std::vector<std::string> str_dests = _split(str, ",");
 	std::vector<int> dests_fd;
@@ -83,11 +52,14 @@ int	ExecutionManager::_msg_to_nicknames(Client *client, token_vector tokens, inf
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	text = _bot_moderate(text);
 
 	for (size_t i = 0; i < str_dests.size(); ++i) {
 		std::string msg = RPL(client->get_nickname(), str_dests[i], text);
-		send(fd_dests[i], msg.c_str(), msg.size(), 0);
+		
+		if (fd_dests[i] != _bot_fd)
+			send(fd_dests[i], msg.c_str(), msg.size(), 0);
+		if (_bot_fd != 0 && client->get_fd() != _bot_fd)
+			send(_bot_fd, msg.c_str(), msg.size(), 0);
 	}
 	return SUCCESS;
 }
@@ -99,11 +71,12 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 	if (tokens.size() > 3) // in case no :
 		text = _assemble_msg(tokens);
-	text = _bot_moderate(text);
 
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
 	std::string msg = RPL(client->get_nickname(), dest, text);
+	if (_bot_fd != 0)
+		send(_bot_fd, msg.c_str(), msg.size(), 0);
 	chan->broadcast(client, msg);
 	return SUCCESS;
 }
