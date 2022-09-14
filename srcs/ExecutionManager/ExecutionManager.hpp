@@ -23,10 +23,7 @@ class ExecutionManager
 		typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 
 		ExecutionManager(std::string password);
-		ExecutionManager(ExecutionManager const & src);
 		~ExecutionManager();
-
-		ExecutionManager	&operator=(ExecutionManager const &rhs);
 
 		//--------------------------------- ACCESSORS --------------------------------
 
@@ -38,6 +35,8 @@ class ExecutionManager
 
 	private:
 		ExecutionManager();
+		ExecutionManager(ExecutionManager const & src);
+		ExecutionManager	&operator=(ExecutionManager const &rhs);
 
 		cmd_map				_command_book;
 		Client::map			_client_book;

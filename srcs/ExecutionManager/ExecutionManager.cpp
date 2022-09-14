@@ -42,16 +42,11 @@ ExecutionManager::~ExecutionManager() {
 //--------------------------------- OVERLOADS --------------------------------
 ExecutionManager	&ExecutionManager::operator=( ExecutionManager const & rhs ) {
 	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
 	return *this;
 }
 
 std::ostream	&operator<<( std::ostream & o, ExecutionManager const & i ) {
 	(void)i;
-	//o << "Value = " << i.getValue();
 	return o;
 }
 //----------------------------------------------------------------------------
@@ -73,7 +68,6 @@ int	ExecutionManager::run(Client* client) {
 	if (client->get_input().empty())
 		return ret;
 
-	// std::cout << client->get_input() << std::endl;
 	std::vector<std::string> multiple_cmds = _split(client->get_input(), "\n");
 	//for multiple \n
 	client->clear_recv_data();
@@ -163,6 +157,22 @@ Client *ExecutionManager::_get_client_by_name(std::string client_name) {
 		if (it->second->get_nickname() == client_name)
 			return it->second;
 	return NULL;
+}
+
+int	ExecutionManager::_send_rpl(Client *client, std::string msg, int numeric) {
+	if (send(client->get_fd(), msg.c_str(), msg.size(), 0) == FAILED){
+		perror("ExecutionManager: send");
+		return FAILED;
+	}
+	return numeric;
+}
+
+//does not modify original token bc that is what freenode does
+Channel::iterator ExecutionManager::_find_chan_in_lowercase(std::string token) {
+	std::string chan_name_lowercase;
+	for (std::string::size_type i = 0; i < token.length(); i++) // token to lower
+		chan_name_lowercase.push_back(std::tolower(token[i]));
+	return (_channel_book.find(chan_name_lowercase));
 }
 
 //----------------------------------------------------------------------------

@@ -21,16 +21,13 @@ class Channel
 		typedef map::iterator							iterator;
 
 		Channel(std::string name);
-		Channel( Channel const & src );
 		~Channel();
-
-		Channel &			operator=( Channel const & rhs );
 
 		// accessors
 		std::string	get_name() const;
 		std::string	get_topic() const;
 		std::string	get_modes() const;
-		Client*		get_operator() const;
+		Client		*get_operator() const;
 		void		set_operator(Client *client);
 		void		set_modes(char c, size_t pos, char add_rmv);
 		void		set_topic(std::string topic);
@@ -49,6 +46,8 @@ class Channel
 	private:
 		
 		Channel();
+		Channel( Channel const & src );
+		Channel &operator=( Channel const & rhs );
 		
 		std::string				_name;
 		std::string				_topic;

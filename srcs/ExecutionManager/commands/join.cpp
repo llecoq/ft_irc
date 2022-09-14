@@ -40,7 +40,6 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 			break;
 		case CHANNEL_FOUND:
 			client->join_channel(_channel_book.find(channels[i])->second); // add channel to client's joined_channel and client to channel's members
-			// ATTENTION ! MSG_JOIN IS INCOMPLETE
 			_send_channel_infos(channels[i], client, MSG_JOIN(channels[i], client->get_nickname()));
 			break;
 		}
