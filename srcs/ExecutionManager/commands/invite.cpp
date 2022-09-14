@@ -19,6 +19,8 @@ int ExecutionManager::_invite_errors(Client *client, token_vector tokens) {
 		return (_send_rpl(client, ERR_CHANOPRIVSNEEDED(channel->get_name()), 482));
 	if (_get_client_by_name(tokens[1]) == NULL)
 		return (_send_rpl(client, ERR_NOSUCHNICK(tokens[1]), 401));
+	if (channel->user_is_in_channel(_get_client_by_name(tokens[1])) == true)
+		return (_send_rpl(client, ERR_USERONCHANNEL(tokens[1], channel->get_name()), 443));
 	return (SUCCESS);
 }
 
