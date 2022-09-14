@@ -18,3 +18,4 @@ freenode
 /set irc.server.freenode.username "henry"
 /set irc.server.freenode.realname "henry"
 /connect freenode
+

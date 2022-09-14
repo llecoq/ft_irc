@@ -2,9 +2,6 @@
 
 typedef std::pair<std::vector<std::string>, std::vector<int> >			info_dest;
 
-#define CMD	"PRIVMSG"
-#define RPL(sending_nickname, recipient, msg)	":" + sending_nickname + " PRIVMSG " + recipient + " " + msg + CRLF
-
 int	ExecutionManager::_err_privmsg_handling(Client *client, token_vector tokens, std::string cmd) {
 
 	std::string msg;
@@ -54,7 +51,8 @@ int	ExecutionManager::_msg_to_nicknames(Client *client, token_vector tokens, inf
 		text = _assemble_msg(tokens);
 
 	for (size_t i = 0; i < str_dests.size(); ++i) {
-		std::string msg = RPL(client->get_nickname(), str_dests[i], text);
+		std::string msg = ((tokens[0] == "PRIVMSG") ? 	MSG_PRIVMSG(client->get_nickname(), str_dests[i], text) : \
+														MSG_NOTICE(client->get_nickname(), str_dests[i], text));
 		
 		if (fd_dests[i] != _bot_fd)
 			send(fd_dests[i], msg.c_str(), msg.size(), 0);
@@ -74,7 +72,8 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 
 	if (chan->user_is_in_channel(client) == false)
 		_send_rpl(client, ERR_CANNOTSENDTOCHAN(chan_it->first), 404);
-	std::string msg = RPL(client->get_nickname(), dest, text);
+	std::string msg = ((tokens[0] == "PRIVMSG") ? 	MSG_PRIVMSG(client->get_nickname(), dest, text) : \
+													MSG_NOTICE(client->get_nickname(), dest, text));
 	if (_bot_fd != 0)
 		send(_bot_fd, msg.c_str(), msg.size(), 0);
 	chan->broadcast(client, msg);
@@ -82,8 +81,8 @@ int	ExecutionManager::_msg_to_channel(Client *client, token_vector tokens, Chann
 }
 
 int	ExecutionManager::privmsg(Client *client, token_vector tokens) {
-
-	int ret = _err_privmsg_handling(client, tokens, CMD);
+	std::string cmd("PRIVMSG");
+	int ret = _err_privmsg_handling(client, tokens, cmd);
 	if (ret != SUCCESS)
 		return ret;
 

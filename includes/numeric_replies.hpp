@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   numeric_replies.hpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
+/*   By: abonnel <abonnel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/14 13:03:21 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/14 13:35:22 by abonnel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,10 @@
 #define MSG_NICK(old_nickname, new_nickname)			":" + old_nickname + " NICK " + new_nickname + CRLF
 #define MSG_MODE(nickname)								":" + nickname + " MODE " + nickname + " :+w" + CRLF
 #define MSG_KILL(nickname, message)						":bot KILL " + nickname + " " + message + CRLF
+#define MSG_PRIVMSG(sender, recipient, msg)				":" + sender + " PRIVMSG " + recipient + " " + msg + CRLF
+#define MSG_NOTICE(sender, recipient, msg)				":" + sender + " NOTICE " + recipient + " " + msg + CRLF
+
+// #define MSG_NOTICE(rpl, sending_nickname, recipient, msg)	rpl + ":" + sending_nickname + " NOTICE " + recipient + " :" + msg + CRLF
+
 
 #endif // NUMERIC_REPLIES_HPP

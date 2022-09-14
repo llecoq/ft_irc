@@ -1,23 +1,20 @@
 #include "ExecutionManager.hpp"
 
-#define CMD	"NOTICE"
-#define RPL(rpl, sending_nickname, recipient, msg)		rpl + ":" + sending_nickname + " NOTICE " + recipient + " :" + msg + CRLF
-
 int	ExecutionManager::notice(Client *client, token_vector tokens) {
-
-	int ret = _err_privmsg_handling(client, tokens, CMD);
+	std::string cmd("NOTICE");
+	int ret = _err_privmsg_handling(client, tokens, cmd);
 	if (ret != SUCCESS)
 		return ret;
 
 	std::pair<std::vector<std::string>, std::vector<int> > dests = _infos_dests(tokens[1]);
-	Channel::iterator chan_it = _channel_book.find(tokens[1]);
+	Channel::iterator chan_it = _find_chan_in_lowercase(tokens[1]);
 
 	if (_dests_fd_valid(dests.second))
 		ret = _msg_to_nicknames(client, tokens, dests);
 	else if (chan_it != _channel_book.end()) {
 		ret = _msg_to_channel(client, tokens, chan_it);
 	}
-	if (ret != SUCCESS)
+	else
 		_send_rpl(client, ERR_NOSUCHNICK(tokens[1]), 401);
 	return ret;
 }
