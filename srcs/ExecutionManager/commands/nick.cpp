@@ -17,7 +17,7 @@ int ExecutionManager::nick(Client *client, token_vector tokens) {
 		if (client->get_authentication() == false) {
 			client->set_authentication(_password, client->get_password());
 			if (client->get_authentication() == true)
-				_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
+				return _send_welcome_msg(client);
 		}
 		else
 			client->announce_new_nickname(MSG_NICK(old_nickname, tokens[1]));

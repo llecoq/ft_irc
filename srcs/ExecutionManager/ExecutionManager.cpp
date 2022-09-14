@@ -175,4 +175,44 @@ Channel::iterator ExecutionManager::_find_chan_in_lowercase(std::string token) {
 	return (_channel_book.find(chan_name_lowercase));
 }
 
+int	ExecutionManager::_send_welcome_msg(Client *client) {
+	std::string msg;
+
+	_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
+	_send_rpl(client, RPL_YOURHOST(client->get_nickname()), 002);
+	_send_rpl(client, RPL_LUSERCLIENT(client->get_nickname(), std::to_string(_client_book.size())), 251);
+	_send_rpl(client, RPL_LUSERCHANNELS(client->get_nickname(), std::to_string(_channel_book.size())), 254);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "███████╗████████╗     ██╗██████╗  ██████╗");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "██╔════╝╚══██╔══╝     ██║██╔══██╗██╔════╝");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "█████╗     ██║        ██║██████╔╝██║     ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "██╔══╝     ██║        ██║██╔══██╗██║     ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "██║        ██║███████╗██║██║  ██║╚██████╗");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "╚═╝        ╚═╝╚══════╝╚═╝╚═╝  ╚═╝ ╚═════╝");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "Type /join #<channel>");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), " ");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "Thank you for using the forbidden ft_irc !");
+	_send_rpl(client, msg, 372);
+	msg = RPL_MOTD(client->get_nickname(), "Be careful, the bot has escaped and is out of control...");
+	_send_rpl(client, msg, 372);
+	_send_rpl(client, RPL_ENDOFMOTD(client->get_nickname()), 376);
+	_send_rpl(client, MSG_MODE(client->get_nickname()), 0);
+	return SUCCESS;
+}
+
 //----------------------------------------------------------------------------

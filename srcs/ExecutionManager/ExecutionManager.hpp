@@ -49,10 +49,10 @@ class ExecutionManager
 		int					_send_rpl(Client* client, std::string msg, int code);
 		void				_remove_empty_channel(Channel::iterator chan_it);
 		Channel::iterator 	_find_chan_in_lowercase(std::string channel_name);
+		int					_send_welcome_msg(Client *client);
 
 		// join
-		int					_send_channel_infos(std::string channel_name,\
-								Client *client, std::string msg);
+		int					_send_channel_infos(std::string channel_name, Client *client, std::string msg);
 
 		// privmsg
 		int					_err_privmsg_handling(Client *client, token_vector tokens, std::string rpl);

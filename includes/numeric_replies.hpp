@@ -6,14 +6,16 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 20:57:18 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/14 12:06:51 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef NUMERIC_REPLIES_HPP
 #define NUMERIC_REPLIES_HPP
 
-#define CRLF "\r\n"
+#define CRLF 											"\r\n"
+#define SERVER_NAME										"ft_irc"
+#define SERVER_VERSION									"1.0"
 
 // ERROR REPLIES 1459
 #define ERR_NOSUCHNICK(nickname)						"401 " + nickname + " :No such nick/channel" + CRLF
@@ -41,13 +43,18 @@
 #define ERR_BADCHANNAME(channel)						"479 " + channel + " :Invalid channel name" + CRLF
 
 // COMMAND RESPONSES RFC_2812
-#define RPL_WELCOME(nickname)							"001 " + nickname + " :Bijour " + nickname + CRLF
+#define RPL_WELCOME(nickname)							"001 " + nickname + " :Welcome to the forbidden ft_irc serveur " + nickname + CRLF
+#define RPL_YOURHOST(nickname)							"002 " + nickname + " :Your host is ft_irc, running version 1.0" + CRLF
+#define RPL_LUSERCLIENT(nickname, number_of_clients)	"251 " + nickname + " :There are " + number_of_clients +  " users on 1 servers" + CRLF
+#define RPL_LUSERCHANNELS(nickname, number_of_channels)	"254 " + nickname + " :There are " + number_of_channels +  " channels formed" + CRLF
 #define RPL_CHANNELMODEIS(nickname, channel, mode, mode_params)	"324 " + nickname + " " + channel + " :" + mode + mode_params + CRLF
 #define RPL_NOTOPIC(nickname, channel) 					"331 " + nickname + " " + channel + " :No topic is set" + CRLF
 #define RPL_TOPIC(nickname, channel, topic) 			"332 " + nickname + " " + channel + " :" + topic + CRLF
 #define RPL_NAMREPLY(channel, nickname, members)		"353 " + nickname + " " + channel + " :" + members + CRLF
-#define RPL_ENDOFNAMES(channel, nickname)				"366 " + nickname + " " + channel + " :End of /NAMES list" + CRLF
 #define RPL_INVITING(inviting, channel, invited)		"341 " + inviting + " " + invited + " " + channel + CRLF
+#define RPL_ENDOFNAMES(channel, nickname)				"366 " + nickname + " " + channel + " :End of /NAMES list" + CRLF
+#define RPL_MOTD(nickname, message)						"372 " + nickname + " :" + message + CRLF
+#define RPL_ENDOFMOTD(nickname)							"376 " + nickname + " :End of message of the day." + CRLF
 
 // MSG_BUILDER
 #define MSG_JOIN(channel, nickname)						":" + nickname + " JOIN " + channel + CRLF
@@ -55,11 +62,6 @@
 #define MSG_KICK(operator, channel, kicked, kick_msg)	":" + operator + " KICK " + channel +  " " + kicked + " " + kick_msg + CRLF
 #define MSG_INVITE(inviting, invited, channel)			":" + inviting + " INVITE " + invited +  " " + channel + CRLF
 #define MSG_NICK(old_nickname, new_nickname)			":" + old_nickname + " NICK " + new_nickname + CRLF
-//should I put ":" even when there is no msg ?"
-														//:WiZ KICK #Finnish John
-														//:airano KICK #chaninu abonnel :t trop une merde
-
-// COMMAND RESPONSES RFC_1459
-
+#define MSG_MODE(nickname)								":" + nickname + " MODE " + nickname + " :+w" + CRLF
 
 #endif // NUMERIC_REPLIES_HPP

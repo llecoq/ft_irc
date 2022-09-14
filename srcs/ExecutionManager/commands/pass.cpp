@@ -10,6 +10,6 @@ int ExecutionManager::pass(Client *client, token_vector tokens) {
 	client->set_password(tokens[1]);
 	client->set_authentication(_password, client->get_password());
 	if (client->get_authentication() == true)
-		_send_rpl(client, RPL_WELCOME(client->get_nickname()), 001);
+		_send_welcome_msg(client);
 	return SUCCESS;
 }
