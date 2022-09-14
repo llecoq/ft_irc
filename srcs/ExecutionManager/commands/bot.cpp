@@ -7,7 +7,6 @@ int ExecutionManager::bot(Client *client, token_vector tokens) {
 		std::string	bot("bot");
 
 		_bot_fd = client->get_fd();
-		init_client(_bot_fd, bot.c_str());
 		client->set_username("Claptrap");
 		client->set_nickname("bot");
 		client->set_password("AUTHENTICATION");
