@@ -50,7 +50,10 @@ void	Bot::process_data()
 	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
 	{
 		if (_insult_is_found(tokens[3]) && tokens[2][0] == '#')
-			_kick_the_malotru_out(tokens);
+			_kick_the_malotru_out_of_chan(tokens);
+		// else // insult sent to a single user
+		// 	if (tokens[2] == "bot") // insult sent to the bot
+		// 		_kill_the_malotru(tokens);
 		if (tokens[2] == "bot")
 			_send_random_answers(tokens);
 	}
@@ -77,7 +80,7 @@ bool	Bot::_insult_is_found(std::string msg)
 	return false;
 }
 
-void	Bot::_kick_the_malotru_out(token_vector tokens)
+void	Bot::_kick_the_malotru_out_of_chan(token_vector tokens)
 {
 	std::string	kick_msg("KICK ");
 
@@ -85,6 +88,15 @@ void	Bot::_kick_the_malotru_out(token_vector tokens)
 	kick_msg.append(" :Malotru ! Vous êtes bien malhonnête!\r\n");
 	send(_fd, kick_msg.c_str(), kick_msg.size(), 0);
 	std::cout << "insult found !!! KICK THE VILAAAAIN OUT" << std::endl;
+}
+
+void	Bot::_kill_the_malotru(token_vector tokens)
+{
+	std::string	kill_msg("KILL ");
+
+	kill_msg.append(tokens[0]);
+	kill_msg.append(" :S'en est trop! Non mais!!! Je vais t'apprendre les bonnes manières moi!!!\r\n");
+	send(_fd, kill_msg.c_str(), kill_msg.size(), 0);
 }
 
 void	Bot::_send_random_answers(token_vector tokens)
@@ -151,10 +163,5 @@ std::vector<std::string>	Bot::_split(std::string const &buf, std::string sep)
 	}
 	return vec;
 }
-
-/*
-** --------------------------------- ACCESSOR ---------------------------------
-*/
-
 
 /* ************************************************************************** */

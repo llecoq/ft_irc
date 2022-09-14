@@ -81,8 +81,6 @@ class ExecutionManager
 		//invite
 		int 				_invite_errors(Client *client, token_vector tokens);
 
-
-	
 		int					nick(Client *client, token_vector tokens);
 		int					user(Client *client, token_vector tokens);
 		int					join(Client *client, token_vector tokens);
@@ -98,6 +96,7 @@ class ExecutionManager
 		int					ping(Client *client, token_vector tokens);
 		int					quit(Client *client, token_vector tokens);
 		int					bot(Client *client, token_vector tokens);
+		int					kill(Client *client, token_vector tokens);
 
 };
 

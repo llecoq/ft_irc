@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/28 13:34:23 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/14 12:06:51 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/14 13:03:21 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 #define ERR_ALREADYREGISTRED							"462 :Unauthorized command (already registered)\r\n"
 #define ERR_INVITEONLYCHAN(channel)						"473 " + channel + " :Cannot join channel (+i)" + CRLF
 #define ERR_BADCHANNAME(channel)						"479 " + channel + " :Invalid channel name" + CRLF
+#define ERR_NOPRIVILEGES								"481 :Permission Denied- You're not an IRC operator\r\n"
 
 // COMMAND RESPONSES RFC_2812
 #define RPL_WELCOME(nickname)							"001 " + nickname + " :Welcome to the forbidden ft_irc serveur " + nickname + CRLF
@@ -63,5 +64,6 @@
 #define MSG_INVITE(inviting, invited, channel)			":" + inviting + " INVITE " + invited +  " " + channel + CRLF
 #define MSG_NICK(old_nickname, new_nickname)			":" + old_nickname + " NICK " + new_nickname + CRLF
 #define MSG_MODE(nickname)								":" + nickname + " MODE " + nickname + " :+w" + CRLF
+#define MSG_KILL(nickname, message)						":bot KILL " + nickname + " " + message + CRLF
 
 #endif // NUMERIC_REPLIES_HPP

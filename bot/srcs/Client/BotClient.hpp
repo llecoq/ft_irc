@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 20:28:03 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 20:28:05 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/14 12:17:34 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,20 +33,19 @@ class BotClient
 		BotClient(const char *port);
 		~BotClient();
 
-		// member functions
-		void	init();
-		void	run();
+		void			init();
+		void			run();
 
 	private:
 
 		BotClient();
 
-		void		_get_address_info();
-		void		_get_receiving_socket();
-		int			_connect_to_socket(addrinfo *ptr);
-		void		_poll_events();
-		static void	_signal_handler(int signum);
-		int			_find_event();
+		void			_get_address_info();
+		void			_get_receiving_socket();
+		int				_connect_to_socket(addrinfo *ptr);
+		void			_poll_events();
+		int				_find_event();
+		static void		_signal_handler(int signum);
 
 		const char		*_port;
 		struct addrinfo	*_servinfo;

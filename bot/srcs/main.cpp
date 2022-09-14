@@ -6,7 +6,7 @@
 /*   By: llecoq <llecoq@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 15:51:42 by llecoq            #+#    #+#             */
-/*   Updated: 2022/09/13 16:48:06 by llecoq           ###   ########.fr       */
+/*   Updated: 2022/09/14 12:17:54 by llecoq           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,10 @@ int main(int argc, char *argv[])
 	if (argc < 2)
 	{
 		std::cout << "USAGE : ./bot <port number>" << std::endl; 
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	BotClient	BotClient(argv[1]);
 
-	// mini parsing port // mdp ?
 	try
 	{
 		BotClient.init();

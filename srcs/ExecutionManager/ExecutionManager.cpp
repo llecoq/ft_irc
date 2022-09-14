@@ -21,6 +21,7 @@ ExecutionManager::ExecutionManager(std::string password)
 	_command_book["TOPIC"] = &ExecutionManager::topic;
 	_command_book["QUIT"] = &ExecutionManager::quit;
 	_command_book["BOT"] = &ExecutionManager::bot;
+	_command_book["KILL"] = &ExecutionManager::kill;
 }
 
 ExecutionManager::ExecutionManager(const ExecutionManager & src) {

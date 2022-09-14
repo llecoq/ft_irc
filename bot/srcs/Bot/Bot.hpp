@@ -35,7 +35,8 @@ class Bot
 
 		token_vector	_split(std::string const &buf, std::string sep);
 		bool			_insult_is_found(std::string msg);
-		void			_kick_the_malotru_out(token_vector tokens);
+		void			_kick_the_malotru_out_of_chan(token_vector tokens);
+		void			_kill_the_malotru(token_vector tokens);
 		void			_send_random_answers(token_vector tokens);
 
 };
