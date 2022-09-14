@@ -19,8 +19,7 @@ Channel::Channel( const Channel & src )
 */
 
 Channel::~Channel()
-{
-}
+{}
 
 
 /*
@@ -49,6 +48,7 @@ std::ostream &			operator<<( std::ostream & o, Channel const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
+// set client to NULL to broadcast msg to the sending client itself too
 void	Channel::broadcast(Client *client, std::string msg)
 {
 	for (size_t i = 0; i < _members.size(); i++)

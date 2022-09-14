@@ -20,7 +20,6 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 		return _send_rpl(client, ERR_NEEDMOREPARAMS(cmd), 461);
 	if (tokens[1] == "0")
 		return client->leave_joined_channels(client->get_nickname(), PART, _channel_book);
-	// too many params does not exists because server just create chan with first param (tested on freenode)
 	token_vector			channels = _split(tokens[1], ",");
 
 	for (size_t  i = 0; i < channels.size(); i++) {
@@ -54,7 +53,6 @@ int ExecutionManager::join(Client *client, token_vector tokens) {
 static int	find_channel(Channel::map &channel_book, std::string &channel_name, Client *client) {
 	for (std::string::size_type i = 0; i < channel_name.length(); ++i) // channel_name to lower
 		channel_name[i] = std::tolower(channel_name[i]);
-	// channel name should start with # (# alone is a valid name)
 	if (channel_name[0] != '#' || channel_name.size() > 50)
 		return BAD_CHANNEL_NAME;
 	Channel::iterator	chan_it = channel_book.find(channel_name);
@@ -79,17 +77,15 @@ static void	create_new_channel(Channel::map &channel_book, Client *client, std::
 }
 
 // sending JOIN msg + RPL_TOPIC/NOTOPIC + RPL_NAMREPLY + RPL_ENDOFNAMES to client
-// ATTENTION ! NAMEREPLY() IS INCOMPLETE
 int	ExecutionManager::_send_channel_infos(std::string channel_name, Client *client, std::string msg) {
 	Channel 	*channel = _channel_book.find(channel_name)->second;
 	std::string	channel_topic = channel->get_topic();
 	std::string	client_nickname = client->get_nickname();
-	// send  bimbadaboumboum (~bimbadabo@freenode/user/bimbadaboumboum) a rejoint #freenode 
 	
 	// :llecoq!~llecoq@127.0.0.1 JOIN #baba
 	if (_bot_fd != 0 && client->get_fd() != _bot_fd)
 		send(_bot_fd, msg.c_str(), msg.size(), 0);
-	channel->broadcast(NULL, msg); // NULL = send to everyone included the client itself
+	channel->broadcast(NULL, msg);
 	if (channel_topic.empty() == 1)
 		_send_rpl(client, RPL_NOTOPIC(client_nickname, channel_name), 331);
 	else

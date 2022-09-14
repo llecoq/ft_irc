@@ -28,7 +28,7 @@ ExecutionManager::ExecutionManager(const ExecutionManager & src) {
 }
 
 ExecutionManager::~ExecutionManager() {
-	Client::iterator		client_it;
+	Client::iterator	client_it;
 	Channel::iterator	chan_it;
 
 	for (client_it = _client_book.begin(); client_it != _client_book.end(); client_it++)

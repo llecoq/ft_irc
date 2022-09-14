@@ -49,7 +49,6 @@ void	Bot::process_data()
 
 	if (tokens.size() == 4 && tokens[1] == "PRIVMSG")
 	{
-		std::cout << "token 0 = " << tokens[0] << std::endl;	
 		if (_insult_is_found(tokens[3]) && tokens[2][0] == '#')
 			_kick_the_malotru_out(tokens);
 		if (tokens[2] == "bot")
@@ -85,7 +84,7 @@ void	Bot::_kick_the_malotru_out(token_vector tokens)
 	kick_msg.append(tokens[2] + " " + tokens[0]);
 	kick_msg.append(" :Malotru ! Vous êtes bien malhonnête!\r\n");
 	send(_fd, kick_msg.c_str(), kick_msg.size(), 0);
-	std::cout << "insult found !!!!!! KICK THE VILAAAAIN OUT" << std::endl;
+	std::cout << "insult found !!! KICK THE VILAAAAIN OUT" << std::endl;
 }
 
 void	Bot::_send_random_answers(token_vector tokens)
@@ -117,7 +116,7 @@ void	Bot::_send_random_answers(token_vector tokens)
 		answer = " :J'ai faim. Ah bah non, je suis un robot. Mais j'ai quand même faim.";
 		break;
 	case 7:
-		answer = " :Vous ne saurez rieeen, je ne lacherai pas le morceau !!! JAMAIS !\n\n\n...\nC'est Ariane qui a mangé la dernière mousse au chocolat.";
+		answer = " :Vous ne saurez rieeen, je ne lacherai pas le morceau !!! JAMAIS !    ...     ...   C'est Ariane qui a mangé la dernière mousse au chocolat.";
 		break;
 	case 8:
 		answer = " :J'ai été développé par un être doué d'intelligence, mais pas la bonne...";

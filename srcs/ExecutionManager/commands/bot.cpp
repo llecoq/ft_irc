@@ -12,7 +12,7 @@ int ExecutionManager::bot(Client *client, token_vector tokens) {
 		client->set_nickname("bot");
 		client->set_password("AUTHENTICATION");
 		client->set_authentication("AUTHENTICATION", "AUTHENTICATION");
-		_send_rpl(client, "Cliquez sur 'je ne suis pas un robot' pour continuer\n\nAlors ?!...\n", 001); // autre message
+		_send_rpl(client, "Prouvez que vous êtes un robot pour continuer...\n", 001); // autre message
 	}
 	return SUCCESS;
 }
