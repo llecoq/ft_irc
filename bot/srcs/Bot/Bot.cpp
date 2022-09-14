@@ -63,16 +63,16 @@ void	Bot::process_data()
 bool	Bot::_insult_is_found(std::string msg)
 {
 	std::ifstream	infile("./assets/dict_insult_fr.txt");
-	std::string		word;
+	std::string		insult;
 
 	if (!infile)
 	{
 		infile.close();
 		return false;
 	}
-	while (infile >> word)
+	while (std::getline(infile, insult))
 	{
-		size_t pos = msg.find(word);
+		size_t pos = msg.find(insult);
 		if (pos != std::string::npos)
 			return true;
 	}
