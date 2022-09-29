@@ -19,27 +19,33 @@
   </p>
 </p>
 
+<p align="center">
+  <img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.58.16%20PM.png" width=600>
+</p>
 
 ## Table of contents
 
 - [Quick start](#quick-start)
+- [Usage](#usage)
 - [What's included](#whats-included)
 - [Creators](#creators)
-
 
 ## Quick start
 
 ft_irc server with a dedicated bot.
-We used Weechat as the reference for our client and freenode as the reference for the server.
+
+We used <a href="https://weechat.org/"> Weechat</a> as the reference for our client and <a href="https://freenode.net/"> freenode</a> as the reference for the server.
 
 The bot is running like a client and can be connected/disconnected at will. The bot is ominiscient and... has a short fuse.
 Dare to use bad words and something may happen to you !
 It will only read from the french dictionnary of insults located in ./bot/assets/ but you can still feed the dictionnary by yourself.
 It is possible to send private messages to the bot and it will answer accordingly... (randomly to be honest).
 
-<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.46.37%20PM.png">
+As the subject requires it, the server is only running with a password so you will need to set the password accordingly beforehand in weechat to be able to connect to the server.
 
-usage :  
+<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.46.37%20PM.png" width=800>
+
+## Usage
 
 to start the server, run 'make' at the root of the directory:
 ```
@@ -50,7 +56,7 @@ to start the bot, first you have to run 'make' in the ./bot/ directory:
 ./bot <port>
 ```
 
-<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.44.23%20PM.png">
+<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.44.23%20PM.png" width = 380>
 
 to send a message to the bot with weechat:
 ```
