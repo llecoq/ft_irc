@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://42lyon.fr/">
-    <img src="./assets/final%20grade.png" alt="ft_irc" width=200 height=170>
+    <img src="./assets/final_grade.png" alt="ft_irc" width=200 height=170>
   </a>
 
   <h2 align="center">ft_irc</h2>
