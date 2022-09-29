@@ -29,7 +29,7 @@
 
 ## Quick start
 
-ft_irc server with a dedicated bot. 
+ft_irc server with a dedicated bot.
 We used Weechat as the reference for our client and freenode as the reference for the server.
 
 The bot is running like a client and can be connected/disconnected at will. The bot is ominiscient and... has a short fuse.
@@ -37,16 +37,21 @@ Dare to use bad words and something may happen to you !
 It will only read from the french dictionnary of insults located in ./bot/assets/ but you can still feed the dictionnary by yourself.
 It is possible to send private messages to the bot and it will answer accordingly... (randomly to be honest).
 
+<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.46.37%20PM.png">
+
 usage :  
 
-to start the server:
+to start the server, run 'make' at the root of the directory:
 ```
 ./ircserv <port> <password>
 ```
-to start the bot:
+to start the bot, first you have to run 'make' in the ./bot/ directory:
 ```
 ./bot <port>
 ```
+
+<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.44.23%20PM.png">
+
 to send a message to the bot with weechat:
 ```
 /msg bot <message>
