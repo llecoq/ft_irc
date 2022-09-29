@@ -19,6 +19,8 @@
   </p>
 </p>
 
+![](./assets/Screen%20Shot%202022-09-29%20at%201.58.16%20PM.png)
+
 <p align="center">
   <img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.58.16%20PM.png" width=600>
 </p>
