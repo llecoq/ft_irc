@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://42lyon.fr/">
-    <img src="https://github.com/llecoq/ft_irc/blob/main/assets/final%20grade.png" alt="ft_irc" width=200 height=170>
+    <img src="./assets/final%20grade.png" alt="ft_irc" width=200 height=170>
   </a>
 
   <h2 align="center">ft_irc</h2>
@@ -13,14 +13,14 @@
     <br>
     <br>
     <br>
-    <a href="https://github.com/llecoq/ft_irc/blob/main/assets/en.subject.pdf">English Subject </a>
+    <a href="./assets/en.subject.pdf">English Subject </a>
     |
-    <a href="https://github.com/llecoq/ft_irc/blob/main/assets/fr.subject.pdf"> Sujet en Francais</a>
+    <a href="./assets/fr.subject.pdf"> Sujet en Francais</a>
   </p>
 </p>
 
 <p align="center">
-  <img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.58.16%20PM.png" width=600>
+  <img src="./assets/Screen%20Shot%202022-09-29%20at%201.58.16%20PM.png" width=600>
 </p>
 
 ## Table of contents
@@ -43,7 +43,7 @@ It is possible to send private messages to the bot and it will answer accordingl
 
 As the subject requires it, the server is only running with a password so you will need to set the password accordingly beforehand in weechat to be able to connect to the server.
 
-<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.46.37%20PM.png" width=800>
+<img src="./assets/Screen%20Shot%202022-09-29%20at%201.46.37%20PM.png" width=800>
 
 ## Usage
 
@@ -56,7 +56,7 @@ to start the bot, first you have to run 'make' in the ./bot/ directory:
 ./bot <port>
 ```
 
-<img src="https://github.com/llecoq/ft_irc/blob/main/assets/Screen%20Shot%202022-09-29%20at%201.44.23%20PM.png" width = 380>
+<img src="./assets/Screen%20Shot%202022-09-29%20at%201.44.23%20PM.png" width = 380>
 
 to send a message to the bot with weechat:
 ```
