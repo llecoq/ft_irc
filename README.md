@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://42lyon.fr/">
-    <img src="https://github.com/llecoq/ft_irc/blob/master/assets/final%20grade.png" alt="ft_irc" width=200 height=170>
+    <img src="https://github.com/llecoq/ft_irc/blob/main/assets/final%20grade.png" alt="ft_irc" width=200 height=170>
   </a>
 
   <h2 align="center">ft_irc</h2>
@@ -13,9 +13,9 @@
     <br>
     <br>
     <br>
-    <a href="https://github.com/llecoq/ft_irc/blob/master/assets/en.subject.pdf">English Subject </a>
+    <a href="https://github.com/llecoq/ft_irc/blob/main/assets/en.subject.pdf">English Subject </a>
     |
-    <a href="https://github.com/llecoq/ft_irc/blob/master/assets/fr.subject.pdf"> Sujet en Francais</a>
+    <a href="https://github.com/llecoq/ft_irc/blob/main/assets/fr.subject.pdf"> Sujet en Francais</a>
   </p>
 </p>
 
